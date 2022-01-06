@@ -26,7 +26,9 @@ fn main() -> Result<()> {
 			.parse(&code, None)
 			.expect("Couldn't parse the requested code...");
 		let mut cursor = tree.walk();
-		walk(&mut cursor)?;
+        let split_code: Vec<&str> = code.split("\n").collect();
+
+		walk(&mut cursor, &split_code)?;
 	} else {
 		loop {
 			print!(">>> ");
@@ -39,10 +41,12 @@ fn main() -> Result<()> {
 			}
 
 			let tree = parser
-				.parse(input, None)
+				.parse(&input, None)
 				.expect("Couldn't parse the inputted code");
 			let mut cursor = tree.walk();
-			walk(&mut cursor)?;
+
+            let split_code: Vec<&str> = input.split("\n").collect();
+			walk(&mut cursor, &split_code)?;
 		}
 	}
 
