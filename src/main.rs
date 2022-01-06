@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use log::*;
+use std::io::{stdin, stdout, Write};
 use tree_sitter_typescript::language_typescript;
 
 mod lib;
@@ -22,16 +22,28 @@ fn main() -> Result<()> {
 	parser.set_language(language_typescript()).unwrap();
 
 	if let Some(code) = args.eval {
-		debug!("Code to evaluate: `{}`", &code);
-
 		let tree = parser
 			.parse(&code, None)
 			.expect("Couldn't parse the requested code...");
-		let root_node = tree.root_node();
-		debug!("{}", &root_node.to_sexp());
+		let mut cursor = tree.walk();
+		walk(&mut cursor)?;
+	} else {
+		loop {
+			print!(">>> ");
+			let _ = stdout().flush();
 
-        let cursor = root_node.walk();
-        walk(&cursor);
+			let mut input = String::new();
+			stdin().read_line(&mut input)?;
+			if input == "\n" {
+				break;
+			}
+
+			let tree = parser
+				.parse(input, None)
+				.expect("Couldn't parse the inputted code");
+			let mut cursor = tree.walk();
+			walk(&mut cursor)?;
+		}
 	}
 
 	Ok(())
