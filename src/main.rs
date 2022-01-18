@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
+use log::debug;
 use std::io::{stdin, stdout, Write};
 
 mod lib;
@@ -16,7 +17,7 @@ fn main() -> Result<()> {
 	let args: Args = Args::parse();
 
 	if let Some(code) = args.eval {
-        println!("{}", code);
+        debug!("{code}");
 	} else {
 		loop {
 			print!(">>> ");
