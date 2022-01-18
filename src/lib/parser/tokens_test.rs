@@ -27,10 +27,10 @@ fn string_double_quote_test() {
 
 #[test]
 fn const_var_init_test() {
-	assert_eq!(var_init(r#"const a = 1234;"#), Ok(("", ("a", "1234"))));
+	assert_eq!(var_init(r#"const a = 1234;"#), Ok(("", ("const", "a", "1234"))));
 }
 
 #[test]
 fn let_var_init_test() {
-	assert_eq!(var_init(r#"let a = 'qwerty';"#), Ok(("", ("a", "'qwerty'"))));
+	assert_eq!(var_init(r#"let a = 'qwerty';"#), Ok(("", ("let", "a", "'qwerty'"))));
 }
