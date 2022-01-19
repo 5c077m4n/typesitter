@@ -17,7 +17,7 @@ fn main() -> Result<()> {
 	let args: Args = Args::parse();
 
 	if let Some(code) = args.eval {
-        debug!("{code}");
+		debug!("{code}");
 	} else {
 		loop {
 			print!(">>> ");
@@ -29,7 +29,7 @@ fn main() -> Result<()> {
 				break;
 			}
 
-            println!("{}", input);
+			println!("{}", input);
 		}
 	}
 
