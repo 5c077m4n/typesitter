@@ -1,2 +1,2 @@
-pub mod op_codes;
 pub mod leb128;
+pub mod op_codes;
