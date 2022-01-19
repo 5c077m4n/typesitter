@@ -56,3 +56,27 @@ fn let_var_init_with_type_test() {
 		Ok(("", ("let", "a", Some("number"), "1234")))
 	);
 }
+
+#[test]
+fn fn_init_test() {
+	assert_eq!(
+		fn_init(r#"function () { console.log('Here I am'); }"#),
+		Ok(("", (None, vec![], None, " console.log('Here I am'); ")))
+	);
+}
+
+#[test]
+fn fn_init_output_type_test() {
+	assert_eq!(
+		fn_init(r#"function (): number { console.log('Here I am'); return 1; }"#),
+		Ok((
+			"",
+			(
+				None,
+				vec![],
+				Some("number"),
+				" console.log('Here I am'); return 1; "
+			)
+		))
+	);
+}
