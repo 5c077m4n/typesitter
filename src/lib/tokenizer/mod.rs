@@ -1,4 +1,5 @@
-pub mod tokens;
+pub mod token;
+pub mod tokenizer;
 
 #[cfg(test)]
-mod tokens_test;
+mod tokenizer_test;

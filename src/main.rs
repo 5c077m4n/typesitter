@@ -5,6 +5,8 @@ use std::io::{stdin, stdout, Write};
 
 mod lib;
 
+use lib::tokenizer::token::Span;
+
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
 struct Args {
@@ -17,7 +19,8 @@ fn main() -> Result<()> {
 	let args: Args = Args::parse();
 
 	if let Some(code) = args.eval {
-		debug!("{code}");
+		let input = Span::new_extra(&code, None);
+		debug!("{input:#?}");
 	} else {
 		loop {
 			print!(">>> ");
@@ -29,7 +32,7 @@ fn main() -> Result<()> {
 				break;
 			}
 
-			println!("{}", input);
+			println!("{:#?}", Span::new_extra(&input, None));
 		}
 	}
 
