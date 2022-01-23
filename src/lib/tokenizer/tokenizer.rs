@@ -1,7 +1,9 @@
 #![allow(dead_code)]
 
-use super::super::ast::{keyword::Keyword, literal::Literal};
-use super::token::{GenericToken, KeywordToken, Span};
+use super::{
+	super::ast::{keyword::Keyword, literal::Literal},
+	token::{GenericToken, KeywordToken, LiteralToken, Span},
+};
 use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
@@ -29,40 +31,41 @@ pub fn detect_init_keyword(input: Span) -> IResult<Span, KeywordToken> {
 	))
 }
 
+pub fn decimal(input: Span) -> IResult<Span, LiteralToken> {
+	let (tail, token) = recognize(many1(terminated(digit1, many0(char('_')))))(input)?;
+	let (tail, pos) = position(tail)?;
+	let number: f64 = token.fragment().parse().unwrap();
+
+	Ok((
+		tail,
+		LiteralToken {
+			position: pos,
+			token: Literal::Number(number),
+		},
+	))
+}
+
+pub fn string(input: Span) -> IResult<Span, LiteralToken> {
+	let (tail, token) = alt((
+		delimited(char('\''), take_until("'"), char('\'')),
+		delimited(char('"'), take_until("\""), char('"')),
+	))(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		LiteralToken {
+			position: pos,
+			token: Literal::String(token.fragment()),
+		},
+	))
+}
+
 pub fn binary(input: Span) -> IResult<Span, GenericToken> {
 	let (tail, token) = preceded(
 		tag("0b"),
 		recognize(many1(terminated(one_of("01"), many0(char('_'))))),
 	)(input)?;
-	let (tail, pos) = position(tail)?;
-
-	Ok((
-		tail,
-		GenericToken {
-			position: pos,
-			token: &token,
-		},
-	))
-}
-
-pub fn decimal(input: Span) -> IResult<Span, GenericToken> {
-	let (tail, token) = recognize(many1(terminated(digit1, many0(char('_')))))(input)?;
-	let (tail, pos) = position(tail)?;
-
-	Ok((
-		tail,
-		GenericToken {
-			position: pos,
-			token: &token,
-		},
-	))
-}
-
-pub fn string(input: Span) -> IResult<Span, GenericToken> {
-	let (tail, token) = alt((
-		delimited(char('\''), take_until("'"), char('\'')),
-		delimited(char('"'), take_until("\""), char('"')),
-	))(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
