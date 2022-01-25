@@ -1,3 +1,6 @@
+use strum::EnumIter;
+
+#[derive(Clone, PartialEq, Eq, EnumIter)]
 pub enum Punctuation {
 	/// `(`
 	BracetOpen,
