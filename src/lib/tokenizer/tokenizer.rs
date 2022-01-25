@@ -74,7 +74,7 @@ pub fn detect_punctuation(input: Span) -> IResult<Span, PunctuationToken> {
 pub fn decimal(input: Span) -> IResult<Span, LiteralToken> {
 	let (tail, token) = recognize(many1(terminated(digit1, many0(char('_')))))(input)?;
 	let (tail, pos) = position(tail)?;
-	let number: f64 = token.fragment().parse().unwrap();
+	let number: f64 = token.fragment().replace('_', "").parse().unwrap();
 
 	Ok((
 		tail,
