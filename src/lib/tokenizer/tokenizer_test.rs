@@ -6,9 +6,9 @@ use super::{
 use anyhow::Result;
 
 #[test]
-fn detect_const_test() -> Result<()> {
+fn const_kw_test() -> Result<()> {
 	let input = Span::new_extra("const", None);
-	let (_, KeywordToken { token, position }) = detect_init_keyword(input)?;
+	let (_, KeywordToken { token, position }) = keyword(input)?;
 
 	assert_eq!(token, Keyword::Const);
 	assert_eq!(position.location_line(), 1);
@@ -16,9 +16,9 @@ fn detect_const_test() -> Result<()> {
 }
 
 #[test]
-fn detect_let_test() -> Result<()> {
+fn let_kw_test() -> Result<()> {
 	let input = Span::new_extra("let", None);
-	let (_, KeywordToken { token, position }) = detect_init_keyword(input)?;
+	let (_, KeywordToken { token, position }) = keyword(input)?;
 
 	assert_eq!(token, Keyword::Let);
 	assert_eq!(position.location_line(), 1);

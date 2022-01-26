@@ -15,7 +15,7 @@ use nom::{
 };
 use nom_locate::position;
 
-pub fn detect_init_keyword(input: Span) -> IResult<Span, KeywordToken> {
+pub fn keyword(input: Span) -> IResult<Span, KeywordToken> {
 	let (tail, kw) = alt((
 		value(Keyword::Const, tag(Keyword::Const.as_str())),
 		value(Keyword::Let, tag(Keyword::Let.as_str())),
@@ -31,7 +31,7 @@ pub fn detect_init_keyword(input: Span) -> IResult<Span, KeywordToken> {
 	))
 }
 
-pub fn detect_punctuation(input: Span) -> IResult<Span, PunctuationToken> {
+pub fn punctuation(input: Span) -> IResult<Span, PunctuationToken> {
 	let (tail, punc) = alt((
 		value(
 			Punctuation::BracetOpen,

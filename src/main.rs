@@ -18,8 +18,8 @@ fn main() -> Result<()> {
 	env_logger::init();
 	let args: Args = Args::parse();
 
-	if let Some(code) = args.eval {
-		let input = Span::new_extra(&code, None);
+	if let Some(input) = args.eval {
+		let input = Span::new_extra(&input, None);
 		debug!("{input:#?}");
 	} else {
 		loop {
@@ -32,7 +32,8 @@ fn main() -> Result<()> {
 				break;
 			}
 
-			println!("{:#?}", Span::new_extra(&input, None));
+			let input = Span::new_extra(&input, None);
+			println!("{input:#?}");
 		}
 	}
 
