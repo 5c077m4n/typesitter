@@ -60,8 +60,9 @@ fn decimal_test() -> Result<()> {
 fn decimal_underscore_test() -> Result<()> {
 	let origin = "42_000";
 	let input = Span::new_extra(origin, None);
-	let (_, LiteralToken { token, position }) = decimal(input)?;
+	let (tail, LiteralToken { token, position }) = decimal(input)?;
 
+	assert_eq!(tail.fragment().to_owned(), "");
 	assert_eq!(token, Literal::Number(42_000.));
 	assert_eq!(position.location_line(), 1);
 	Ok(())
@@ -71,8 +72,9 @@ fn decimal_underscore_test() -> Result<()> {
 fn binary_with_dashes_test() -> Result<()> {
 	let origin = "0b01_01";
 	let input = Span::new_extra(origin, None);
-	let (_, GenericToken { token, position }) = binary(input)?;
+	let (tail, GenericToken { token, position }) = binary(input)?;
 
+	assert_eq!(tail.fragment().to_owned(), "");
 	assert_eq!(token, "01_01");
 	assert_eq!(position.location_line(), 1);
 	Ok(())
@@ -82,8 +84,9 @@ fn binary_with_dashes_test() -> Result<()> {
 fn binary_without_dashes_test() -> Result<()> {
 	let origin = "0b0101";
 	let input = Span::new_extra(origin, None);
-	let (_, GenericToken { token, position }) = binary(input)?;
+	let (tail, GenericToken { token, position }) = binary(input)?;
 
+	assert_eq!(tail.fragment().to_owned(), "");
 	assert_eq!(token, "0101");
 	assert_eq!(position.location_line(), 1);
 	Ok(())

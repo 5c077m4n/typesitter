@@ -8,7 +8,7 @@ use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
 	character::complete::{char, digit1, one_of},
-	combinator::{recognize, value},
+	combinator::{map_res, recognize, value},
 	multi::{many0, many1},
 	sequence::{delimited, preceded, terminated},
 	IResult,
@@ -72,22 +72,19 @@ pub fn detect_punctuation(input: Span) -> IResult<Span, PunctuationToken> {
 }
 
 pub fn decimal(input: Span) -> IResult<Span, LiteralToken> {
-	let (tail, token) = recognize(many1(terminated(digit1, many0(char('_')))))(input)?;
+	let (tail, token) = map_res(
+		recognize(many1(terminated(digit1, many0(char('_'))))),
+		|token: Span| token.fragment().replace('_', "").parse::<f64>(),
+	)(input)?;
 	let (tail, pos) = position(tail)?;
 
-	match token.fragment().replace('_', "").parse::<f64>() {
-		Ok(number) => Ok((
-			tail,
-			LiteralToken {
-				position: pos,
-				token: Literal::Number(number),
-			},
-		)),
-		Err(_err) => Err(nom::Err::Error(nom::error::Error::new(
-			tail,
-			nom::error::ErrorKind::Float,
-		))),
-	}
+	Ok((
+		tail,
+		LiteralToken {
+			position: pos,
+			token: Literal::Number(token),
+		},
+	))
 }
 
 pub fn boolean(input: Span) -> IResult<Span, LiteralToken> {
