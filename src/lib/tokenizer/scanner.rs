@@ -2,8 +2,8 @@ use log::{debug, error};
 use std::iter;
 
 use super::{
+	detector::all_tokens,
 	token::{Span, Token, TokenType},
-	tokenizer::all_tokens,
 };
 
 pub fn scan(input: &str, extra: Option<String>) -> impl Iterator<Item = Token<'_>> {
