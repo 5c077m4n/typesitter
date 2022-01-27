@@ -7,7 +7,7 @@ use super::{
 use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
-	character::complete::{char, digit1, one_of},
+	character::complete::{alphanumeric1, char, digit1, one_of, space1},
 	combinator::{map_res, recognize, value},
 	multi::{many0, many1},
 	sequence::{delimited, preceded, terminated},
@@ -17,8 +17,18 @@ use nom_locate::position;
 
 pub fn keyword(input: Span) -> IResult<Span, Token> {
 	let (tail, kw) = alt((
-		value(Keyword::Const, tag(Keyword::Const.as_str())),
-		value(Keyword::Let, tag(Keyword::Let.as_str())),
+		value(
+			Keyword::Const,
+			terminated(tag(Keyword::Const.as_str()), space1),
+		),
+		value(Keyword::Let, terminated(tag(Keyword::Let.as_str()), space1)),
+		value(Keyword::If, tag(Keyword::If.as_str())),
+		value(Keyword::Else, tag(Keyword::Else.as_str())),
+		value(Keyword::Function, tag(Keyword::Function.as_str())),
+		value(Keyword::Class, tag(Keyword::Class.as_str())),
+		value(Keyword::Import, tag(Keyword::Import.as_str())),
+		value(Keyword::Export, tag(Keyword::Export.as_str())),
+		value(Keyword::Return, tag(Keyword::Return.as_str())),
 	))(input)?;
 	let (tail, pos) = position(tail)?;
 
@@ -59,6 +69,8 @@ pub fn punctuation(input: Span) -> IResult<Span, Token> {
 			Punctuation::ExclamationMark,
 			tag(Punctuation::ExclamationMark.as_str()),
 		),
+		value(Punctuation::Colon, tag(Punctuation::Colon.as_str())),
+		value(Punctuation::Semicolon, tag(Punctuation::Semicolon.as_str())),
 	))(input)?;
 	let (tail, pos) = position(tail)?;
 
@@ -158,6 +170,32 @@ pub fn binary(input: Span) -> IResult<Span, Token> {
 	))
 }
 
+pub fn identifier(input: Span) -> IResult<Span, Token> {
+	let (tail, token) = alphanumeric1(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		Token {
+			position: pos,
+			value: TokenType::Generic(&token),
+		},
+	))
+}
+
+pub fn empty(input: Span) -> IResult<Span, Token> {
+	let (tail, token) = tag("")(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		Token {
+			position: pos,
+			value: TokenType::Generic(&token),
+		},
+	))
+}
+
 pub fn all_tokens(input: Span) -> IResult<Span, Token> {
 	alt((
 		keyword,
@@ -167,5 +205,7 @@ pub fn all_tokens(input: Span) -> IResult<Span, Token> {
 		null,
 		string,
 		binary,
+		empty,
+		identifier,
 	))(input)
 }
