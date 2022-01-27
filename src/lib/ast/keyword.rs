@@ -1,7 +1,6 @@
-use strum::EnumIter;
+#![allow(dead_code)]
 
-#[derive(Clone, Debug, PartialEq, Eq, EnumIter)]
-#[strum(serialize_all = "lowercase")]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Keyword {
 	Const,
 	Let,
