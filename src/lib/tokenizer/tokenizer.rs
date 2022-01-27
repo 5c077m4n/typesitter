@@ -85,6 +85,14 @@ pub fn punctuation(input: Span) -> IResult<Span, Token> {
 		),
 		value(Punctuation::LessThan, tag(Punctuation::LessThan.as_str())),
 		value(
+			Punctuation::QuoteDouble,
+			tag(Punctuation::QuoteDouble.as_str()),
+		),
+		value(
+			Punctuation::QuoteSingle,
+			tag(Punctuation::QuoteSingle.as_str()),
+		),
+		value(
 			Punctuation::ExclamationMark,
 			tag(Punctuation::ExclamationMark.as_str()),
 		),
@@ -217,14 +225,15 @@ pub fn space(input: Span) -> IResult<Span, Token> {
 }
 
 pub fn all_tokens(input: Span) -> IResult<Span, Token> {
+	// The order here is **critical** as the `alt` function runs them in the order that they appear in
 	alt((
+		decimal,
+		string,
+		binary,
 		keyword,
 		punctuation,
 		undefined,
 		null,
-		decimal,
-		string,
-		binary,
 		space,
 		identifier,
 	))(input)

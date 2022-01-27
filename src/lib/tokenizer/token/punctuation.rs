@@ -14,6 +14,10 @@ pub enum Punctuation {
 	BracketCurlyOpen,
 	/// `}`
 	BracketCurlyClose,
+	/// `'`
+	QuoteSingle,
+	/// `"`
+	QuoteDouble,
 	/// `;`
 	Semicolon,
 	/// `:`
@@ -42,6 +46,8 @@ impl Punctuation {
 			Self::BracketSquareClose => "]",
 			Self::BracketCurlyOpen => "{",
 			Self::BracketCurlyClose => "}",
+			Self::QuoteDouble => "\"",
+			Self::QuoteSingle => "'",
 			Self::Semicolon => ";",
 			Self::Colon => ":",
 			Self::Equal => "=",
