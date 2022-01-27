@@ -157,3 +157,15 @@ pub fn binary(input: Span) -> IResult<Span, Token> {
 		},
 	))
 }
+
+pub fn all_tokens(input: Span) -> IResult<Span, Token> {
+	alt((
+		keyword,
+		punctuation,
+		decimal,
+		undefined,
+		null,
+		string,
+		binary,
+	))(input)
+}
