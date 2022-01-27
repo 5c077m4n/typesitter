@@ -43,20 +43,28 @@ pub fn keyword(input: Span) -> IResult<Span, Token> {
 pub fn punctuation(input: Span) -> IResult<Span, Token> {
 	let (tail, punc) = alt((
 		value(
-			Punctuation::BracetOpen,
-			tag(Punctuation::BracetOpen.as_str()),
+			Punctuation::BracketOpen,
+			tag(Punctuation::BracketOpen.as_str()),
 		),
 		value(
-			Punctuation::BracetClose,
-			tag(Punctuation::BracetOpen.as_str()),
+			Punctuation::BracketClose,
+			tag(Punctuation::BracketClose.as_str()),
 		),
 		value(
-			Punctuation::BracetCurlyOpen,
-			tag(Punctuation::BracetOpen.as_str()),
+			Punctuation::BracketSquareOpen,
+			tag(Punctuation::BracketSquareOpen.as_str()),
 		),
 		value(
-			Punctuation::BracetCurlyClose,
-			tag(Punctuation::BracetOpen.as_str()),
+			Punctuation::BracketSquareClose,
+			tag(Punctuation::BracketSquareClose.as_str()),
+		),
+		value(
+			Punctuation::BracketCurlyOpen,
+			tag(Punctuation::BracketCurlyOpen.as_str()),
+		),
+		value(
+			Punctuation::BracketCurlyClose,
+			tag(Punctuation::BracketCurlyClose.as_str()),
 		),
 		value(Punctuation::Equal, tag(Punctuation::Equal.as_str())),
 		value(
@@ -70,6 +78,7 @@ pub fn punctuation(input: Span) -> IResult<Span, Token> {
 		),
 		value(Punctuation::Colon, tag(Punctuation::Colon.as_str())),
 		value(Punctuation::Semicolon, tag(Punctuation::Semicolon.as_str())),
+		value(Punctuation::Dot, tag(Punctuation::Dot.as_str())),
 	))(input)?;
 	let (tail, pos) = position(tail)?;
 
