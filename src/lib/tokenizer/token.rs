@@ -6,6 +6,7 @@ pub type Span<'s> = LocatedSpan<&'s str, Option<String>>;
 #[derive(Debug, PartialEq)]
 pub enum TokenType<'t> {
 	Generic(&'t str),
+	Identifier(&'t str),
 	Keyword(Keyword),
 	Punctuation(Punctuation),
 	Literal(Literal<'t>),
