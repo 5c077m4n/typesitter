@@ -1,9 +1,6 @@
 use super::{
-	super::{
-		ast::{keyword::Keyword, literal::Literal, punctuation::Punctuation},
-		tokenizer::token::TokenType,
-	},
 	scanner::scan,
+	token::{keyword::Keyword, literal::Literal, punctuation::Punctuation, TokenType},
 };
 
 #[test]

@@ -1,6 +1,5 @@
 use super::{
-	super::ast::{keyword::Keyword, literal::Literal},
-	token::*,
+	token::{keyword::Keyword, literal::Literal, Span, Token, TokenType},
 	tokenizer::*,
 };
 use anyhow::Result;
