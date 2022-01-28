@@ -7,19 +7,21 @@ use super::{
 };
 
 pub fn scan(input: &str, extra: Option<String>) -> impl Iterator<Item = Token<'_>> {
-	let mut input = Span::new_extra(input, extra);
+	iter::from_fn({
+		let mut input = Span::new_extra(input, extra);
 
-	iter::from_fn(move || match all_tokens(input.to_owned()) {
-		Ok((_, Token { value, .. })) if value == TokenType::Empty => None,
-		Ok((tail, token)) => {
-			input = tail;
-			debug!("{:#?}", &token);
+		move || match all_tokens(input.to_owned()) {
+			Ok((_, Token { value, .. })) if value == TokenType::Empty => None,
+			Ok((tail, token)) => {
+				input = tail;
+				debug!("{:#?}", &token);
 
-			Some(token)
-		}
-		Err(error) => {
-			error!("{:#?}", &error);
-			None
+				Some(token)
+			}
+			Err(error) => {
+				error!("{:#?}", &error);
+				None
+			}
 		}
 	})
 }
