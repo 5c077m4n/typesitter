@@ -34,8 +34,10 @@ pub enum Punctuation {
 	Pipe,
 	/// `&`
 	Ampersand,
-	/// .
+	/// `.`
 	Dot,
+	/// `,`
+	Comma,
 }
 impl Punctuation {
 	pub fn as_str(&self) -> &str {
@@ -57,6 +59,7 @@ impl Punctuation {
 			Self::Pipe => "|",
 			Self::Ampersand => "&",
 			Self::Dot => ".",
+			Self::Comma => ",",
 		}
 	}
 }
