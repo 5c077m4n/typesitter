@@ -3,14 +3,14 @@
 use std::collections::BTreeMap;
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum Literal<'a> {
+pub enum Literal<'l> {
 	Undefined,
 	Null,
-	String(&'a str),
+	String(&'l str),
 	Number(f64),
 	Bool(bool),
-	Array(&'a Vec<&'a Literal<'a>>),
-	Object(&'a BTreeMap<&'a str, &'a Literal<'a>>),
+	Array(&'l Vec<&'l Literal<'l>>),
+	Object(&'l BTreeMap<&'l str, &'l Literal<'l>>),
 }
 impl Default for Literal<'_> {
 	fn default() -> Self {
