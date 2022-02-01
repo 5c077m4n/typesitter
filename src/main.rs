@@ -27,10 +27,10 @@ fn main() -> Result<()> {
 		let input = fs::read_to_string(filepath)?;
 		let input = &input.trim();
 
-		let _tokens: Vec<_> = scan(input, Some("Evaluation script".to_owned())).collect();
+		let _tokens: Vec<_> = scan(input, Some("File".to_owned())).collect();
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
-		let _tokens: Vec<_> = scan(input, Some("Evaluation script".to_owned())).collect();
+		let _tokens: Vec<_> = scan(input, Some("Eval".to_owned())).collect();
 	} else {
 		loop {
 			print!(">>> ");
