@@ -8,8 +8,8 @@ pub enum VarType {
 
 #[derive(Debug)]
 pub struct VarDec<'v> {
-	var_type: VarType,
-	name: &'v str,
-	type_annotation: Option<&'v str>,
-	value: &'v Node<'v>,
+	pub var_type: VarType,
+	pub name: &'v str,
+	pub type_annotation: Option<&'v str>,
+	pub value: &'v Node<'v>,
 }
