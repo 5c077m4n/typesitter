@@ -1,6 +1,6 @@
 use super::node::Node;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct FnCall<'f> {
 	fn_name: &'f str,
 	params: &'f [&'f Node<'f>],

@@ -1,11 +1,11 @@
 use super::node::Node;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Operator {
 	Typeof,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct UnaryOp<'u> {
 	op: Operator,
 	value: &'u Node<'u>,

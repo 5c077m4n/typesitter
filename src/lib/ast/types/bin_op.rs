@@ -1,6 +1,6 @@
 use super::node::Node;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Operator {
 	Plus,
 	Minus,
@@ -9,7 +9,7 @@ pub enum Operator {
 	Mul,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct BinOp<'u> {
 	op: Operator,
 	lhs: &'u Node<'u>,

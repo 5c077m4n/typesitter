@@ -1,6 +1,6 @@
 use super::node::Node;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct If<'i> {
 	expr: &'i Node<'i>,
 	block: &'i Node<'i>,
