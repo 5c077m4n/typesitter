@@ -13,8 +13,11 @@ use super::{
 	},
 };
 
-pub fn parse<'a>(mut token_iter: impl Iterator<Item = Token<'a>>) -> Result<Box<Node<'a>>> {
-	let mut expr_list = Box::new(Vec::new());
+pub fn parse<'a>(
+	mut token_iter: impl Iterator<Item = Token<'a>>,
+	expr_list: Option<Box<Vec<Node<'a>>>>,
+) -> Result<Box<Node<'a>>> {
+	let mut expr_list = expr_list.unwrap_or_else(|| Box::new(Vec::new()));
 
 	while let Some(Token { value, .. }) = token_iter.next() {
 		match value {
