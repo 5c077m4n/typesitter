@@ -1,5 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
+use log::debug;
+
 use std::{
 	fs,
 	io::{stdin, stdout, Write},
@@ -8,7 +10,7 @@ use std::{
 
 mod lib;
 
-use lib::lexer::scanner::scan;
+use lib::{ast::parser::parse, lexer::scanner::scan};
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
@@ -27,10 +29,15 @@ fn main() -> Result<()> {
 		let input = fs::read_to_string(filepath)?;
 		let input = &input.trim();
 
-		let _tokens: Vec<_> = scan(input, Some("File".to_owned())).collect();
+		let tokens = scan(input, Some("REPL".to_owned()));
+		let ast = parse(tokens)?;
+		debug!("{:?}", &ast);
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
-		let _tokens: Vec<_> = scan(input, Some("Eval".to_owned())).collect();
+
+		let tokens = scan(input, Some("REPL".to_owned()));
+		let ast = parse(tokens)?;
+		debug!("{:?}", &ast);
 	} else {
 		loop {
 			print!(">>> ");
@@ -43,7 +50,9 @@ fn main() -> Result<()> {
 			}
 
 			let input = &input.trim();
-			let _tokens: Vec<_> = scan(input, Some("REPL".to_owned())).collect();
+			let tokens = scan(input, Some("REPL".to_owned()));
+			let ast = parse(tokens)?;
+			debug!("{:?}", &ast);
 		}
 	}
 
