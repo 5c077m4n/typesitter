@@ -1,3 +1,5 @@
+use anyhow::Result;
+
 use super::{
 	super::lexer::token::{
 		keyword::Keyword, literal::Literal as TokenLiteral, punctuation::Punctuation, Token,
@@ -10,7 +12,7 @@ use super::{
 	},
 };
 
-pub fn parse<'a>(mut token_iter: impl Iterator<Item = Token<'a>>) -> Box<Vec<Node<'a>>> {
+pub fn parse<'a>(mut token_iter: impl Iterator<Item = Token<'a>>) -> Result<Box<Vec<Node<'a>>>> {
 	let mut expr_list: Box<Vec<Node<'a>>> = Box::new(Vec::new());
 
 	while let Some(Token { value, .. }) = token_iter.next() {
@@ -92,5 +94,5 @@ pub fn parse<'a>(mut token_iter: impl Iterator<Item = Token<'a>>) -> Box<Vec<Nod
 		}
 	}
 
-	expr_list
+	Ok(expr_list)
 }
