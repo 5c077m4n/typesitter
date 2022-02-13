@@ -11,7 +11,7 @@ use super::{
 };
 
 pub fn parse<'a>(mut token_iter: impl Iterator<Item = Token<'a>>) -> Box<Vec<Node<'a>>> {
-	let mut expr_list = Box::new(Vec::new());
+	let mut expr_list: Box<Vec<Node<'a>>> = Box::new(Vec::new());
 
 	while let Some(Token { value, .. }) = token_iter.next() {
 		match value {
