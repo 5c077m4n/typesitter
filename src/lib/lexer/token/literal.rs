@@ -9,8 +9,8 @@ pub enum Literal<'l> {
 	String(&'l str),
 	Number(f64),
 	Bool(bool),
-	Array(Box<Vec<&'l Literal<'l>>>),
-	Object(Box<BTreeMap<&'l str, &'l Literal<'l>>>),
+	Array(Vec<&'l Literal<'l>>),
+	Object(BTreeMap<&'l str, &'l Literal<'l>>),
 }
 impl Default for Literal<'_> {
 	fn default() -> Self {

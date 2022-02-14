@@ -19,9 +19,9 @@ use {
 
 pub fn parse<'a>(
 	mut token_iter: impl Iterator<Item = Token<'a>>,
-	expr_list: Option<Box<Vec<Node<'a>>>>,
+	expr_list: Option<Vec<Node<'a>>>,
 ) -> Result<Box<Node<'a>>> {
-	let mut expr_list = expr_list.unwrap_or_else(|| Box::new(Vec::new()));
+	let mut expr_list = expr_list.unwrap_or_else(Vec::new);
 
 	while let Some(Token { value, .. }) = token_iter.next() {
 		match value {
