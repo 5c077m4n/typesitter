@@ -1,5 +1,4 @@
-use anyhow::Result;
-use assert_cmd::Command;
+use {anyhow::Result, assert_cmd::Command};
 
 const BIN_NAME: &str = env!("CARGO_PKG_NAME");
 

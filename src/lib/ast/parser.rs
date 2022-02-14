@@ -1,16 +1,20 @@
-use anyhow::Result;
-use log::error;
-
-use super::{
-	super::lexer::token::{
-		keyword::Keyword, literal::Literal as TokenLiteral, punctuation::Punctuation, Token,
-		TokenType,
+use {
+	super::{
+		super::lexer::token::{
+			keyword::Keyword,
+			literal::Literal as TokenLiteral,
+			punctuation::Punctuation,
+			Token,
+			TokenType,
+		},
+		types::{
+			literal::Literal,
+			node::Node,
+			var_dec::{VarDec, VarType},
+		},
 	},
-	types::{
-		literal::Literal,
-		node::Node,
-		var_dec::{VarDec, VarType},
-	},
+	anyhow::Result,
+	log::error,
 };
 
 pub fn parse<'a>(

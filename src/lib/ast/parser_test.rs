@@ -1,15 +1,16 @@
-use anyhow::Result;
-
-use super::super::{
-	ast::{
-		parser::parse,
-		types::{
-			literal::Literal,
-			node::Node,
-			var_dec::{VarDec, VarType},
+use {
+	super::super::{
+		ast::{
+			parser::parse,
+			types::{
+				literal::Literal,
+				node::Node,
+				var_dec::{VarDec, VarType},
+			},
 		},
+		lexer::scanner::scan,
 	},
-	lexer::scanner::scan,
+	anyhow::Result,
 };
 
 #[test]

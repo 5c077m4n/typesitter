@@ -1,6 +1,13 @@
 use super::{
-	array::Array, bin_op::BinOp, fn_call::FnCall, fn_dec::FnDec, literal::Literal, object::Object,
-	r#if::If, unary_op::UnaryOp, var_dec::VarDec,
+	array::Array,
+	bin_op::BinOp,
+	fn_call::FnCall,
+	fn_dec::FnDec,
+	literal::Literal,
+	object::Object,
+	r#if::If,
+	unary_op::UnaryOp,
+	var_dec::VarDec,
 };
 
 #[derive(Clone, Debug, PartialEq)]

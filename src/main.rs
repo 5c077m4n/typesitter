@@ -1,11 +1,12 @@
-use anyhow::Result;
-use clap::Parser;
-use log::debug;
-
-use std::{
-	fs,
-	io::{stdin, stdout, Write},
-	path::PathBuf,
+use {
+	anyhow::Result,
+	clap::Parser,
+	log::debug,
+	std::{
+		fs,
+		io::{stdin, stdout, Write},
+		path::PathBuf,
+	},
 };
 
 mod lib;

@@ -1,8 +1,10 @@
-use super::{
-	detector::*,
-	token::{keyword::Keyword, literal::Literal, Span, Token, TokenType},
+use {
+	super::{
+		detector::*,
+		token::{keyword::Keyword, literal::Literal, Span, Token, TokenType},
+	},
+	anyhow::Result,
 };
-use anyhow::Result;
 
 #[test]
 fn const_kw_test() -> Result<()> {
