@@ -48,8 +48,8 @@ pub fn parse_let_number_init_string_test() -> Result<()> {
 	);
 	Ok(())
 }
-#[test]
 
+#[test]
 pub fn parse_let_number_init_no_type_test() -> Result<()> {
 	let init_str = r#"let x = 42;"#;
 	let tokens = scan(init_str, Some("Parser test".to_string()));
@@ -62,6 +62,24 @@ pub fn parse_let_number_init_no_type_test() -> Result<()> {
 			name: "x",
 			type_annotation: None,
 			value: Box::new(Node::Literal(Box::new(Literal::Number(42.))))
+		}))])
+	);
+	Ok(())
+}
+
+#[test]
+pub fn parse_let_no_int_value_test() -> Result<()> {
+	let init_str = r#"let x;"#;
+	let tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = *parse(tokens, None)?;
+
+	assert_eq!(
+		ast,
+		Node::Block(vec![Node::VarDec(Box::new(VarDec {
+			var_type: VarType::Let,
+			name: "x",
+			type_annotation: None,
+			value: Box::new(Node::Literal(Box::new(Literal::Undefined)))
 		}))])
 	);
 	Ok(())
