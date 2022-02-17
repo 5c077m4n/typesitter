@@ -207,7 +207,7 @@ pub fn binary(input: Span) -> IResult<Span, Token> {
 }
 
 pub fn identifier(input: Span) -> IResult<Span, Token> {
-	let (tail, token) = alphanumeric1(input)?;
+	let (tail, token) = recognize(many1(alt((alphanumeric1, tag("_"), tag("$")))))(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
