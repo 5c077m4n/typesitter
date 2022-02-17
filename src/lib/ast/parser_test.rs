@@ -1,17 +1,15 @@
-use {
-	super::super::{
-		ast::{
-			parser::parse,
-			types::{
-				literal::Literal,
-				node::Node,
-				var_dec::{VarDec, VarType},
-			},
+use super::super::{
+	ast::{
+		parser::parse,
+		types::{
+			literal::Literal,
+			node::Node,
+			var_dec::{VarDec, VarType},
 		},
-		lexer::scanner::scan,
 	},
-	anyhow::Result,
+	lexer::scanner::scan,
 };
+use anyhow::Result;
 
 #[test]
 pub fn parse_const_number_init_number_test() -> Result<()> {

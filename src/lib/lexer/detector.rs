@@ -1,25 +1,21 @@
 #![allow(dead_code)]
 
-use {
-	super::token::{
-		keyword::Keyword,
-		literal::Literal,
-		punctuation::Punctuation,
-		Span,
-		Token,
-		TokenType,
-	},
-	nom::{
-		branch::alt,
-		bytes::complete::{tag, take_until},
-		character::complete::{alphanumeric1, char, digit1, multispace1, one_of, space1},
-		combinator::{map_res, recognize, value},
-		multi::{many0, many1},
-		sequence::{delimited, preceded, terminated},
-		IResult,
-	},
-	nom_locate::position,
+use super::token::{
+	keyword::Keyword,
+	literal::Literal,
+	punctuation::Punctuation,
+	token_variance::{Span, Token, TokenType},
 };
+use nom::{
+	branch::alt,
+	bytes::complete::{tag, take_until},
+	character::complete::{alphanumeric1, char, digit1, multispace1, one_of, space1},
+	combinator::{map_res, recognize, value},
+	multi::{many0, many1},
+	sequence::{delimited, preceded, terminated},
+	IResult,
+};
+use nom_locate::position;
 
 pub fn keyword(input: Span) -> IResult<Span, Token> {
 	let (tail, kw) = alt((
