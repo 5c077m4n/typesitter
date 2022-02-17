@@ -149,27 +149,27 @@ pub fn boolean(input: Span) -> IResult<Span, Token> {
 }
 
 pub fn undefined(input: Span) -> IResult<Span, Token> {
-	let (tail, _token) = tag("undefined")(input)?;
+	let (tail, undefined_literal) = value(Literal::Undefined, tag("undefined"))(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
 		tail,
 		Token {
 			position: pos,
-			value: TokenType::Literal(Literal::Undefined),
+			value: TokenType::Literal(undefined_literal),
 		},
 	))
 }
 
 pub fn null(input: Span) -> IResult<Span, Token> {
-	let (tail, _token) = tag("null")(input)?;
+	let (tail, null_literal) = value(Literal::Null, tag("null"))(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
 		tail,
 		Token {
 			position: pos,
-			value: TokenType::Literal(Literal::Null),
+			value: TokenType::Literal(null_literal),
 		},
 	))
 }
@@ -185,7 +185,7 @@ pub fn string(input: Span) -> IResult<Span, Token> {
 		tail,
 		Token {
 			position: pos,
-			value: TokenType::Literal(Literal::String(token.fragment())),
+			value: TokenType::Literal(Literal::String(&token)),
 		},
 	))
 }
