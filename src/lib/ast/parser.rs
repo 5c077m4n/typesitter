@@ -12,7 +12,7 @@ use super::{
 		var_dec::{VarDec, VarType},
 	},
 };
-use anyhow::Result;
+use anyhow::{bail, Result};
 use log::error;
 
 pub fn parse<'a>(
@@ -159,46 +159,56 @@ pub fn parse<'a>(
 					}
 				}
 			}
-			TokenType::Identifier(ident) => match token_iter.next() {
-				Some(Token {
-					value: TokenType::Punctuation(Punctuation::BracketOpen),
-					..
-				}) => {
-					let mut param_list: Vec<&str> = Vec::new();
+			TokenType::Identifier(ident) => {
+				match token_iter.next() {
+					Some(Token {
+						value: TokenType::Punctuation(Punctuation::BracketOpen),
+						..
+					}) => {
+						let mut input_token_index = 0usize;
+						let mut params: Vec<&str> = Vec::new();
 
-					for Token { value, .. } in token_iter.by_ref() {
-						match value {
-							TokenType::Punctuation(Punctuation::BracketClose) => {
-								break;
-							}
-							TokenType::Punctuation(Punctuation::Comma) => {}
-							TokenType::Identifier(param_name) => {
-								param_list.push(param_name);
-							}
-							other => {
-								error!("{:?}", &other);
-								unimplemented!();
+						for Token { value, .. } in token_iter.by_ref() {
+							match value {
+								TokenType::Punctuation(Punctuation::BracketClose) => {
+									break;
+								}
+								TokenType::Punctuation(Punctuation::Comma) => {
+									if input_token_index == 0 {
+										bail!("Shouldn't put a comma as the first char in the fn input");
+									} else {
+										input_token_index += 1;
+									}
+								}
+								TokenType::Identifier(param_name) => {
+									input_token_index += 1;
+									params.push(param_name);
+								}
+								other => {
+									error!("{:?}", &other);
+									unimplemented!();
+								}
 							}
 						}
-					}
 
-					let fn_call_node = Node::FnCall(Box::new(FnCall {
-						fn_name: ident,
-						params: param_list,
-					}));
-					expr_list.push(fn_call_node);
+						let fn_call_node = Node::FnCall(Box::new(FnCall {
+							fn_name: ident,
+							params,
+						}));
+						expr_list.push(fn_call_node);
+					}
+					Some(Token {
+						value: TokenType::Punctuation(Punctuation::Equal),
+						..
+					}) => {
+						todo!();
+					}
+					other => {
+						error!("{:?}", &other);
+						unimplemented!();
+					}
 				}
-				Some(Token {
-					value: TokenType::Punctuation(Punctuation::Equal),
-					..
-				}) => {
-					todo!();
-				}
-				other => {
-					error!("{:?}", &other);
-					unimplemented!();
-				}
-			},
+			}
 			other => {
 				error!("{:?}", &other);
 				unimplemented!();
