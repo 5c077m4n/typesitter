@@ -2,6 +2,7 @@ use super::super::{
 	ast::{
 		parser::parse,
 		types::{
+			fn_call::FnCall,
 			literal::Literal,
 			node::Node,
 			var_dec::{VarDec, VarType},
@@ -78,6 +79,22 @@ pub fn parse_let_no_int_value_test() -> Result<()> {
 			name: "x",
 			type_annotation: None,
 			value: Box::new(Node::Literal(Box::new(Literal::Undefined)))
+		}))])
+	);
+	Ok(())
+}
+
+#[test]
+pub fn parse_empty_fn_call_test() -> Result<()> {
+	let init_str = r#"fnName();"#;
+	let tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = *parse(tokens, None)?;
+
+	assert_eq!(
+		ast,
+		Node::Block(vec![Node::FnCall(Box::new(FnCall {
+			fn_name: "fnName",
+			params: &[]
 		}))])
 	);
 	Ok(())

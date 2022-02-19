@@ -6,6 +6,7 @@ use super::{
 		token_variance::{Token, TokenType},
 	},
 	types::{
+		fn_call::FnCall,
 		literal::Literal,
 		node::Node,
 		var_dec::{VarDec, VarType},
@@ -23,12 +24,11 @@ pub fn parse<'a>(
 	while let Some(Token { value, .. }) = token_iter.next() {
 		match value {
 			TokenType::Keyword(init_type @ (Keyword::Const | Keyword::Let)) => {
-				if let Some(Token {
-					value: TokenType::Identifier(param_name),
-					..
-				}) = token_iter.next()
-				{
-					match token_iter.next() {
+				match token_iter.next() {
+					Some(Token {
+						value: TokenType::Identifier(param_name),
+						..
+					}) => match token_iter.next() {
 						Some(Token {
 							value: TokenType::Punctuation(Punctuation::Colon),
 							..
@@ -177,18 +177,56 @@ pub fn parse<'a>(
 								type_annotation: None,
 								value: Box::new(Node::Literal(Box::new(Literal::Undefined))),
 							}));
-
 							expr_list.push(init_node);
 						}
 						other => {
 							error!("{:?}", &other);
 							unimplemented!();
 						}
+					},
+					other => {
+						error!("{:?}", &other);
+						unimplemented!();
 					}
-				} else {
-					unimplemented!();
 				}
 			}
+			TokenType::Identifier(ident) => match token_iter.next() {
+				Some(Token {
+					value: TokenType::Punctuation(Punctuation::BracketOpen),
+					..
+				}) => match token_iter.next() {
+					Some(Token {
+						value: TokenType::Punctuation(Punctuation::BracketClose),
+						..
+					}) => {
+						if let Some(Token {
+							value: TokenType::Punctuation(Punctuation::Semicolon),
+							..
+						}) = token_iter.next()
+						{
+							let fn_call_node = Node::FnCall(Box::new(FnCall {
+								fn_name: ident,
+								params: &[],
+							}));
+							expr_list.push(fn_call_node);
+						}
+					}
+					other => {
+						error!("{:?}", &other);
+						unimplemented!();
+					}
+				},
+				Some(Token {
+					value: TokenType::Punctuation(Punctuation::Equal),
+					..
+				}) => {
+					todo!();
+				}
+				other => {
+					error!("{:?}", &other);
+					unimplemented!();
+				}
+			},
 			other => {
 				error!("{:?}", &other);
 				unimplemented!();
