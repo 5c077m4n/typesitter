@@ -163,28 +163,31 @@ pub fn parse<'a>(
 				Some(Token {
 					value: TokenType::Punctuation(Punctuation::BracketOpen),
 					..
-				}) => match token_iter.next() {
-					Some(Token {
-						value: TokenType::Punctuation(Punctuation::BracketClose),
-						..
-					}) => {
-						let fn_call_node = Node::FnCall(Box::new(FnCall {
-							fn_name: ident,
-							params: &[],
-						}));
-						expr_list.push(fn_call_node);
+				}) => {
+					let mut param_list: Vec<&str> = Vec::new();
+
+					for Token { value, .. } in token_iter.by_ref() {
+						match value {
+							TokenType::Punctuation(Punctuation::BracketClose) => {
+								break;
+							}
+							TokenType::Punctuation(Punctuation::Comma) => {}
+							TokenType::Identifier(param_name) => {
+								param_list.push(param_name);
+							}
+							other => {
+								error!("{:?}", &other);
+								unimplemented!();
+							}
+						}
 					}
-					Some(Token {
-						value: TokenType::Identifier(_param_name),
-						..
-					}) => {
-						todo!();
-					}
-					other => {
-						error!("{:?}", &other);
-						unimplemented!();
-					}
-				},
+
+					let fn_call_node = Node::FnCall(Box::new(FnCall {
+						fn_name: ident,
+						params: param_list,
+					}));
+					expr_list.push(fn_call_node);
+				}
 				Some(Token {
 					value: TokenType::Punctuation(Punctuation::Equal),
 					..
