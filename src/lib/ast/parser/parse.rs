@@ -1,4 +1,4 @@
-use super::{
+use super::super::{
 	super::lexer::token::{
 		keyword::Keyword,
 		literal::Literal as TokenLiteral,
@@ -196,6 +196,12 @@ pub fn parse<'a>(
 							params,
 						}));
 						expr_list.push(fn_call_node);
+					}
+					Some(Token {
+						value: TokenType::Punctuation(Punctuation::Dot),
+						..
+					}) => {
+						todo!();
 					}
 					Some(Token {
 						value: TokenType::Punctuation(Punctuation::Equal),

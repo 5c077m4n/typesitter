@@ -1,6 +1,6 @@
-use super::super::{
+use super::super::super::{
 	ast::{
-		parser::parse,
+		parser::parse::parse,
 		types::{
 			fn_call::FnCall,
 			literal::Literal,

@@ -9,7 +9,7 @@ use std::{
 
 mod lib;
 
-use lib::{ast::parser::parse, lexer::scanner::scan};
+use lib::{ast::parser::parse::parse, lexer::scanner::scan};
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
