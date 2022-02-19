@@ -22,7 +22,6 @@ fn scan_basic_number_init_test() -> anyhow::Result<()> {
 			TokenType::Identifier("a"),
 			TokenType::Punctuation(Punctuation::Equal),
 			TokenType::Literal(Literal::Number(123.)),
-			TokenType::Punctuation(Punctuation::Semicolon)
 		]
 	);
 	Ok(())
@@ -44,7 +43,6 @@ fn scan_typed_number_init_test() -> anyhow::Result<()> {
 			TokenType::Identifier("number"),
 			TokenType::Punctuation(Punctuation::Equal),
 			TokenType::Literal(Literal::Number(123.)),
-			TokenType::Punctuation(Punctuation::Semicolon)
 		]
 	);
 	Ok(())
@@ -64,7 +62,6 @@ fn scan_basic_string_init_test() -> anyhow::Result<()> {
 			TokenType::Identifier("a"),
 			TokenType::Punctuation(Punctuation::Equal),
 			TokenType::Literal(Literal::String("what?!")),
-			TokenType::Punctuation(Punctuation::Semicolon)
 		]
 	);
 	Ok(())
@@ -86,7 +83,6 @@ fn scan_console_log_test() -> anyhow::Result<()> {
 			TokenType::Punctuation(Punctuation::BracketOpen),
 			TokenType::Literal(Literal::Number(123.)),
 			TokenType::Punctuation(Punctuation::BracketClose),
-			TokenType::Punctuation(Punctuation::Semicolon)
 		]
 	);
 	Ok(())
