@@ -1,18 +1,21 @@
-use super::super::{
-	super::lexer::token::{
-		keyword::Keyword,
-		literal::Literal as TokenLiteral,
-		punctuation::Punctuation,
-		token_variance::{Token, TokenType},
+use super::{
+	super::{
+		super::lexer::token::{
+			keyword::Keyword,
+			literal::Literal as TokenLiteral,
+			punctuation::Punctuation,
+			token_variance::{Token, TokenType},
+		},
+		types::{
+			fn_call::FnCall,
+			literal::Literal,
+			node::Node,
+			var_dec::{VarDec, VarType},
+		},
 	},
-	types::{
-		fn_call::FnCall,
-		literal::Literal,
-		node::Node,
-		var_dec::{VarDec, VarType},
-	},
+	param_list::parse_param_list,
 };
-use anyhow::{bail, Result};
+use anyhow::Result;
 use log::error;
 
 pub fn parse<'a>(
@@ -164,32 +167,7 @@ pub fn parse<'a>(
 					value: TokenType::Punctuation(Punctuation::BracketOpen),
 					..
 				}) => {
-					let mut input_token_index = 0usize;
-					let mut params: Vec<&str> = Vec::new();
-
-					for Token { value, position } in token_iter.by_ref() {
-						match value {
-							TokenType::Punctuation(Punctuation::BracketClose) => {
-								break;
-							}
-							TokenType::Punctuation(Punctuation::Comma) => {
-								if input_token_index == 0 {
-									bail!("Shouldn't put a comma as the first char in the fn input @ {}", &position);
-								} else {
-									input_token_index += 1;
-								}
-							}
-							TokenType::Identifier(param_name) => {
-								input_token_index += 1;
-								params.push(param_name);
-							}
-							other => {
-								error!("{:?}", &other);
-								unimplemented!();
-							}
-						}
-					}
-
+					let params = parse_param_list(token_iter.by_ref())?;
 					let fn_call_node = Node::FnCall(Box::new(FnCall {
 						fn_name: ident,
 						params,
