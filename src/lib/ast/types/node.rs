@@ -12,15 +12,15 @@ use super::{
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Node<'n> {
-	Block(Vec<Node<'n>>),
-	Literal(Box<Literal<'n>>),
-	Object(Box<Object<'n>>),
-	Array(Box<Array<'n>>),
-	BinOp(Box<BinOp<'n>>),
-	UnaryOp(Box<UnaryOp<'n>>),
-	If(Box<If<'n>>),
-	VarDec(Box<VarDec<'n>>),
-	FnDec(Box<FnDec<'n>>),
-	FnCall(Box<FnCall<'n>>),
+	Block(Vec<Box<Node<'n>>>),
+	Literal(Literal<'n>),
+	Object(Object<'n>),
+	Array(Array<'n>),
+	BinOp(BinOp<'n>),
+	UnaryOp(UnaryOp<'n>),
+	If(If<'n>),
+	VarDec(VarDec<'n>),
+	FnDec(FnDec<'n>),
+	FnCall(FnCall<'n>),
 	Return(Box<Node<'n>>),
 }
