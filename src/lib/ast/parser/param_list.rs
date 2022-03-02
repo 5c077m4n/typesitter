@@ -2,7 +2,7 @@ use super::super::super::{
 	ast::types::{
 		literal::Literal,
 		node::Node,
-		var_dec::{VarDec, VarType},
+		var_dec::{VarDecl, VarType},
 	},
 	lexer::token::{
 		punctuation::Punctuation,
@@ -14,9 +14,9 @@ use log::error;
 
 pub fn parse_param_list<'a>(
 	token_iter: &mut impl Iterator<Item = Token<'a>>,
-) -> Result<Vec<VarDec<'a>>> {
+) -> Result<Vec<VarDecl<'a>>> {
 	let mut input_token_index: usize = 0;
-	let mut params: Vec<VarDec> = Vec::new();
+	let mut params: Vec<VarDecl> = Vec::new();
 
 	for Token { value, position } in token_iter {
 		match value {
@@ -35,7 +35,7 @@ pub fn parse_param_list<'a>(
 			}
 			TokenType::Identifier(param_name) => {
 				input_token_index += 1;
-				let param_dec = VarDec {
+				let param_dec = VarDecl {
 					var_type: VarType::Let,
 					name: param_name,
 					type_annotation: None,

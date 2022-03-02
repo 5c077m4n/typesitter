@@ -11,7 +11,7 @@ use super::{
 			fn_dec::{FnDec, FnType},
 			literal::Literal,
 			node::Node,
-			var_dec::VarDec,
+			var_dec::VarDecl,
 		},
 	},
 	param_list::parse_param_list,
@@ -19,13 +19,10 @@ use super::{
 use anyhow::{bail, Result};
 use log::error;
 
-pub fn parse<'a>(
-	token_iter: &mut impl Iterator<Item = Token<'a>>,
-	expr_list: Option<Vec<Box<Node<'a>>>>,
-) -> Result<Vec<Box<Node<'a>>>> {
-	let mut expr_list = expr_list.unwrap_or_default();
+pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec<Box<Node<'a>>>> {
+	let mut expr_list: Vec<Box<Node<'a>>> = Vec::new();
 
-	while let Some(Token { value, .. }) = token_iter.next() {
+	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
 			// This makes the `;` optional - but only at the right placement
 			TokenType::Punctuation(Punctuation::Semicolon) => (),
@@ -45,7 +42,7 @@ pub fn parse<'a>(
 							..
 						}) = token_iter.next()
 						{
-							let body = parse(token_iter, None)?;
+							let body = parse(token_iter)?;
 							let named_fn_node = Box::new(Node::FnDec(FnDec {
 								fn_type: FnType::Classic,
 								name: Some(fn_name),
@@ -100,7 +97,7 @@ pub fn parse<'a>(
 											value: TokenType::Literal(TokenLiteral::Number(n)),
 											..
 										}) => {
-											let init_node = Box::new(Node::VarDecl(VarDec {
+											let init_node = Box::new(Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
@@ -112,7 +109,7 @@ pub fn parse<'a>(
 											value: TokenType::Literal(TokenLiteral::String(s)),
 											..
 										}) => {
-											let init_node = Box::new(Node::VarDecl(VarDec {
+											let init_node = Box::new(Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
@@ -136,7 +133,7 @@ pub fn parse<'a>(
 								value: TokenType::Literal(TokenLiteral::Number(n)),
 								..
 							}) => {
-								let init_node = Box::new(Node::VarDecl(VarDec {
+								let init_node = Box::new(Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
 									name: param_name,
 									type_annotation: None,
@@ -148,7 +145,7 @@ pub fn parse<'a>(
 								value: TokenType::Literal(TokenLiteral::String(s)),
 								..
 							}) => {
-								let init_node = Box::new(Node::VarDecl(VarDec {
+								let init_node = Box::new(Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
 									name: param_name,
 									type_annotation: None,
@@ -165,7 +162,7 @@ pub fn parse<'a>(
 							value: TokenType::Punctuation(Punctuation::Semicolon),
 							..
 						}) => {
-							let init_node = Box::new(Node::VarDecl(VarDec {
+							let init_node = Box::new(Node::VarDecl(VarDecl {
 								var_type: init_type.try_into()?,
 								name: param_name,
 								type_annotation: None,
@@ -214,8 +211,8 @@ pub fn parse<'a>(
 				}
 			},
 			other => {
-				error!("{:?}", &other);
-				unimplemented!("Main");
+				error!("{:?} @ {:?}", &other, &position);
+				unimplemented!("Main @ {:?}", &position);
 			}
 		}
 	}

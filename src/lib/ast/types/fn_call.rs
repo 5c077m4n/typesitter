@@ -1,7 +1,7 @@
-use super::var_dec::VarDec;
+use super::var_dec::VarDecl;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct FnCall<'f> {
 	pub fn_name: &'f str,
-	pub params: Vec<VarDec<'f>>,
+	pub params: Vec<VarDecl<'f>>,
 }
