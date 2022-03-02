@@ -20,7 +20,7 @@ use anyhow::Result;
 use log::error;
 
 pub fn parse<'a>(
-	token_iter: &mut (impl Iterator<Item = Token<'a>> + Sized),
+	token_iter: &mut impl Iterator<Item = Token<'a>>,
 	expr_list: Option<Vec<Box<Node<'a>>>>,
 ) -> Result<Vec<Box<Node<'a>>>> {
 	let mut expr_list = expr_list.unwrap_or_default();
@@ -44,15 +44,15 @@ pub fn parse<'a>(
 							..
 						}) = token_iter.next()
 						{
-							// let body = parse(token_iter, None)?;
-							// let named_fn_node = Box::new(Node::FnDec(FnDec {
-							// 	fn_type: FnType::Classic,
-							// 	name: Some(fn_name),
-							// 	input_params,
-							// 	return_type: None,
-							// 	body: Box::new(Node::Block(body)),
-							// }));
-							// expr_list.push(named_fn_node);
+							let body = parse(token_iter, None)?;
+							let named_fn_node = Box::new(Node::FnDec(FnDec {
+								fn_type: FnType::Classic,
+								name: Some(fn_name),
+								input_params,
+								return_type: None,
+								body: Box::new(Node::Block(body)),
+							}));
+							expr_list.push(named_fn_node);
 						}
 					}
 					_ => {}
@@ -95,7 +95,7 @@ pub fn parse<'a>(
 											value: TokenType::Literal(TokenLiteral::Number(n)),
 											..
 										}) => {
-											let init_node = Box::new(Node::VarDec(VarDec {
+											let init_node = Box::new(Node::VarDecl(VarDec {
 												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
@@ -107,7 +107,7 @@ pub fn parse<'a>(
 											value: TokenType::Literal(TokenLiteral::String(s)),
 											..
 										}) => {
-											let init_node = Box::new(Node::VarDec(VarDec {
+											let init_node = Box::new(Node::VarDecl(VarDec {
 												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
@@ -117,7 +117,7 @@ pub fn parse<'a>(
 										}
 										other => {
 											error!("{:?}", &other);
-											unimplemented!();
+											unimplemented!("Node::Literal");
 										}
 									}
 								}
@@ -131,7 +131,7 @@ pub fn parse<'a>(
 								value: TokenType::Literal(TokenLiteral::Number(n)),
 								..
 							}) => {
-								let init_node = Box::new(Node::VarDec(VarDec {
+								let init_node = Box::new(Node::VarDecl(VarDec {
 									var_type: init_type.try_into()?,
 									name: param_name,
 									type_annotation: None,
@@ -143,7 +143,7 @@ pub fn parse<'a>(
 								value: TokenType::Literal(TokenLiteral::String(s)),
 								..
 							}) => {
-								let init_node = Box::new(Node::VarDec(VarDec {
+								let init_node = Box::new(Node::VarDecl(VarDec {
 									var_type: init_type.try_into()?,
 									name: param_name,
 									type_annotation: None,
@@ -153,14 +153,14 @@ pub fn parse<'a>(
 							}
 							other => {
 								error!("{:?}", &other);
-								unimplemented!();
+								unimplemented!("VarDecl");
 							}
 						},
 						Some(Token {
 							value: TokenType::Punctuation(Punctuation::Semicolon),
 							..
 						}) => {
-							let init_node = Box::new(Node::VarDec(VarDec {
+							let init_node = Box::new(Node::VarDecl(VarDec {
 								var_type: init_type.try_into()?,
 								name: param_name,
 								type_annotation: None,
@@ -170,12 +170,12 @@ pub fn parse<'a>(
 						}
 						other => {
 							error!("{:?}", &other);
-							unimplemented!();
+							unimplemented!("Not initialized VarDecl");
 						}
 					},
 					other => {
 						error!("{:?}", &other);
-						unimplemented!();
+						unimplemented!("VarDecl");
 					}
 				}
 			}
@@ -195,7 +195,7 @@ pub fn parse<'a>(
 					value: TokenType::Punctuation(Punctuation::Dot),
 					..
 				}) => {
-					todo!();
+					todo!("Object fields lookup");
 				}
 				Some(Token {
 					value: TokenType::Punctuation(Punctuation::Equal),
@@ -205,12 +205,12 @@ pub fn parse<'a>(
 				}
 				other => {
 					error!("{:?}", &other);
-					unimplemented!();
+					unimplemented!("Identifier");
 				}
 			},
 			other => {
 				error!("{:?}", &other);
-				unimplemented!();
+				unimplemented!("Main");
 			}
 		}
 	}
