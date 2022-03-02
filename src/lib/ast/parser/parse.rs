@@ -16,7 +16,7 @@ use super::{
 	},
 	param_list::parse_param_list,
 };
-use anyhow::Result;
+use anyhow::{bail, Result};
 use log::error;
 
 pub fn parse<'a>(
@@ -56,7 +56,9 @@ pub fn parse<'a>(
 							expr_list.push(named_fn_node);
 						}
 					}
-					_ => {}
+					other => {
+						bail!("The character `(` was expected here, but got: {:?}", &other);
+					}
 				},
 				Some(Token {
 					value: TokenType::Punctuation(Punctuation::BracketOpen),
@@ -67,7 +69,9 @@ pub fn parse<'a>(
 						value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 						..
 					}) = token_iter.next()
-					{}
+					{
+						unimplemented!("Function call on nested object");
+					}
 				}
 				_ => {}
 			},
