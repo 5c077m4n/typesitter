@@ -13,12 +13,12 @@ use anyhow::{bail, Result};
 use log::error;
 
 pub fn parse_param_list<'a>(
-	mut token_iter: impl Iterator<Item = Token<'a>>,
+	token_iter: &mut impl Iterator<Item = Token<'a>>,
 ) -> Result<Vec<VarDec<'a>>> {
 	let mut input_token_index: usize = 0;
 	let mut params: Vec<VarDec> = Vec::new();
 
-	for Token { value, position } in token_iter.by_ref() {
+	for Token { value, position } in token_iter {
 		match value {
 			TokenType::Punctuation(Punctuation::BracketClose) => {
 				break;

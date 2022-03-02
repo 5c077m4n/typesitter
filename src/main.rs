@@ -28,14 +28,14 @@ fn main() -> Result<()> {
 		let input = fs::read_to_string(filepath)?;
 		let input = &input.trim();
 
-		let tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(tokens, None)?;
+		let mut tokens = scan(input, Some("REPL".to_owned()));
+		let ast = parse(&mut tokens, None)?;
 		debug!("{:?}", &ast);
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
-		let tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(tokens, None)?;
+		let mut tokens = scan(input, Some("REPL".to_owned()));
+		let ast = parse(&mut tokens, None)?;
 		debug!("{:?}", &ast);
 	} else {
 		loop {
@@ -49,8 +49,8 @@ fn main() -> Result<()> {
 			}
 
 			let input = &input.trim();
-			let tokens = scan(input, Some("REPL".to_owned()));
-			let ast = parse(tokens, None)?;
+			let mut tokens = scan(input, Some("REPL".to_owned()));
+			let ast = parse(&mut tokens, None)?;
 			debug!("{:?}", &ast);
 		}
 	}

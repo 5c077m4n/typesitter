@@ -20,7 +20,7 @@ use anyhow::Result;
 use log::error;
 
 pub fn parse<'a>(
-	mut token_iter: impl Iterator<Item = Token<'a>>,
+	token_iter: &mut (impl Iterator<Item = Token<'a>> + Sized),
 	expr_list: Option<Vec<Box<Node<'a>>>>,
 ) -> Result<Vec<Box<Node<'a>>>> {
 	let mut expr_list = expr_list.unwrap_or_default();
@@ -38,13 +38,13 @@ pub fn parse<'a>(
 						value: TokenType::Punctuation(Punctuation::BracketOpen),
 						..
 					}) => {
-						let input_params = parse_param_list(token_iter.by_ref())?;
+						let input_params = parse_param_list(token_iter)?;
 						if let Some(Token {
 							value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 							..
 						}) = token_iter.next()
 						{
-							// let body = parse(token_iter.by_ref(), None)?;
+							// let body = parse(token_iter, None)?;
 							// let named_fn_node = Box::new(Node::FnDec(FnDec {
 							// 	fn_type: FnType::Classic,
 							// 	name: Some(fn_name),
@@ -61,7 +61,7 @@ pub fn parse<'a>(
 					value: TokenType::Punctuation(Punctuation::BracketOpen),
 					..
 				}) => {
-					let _params = parse_param_list(token_iter.by_ref())?;
+					let _params = parse_param_list(token_iter)?;
 					if let Some(Token {
 						value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 						..
@@ -184,7 +184,7 @@ pub fn parse<'a>(
 					value: TokenType::Punctuation(Punctuation::BracketOpen),
 					..
 				}) => {
-					let params = parse_param_list(token_iter.by_ref())?;
+					let params = parse_param_list(token_iter)?;
 					let fn_call_node = Box::new(Node::FnCall(FnCall {
 						fn_name: ident,
 						params,
