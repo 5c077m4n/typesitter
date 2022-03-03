@@ -237,8 +237,27 @@ pub fn parse_fn_declaration_empty_params_test() -> Result<()> {
 }
 
 #[test]
+pub fn parse_fn_declaration_return_type_test() -> Result<()> {
+	let init_str = r#"function fn(): void {}"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens)?;
+
+	assert_eq!(
+		ast,
+		vec![Box::new(Node::FnDec(FnDec {
+			fn_type: FnType::Classic,
+			name: Some("fn"),
+			input_params: vec![],
+			return_type: Some("void"),
+			body: Box::new(Node::Block(vec![])),
+		}))]
+	);
+	Ok(())
+}
+
+#[test]
 pub fn parse_fn_declaration_full_test() -> Result<()> {
-	let init_str = r#"function fn1(param1) {
+	let init_str = r#"function fn1(param1): void {
         const a: string = '123';
         const b: number = 123;
     }"#;
@@ -256,7 +275,7 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 				type_annotation: None,
 				value: Box::new(Node::Literal(Literal::Undefined))
 			}],
-			return_type: None,
+			return_type: Some("void"),
 			body: Box::new(Node::Block(vec![
 				Box::new(Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
