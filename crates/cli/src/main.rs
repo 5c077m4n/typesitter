@@ -1,15 +1,13 @@
 use anyhow::Result;
+use ast::parser::parse::parse;
 use clap::Parser;
+use lexer::scanner::scan;
 use log::debug;
 use std::{
 	fs,
 	io::{stdin, stdout, Write},
 	path::PathBuf,
 };
-
-mod lib;
-
-use lib::{ast::parser::parse::parse, lexer::scanner::scan};
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]

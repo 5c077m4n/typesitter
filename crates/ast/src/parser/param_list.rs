@@ -1,15 +1,13 @@
-use super::super::super::{
-	ast::types::{
-		literal::Literal,
-		node::Node,
-		var_dec::{VarDecl, VarType},
-	},
-	lexer::token::{
-		punctuation::Punctuation,
-		token_variance::{Token, TokenType},
-	},
+use super::super::types::{
+	literal::Literal,
+	node::Node,
+	var_dec::{VarDecl, VarType},
 };
 use anyhow::{bail, Result};
+use lexer::token::{
+	punctuation::Punctuation,
+	token_variance::{Token, TokenType},
+};
 
 pub fn parse_param_list<'a>(
 	token_iter: &mut impl Iterator<Item = Token<'a>>,

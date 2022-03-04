@@ -1,5 +1,6 @@
-use super::{super::super::lexer::token::keyword::Keyword, node::Node};
+use super::node::Node;
 use anyhow::{bail, Error};
+use lexer::token::keyword::Keyword;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum VarType {
