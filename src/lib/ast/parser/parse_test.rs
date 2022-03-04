@@ -21,12 +21,12 @@ pub fn parse_const_init_number_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::VarDecl(VarDecl {
+		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
 			name: "n",
 			type_annotation: Some("number"),
 			value: Box::new(Node::Literal(Literal::Number(123.)))
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -42,18 +42,18 @@ pub fn parse_2_const_init_number_test() -> Result<()> {
 	assert_eq!(
 		ast,
 		vec![
-			Box::new(Node::VarDecl(VarDecl {
+			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
 				name: "n",
 				type_annotation: Some("number"),
 				value: Box::new(Node::Literal(Literal::Number(123.)))
-			})),
-			Box::new(Node::VarDecl(VarDecl {
+			}),
+			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
 				name: "n",
 				type_annotation: Some("number"),
 				value: Box::new(Node::Literal(Literal::Number(123.)))
-			})),
+			}),
 		]
 	);
 	Ok(())
@@ -67,12 +67,12 @@ pub fn parse_let_init_string_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::VarDecl(VarDecl {
+		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Let,
 			name: "s",
 			type_annotation: Some("string"),
 			value: Box::new(Node::Literal(Literal::String("123"))),
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -85,12 +85,12 @@ pub fn parse_let_number_init_no_type_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::VarDecl(VarDecl {
+		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Let,
 			name: "x",
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Number(42.)))
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -104,12 +104,12 @@ pub fn parse_let_no_int_value_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::VarDecl(VarDecl {
+		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Let,
 			name: "x",
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Undefined))
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -122,10 +122,10 @@ pub fn parse_empty_fn_call_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnCall(FnCall {
+		vec![Node::FnCall(FnCall {
 			fn_name: "fnName",
 			params: Vec::new(),
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -138,7 +138,7 @@ pub fn parse_2_param_fn_call_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnCall(FnCall {
+		vec![Node::FnCall(FnCall {
 			fn_name: "fnName",
 			params: vec![
 				VarDecl {
@@ -154,7 +154,7 @@ pub fn parse_2_param_fn_call_test() -> Result<()> {
 					value: Box::new(Node::Literal(Literal::Undefined)),
 				}
 			],
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -175,13 +175,13 @@ pub fn parse_fn_declaration_empty_body_empty_params_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnDec(FnDec {
+		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
 			name: Some("fn1"),
 			input_params: Vec::new(),
 			return_type: None,
 			body: Box::new(Node::Block(Vec::new())),
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -194,7 +194,7 @@ pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnDec(FnDec {
+		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
 			name: Some("fn1"),
 			input_params: vec![VarDecl {
@@ -205,7 +205,7 @@ pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
 			}],
 			return_type: None,
 			body: Box::new(Node::Block(Vec::new())),
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -220,18 +220,18 @@ pub fn parse_fn_declaration_empty_params_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnDec(FnDec {
+		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
 			name: Some("fn1"),
 			input_params: Vec::new(),
 			return_type: None,
-			body: Box::new(Node::Block(vec![Box::new(Node::VarDecl(VarDecl {
+			body: Box::new(Node::Block(vec![Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
 				name: "a",
 				type_annotation: Some("string"),
 				value: Box::new(Node::Literal(Literal::String("123"))),
-			}))])),
-		}))]
+			})])),
+		})]
 	);
 	Ok(())
 }
@@ -244,13 +244,13 @@ pub fn parse_fn_declaration_return_type_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnDec(FnDec {
+		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
 			name: Some("fn"),
 			input_params: vec![],
 			return_type: Some("void"),
 			body: Box::new(Node::Block(vec![])),
-		}))]
+		})]
 	);
 	Ok(())
 }
@@ -266,7 +266,7 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnDec(FnDec {
+		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
 			name: Some("fn1"),
 			input_params: vec![VarDecl {
@@ -277,20 +277,20 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 			}],
 			return_type: Some("void"),
 			body: Box::new(Node::Block(vec![
-				Box::new(Node::VarDecl(VarDecl {
+				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
 					name: "a",
 					type_annotation: Some("string"),
 					value: Box::new(Node::Literal(Literal::String("123"))),
-				})),
-				Box::new(Node::VarDecl(VarDecl {
+				}),
+				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
 					name: "b",
 					type_annotation: Some("number"),
 					value: Box::new(Node::Literal(Literal::Number(123.))),
-				}))
+				})
 			])),
-		}))]
+		})]
 	);
 	Ok(())
 }

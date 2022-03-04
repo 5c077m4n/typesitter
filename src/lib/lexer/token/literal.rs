@@ -9,7 +9,7 @@ pub enum Literal<'l> {
 	String(&'l str),
 	Number(f64),
 	Bool(bool),
-	Array(Vec<Box<Literal<'l>>>),
+	Array(Vec<Literal<'l>>),
 	Object(BTreeMap<&'l str, Box<Literal<'l>>>),
 }
 impl Default for Literal<'_> {
