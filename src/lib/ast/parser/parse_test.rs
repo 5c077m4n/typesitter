@@ -257,7 +257,7 @@ pub fn parse_fn_declaration_return_type_test() -> Result<()> {
 
 #[test]
 pub fn parse_fn_declaration_full_test() -> Result<()> {
-	let init_str = r#"function fn1(param1): void {
+	let init_str = r#"function fn1(param1: any): void {
         const a: string = '123';
         const b: number = 123;
     }"#;
@@ -272,7 +272,7 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 			input_params: vec![VarDecl {
 				var_type: VarType::Let,
 				name: "param1",
-				type_annotation: None,
+				type_annotation: Some("any"),
 				value: Box::new(Node::Literal(Literal::Undefined))
 			}],
 			return_type: Some("void"),
