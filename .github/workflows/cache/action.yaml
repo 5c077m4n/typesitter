@@ -1,0 +1,17 @@
+name: "Cache"
+description: "Cache cargo deps"
+inputs: {}
+outputs: {}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
