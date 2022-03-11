@@ -1,11 +1,11 @@
 use super::{
 	super::types::{
-		fn_call::FnCall,
 		fn_dec::{FnDec, FnType},
 		literal::Literal,
 		node::Node,
 		var_dec::VarDecl,
 	},
+	ident::ident_parse,
 	param_list::parse_param_list,
 };
 use anyhow::{bail, Result};
@@ -16,8 +16,11 @@ use lexer::token::{
 	token_variance::{Token, TokenType},
 };
 use log::error;
+use std::iter::Peekable;
 
-pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec<Node<'a>>> {
+pub fn parse<'a>(
+	token_iter: &mut Peekable<impl Iterator<Item = Token<'a>>>,
+) -> Result<Vec<Node<'a>>> {
 	let mut expr_list: Vec<Node<'a>> = Vec::new();
 
 	while let Some(Token { value, position }) = token_iter.next() {
@@ -211,35 +214,10 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 					}
 				}
 			}
-			TokenType::Identifier(ident) => match token_iter.next() {
-				Some(Token {
-					value: TokenType::Punctuation(Punctuation::BracketOpen),
-					..
-				}) => {
-					let params = parse_param_list(token_iter)?;
-					let fn_call_node = Node::FnCall(FnCall {
-						fn_name: ident,
-						params,
-					});
-					expr_list.push(fn_call_node);
-				}
-				Some(Token {
-					value: TokenType::Punctuation(Punctuation::Dot),
-					..
-				}) => {
-					todo!("Object fields lookup");
-				}
-				Some(Token {
-					value: TokenType::Punctuation(Punctuation::Equal),
-					..
-				}) => {
-					todo!();
-				}
-				other => {
-					error!("{:?}", &other);
-					unimplemented!("Identifier");
-				}
-			},
+			TokenType::Identifier(ident) => {
+				let mut ident_list = ident_parse(ident, token_iter)?;
+				expr_list.append(&mut ident_list);
+			}
 			other => {
 				error!("{:?} @ {:?}", &other, &position);
 				unimplemented!("Main @ {:?}", &position);
