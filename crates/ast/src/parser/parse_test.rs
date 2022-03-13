@@ -21,7 +21,7 @@ pub fn parse_const_init_number_test() -> Result<()> {
 		ast,
 		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
-			name: "n",
+			name: vec!["n"],
 			type_annotation: Some("number"),
 			value: Box::new(Node::Literal(Literal::Number(123.)))
 		})]
@@ -42,13 +42,13 @@ pub fn parse_2_const_init_number_test() -> Result<()> {
 		vec![
 			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
-				name: "n",
+				name: vec!["n"],
 				type_annotation: Some("number"),
 				value: Box::new(Node::Literal(Literal::Number(123.)))
 			}),
 			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
-				name: "n",
+				name: vec!["n"],
 				type_annotation: Some("number"),
 				value: Box::new(Node::Literal(Literal::Number(123.)))
 			}),
@@ -67,7 +67,7 @@ pub fn parse_let_init_string_test() -> Result<()> {
 		ast,
 		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Let,
-			name: "s",
+			name: vec!["s"],
 			type_annotation: Some("string"),
 			value: Box::new(Node::Literal(Literal::String("123"))),
 		})]
@@ -85,7 +85,7 @@ pub fn parse_let_number_init_no_type_test() -> Result<()> {
 		ast,
 		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Let,
-			name: "x",
+			name: vec!["x"],
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Number(42.)))
 		})]
@@ -103,7 +103,7 @@ pub fn parse_let_no_int_value_test() -> Result<()> {
 		ast,
 		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Let,
-			name: "x",
+			name: vec!["x"],
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Undefined))
 		})]
@@ -120,7 +120,7 @@ pub fn parse_empty_fn_call_test() -> Result<()> {
 	assert_eq!(
 		ast,
 		vec![Node::FnCall(FnCall {
-			fn_name: "fnName",
+			fn_name: vec!["fnName"],
 			params: Vec::new(),
 		})]
 	);
@@ -136,16 +136,16 @@ pub fn parse_2_param_fn_call_test() -> Result<()> {
 	assert_eq!(
 		ast,
 		vec![Node::FnCall(FnCall {
-			fn_name: "fnName",
+			fn_name: vec!["fnName"],
 			params: vec![
 				VarDecl {
 					var_type: VarType::Let,
-					name: "param1",
+					name: vec!["param1"],
 					type_annotation: None,
 					value: Box::new(Node::Literal(Literal::Undefined))
 				},
 				VarDecl {
-					name: "param2",
+					name: vec!["param2"],
 					var_type: VarType::Let,
 					type_annotation: None,
 					value: Box::new(Node::Literal(Literal::Undefined)),
@@ -174,7 +174,7 @@ pub fn parse_fn_declaration_empty_body_empty_params_test() -> Result<()> {
 		ast,
 		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
-			name: Some("fn1"),
+			name: Some(vec!["fn1"]),
 			input_params: Vec::new(),
 			return_type: None,
 			body: Box::new(Node::Block(Vec::new())),
@@ -193,10 +193,10 @@ pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
 		ast,
 		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
-			name: Some("fn1"),
+			name: Some(vec!["fn1"]),
 			input_params: vec![VarDecl {
 				var_type: VarType::Let,
-				name: "param1",
+				name: vec!["param1"],
 				type_annotation: None,
 				value: Box::new(Node::Literal(Literal::Undefined))
 			}],
@@ -219,12 +219,12 @@ pub fn parse_fn_declaration_empty_params_test() -> Result<()> {
 		ast,
 		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
-			name: Some("fn1"),
+			name: Some(vec!["fn1"]),
 			input_params: Vec::new(),
 			return_type: None,
 			body: Box::new(Node::Block(vec![Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
-				name: "a",
+				name: vec!["a"],
 				type_annotation: Some("string"),
 				value: Box::new(Node::Literal(Literal::String("123"))),
 			})])),
@@ -262,10 +262,28 @@ pub fn parse_fn_declaration_return_type_test() -> Result<()> {
 		ast,
 		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
-			name: Some("fn"),
+			name: Some(vec!["fn"]),
 			input_params: vec![],
 			return_type: Some("void"),
 			body: Box::new(Node::Block(vec![])),
+		})]
+	);
+	Ok(())
+}
+
+#[test]
+pub fn parse_empty_console_log_test() -> Result<()> {
+	let init_str = r#"console.log();"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens)?;
+
+	assert_eq!(
+		ast,
+		vec![Node::FnCall({
+			FnCall {
+				fn_name: vec!["console", "log"],
+				params: vec![],
+			}
 		})]
 	);
 	Ok(())
@@ -284,10 +302,10 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 		ast,
 		vec![Node::FnDec(FnDec {
 			fn_type: FnType::Classic,
-			name: Some("fn1"),
+			name: Some(vec!["fn1"]),
 			input_params: vec![VarDecl {
 				var_type: VarType::Let,
-				name: "param1",
+				name: vec!["param1"],
 				type_annotation: Some("any"),
 				value: Box::new(Node::Literal(Literal::Undefined))
 			}],
@@ -295,13 +313,13 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 			body: Box::new(Node::Block(vec![
 				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
-					name: "a",
+					name: vec!["a"],
 					type_annotation: Some("string"),
 					value: Box::new(Node::Literal(Literal::String("123"))),
 				}),
 				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
-					name: "b",
+					name: vec!["b"],
 					type_annotation: Some("number"),
 					value: Box::new(Node::Literal(Literal::Number(123.))),
 				})

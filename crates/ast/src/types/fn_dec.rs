@@ -8,7 +8,7 @@ pub enum FnType {
 #[derive(Clone, Debug, PartialEq)]
 pub struct FnDec<'f> {
 	pub fn_type: FnType,
-	pub name: Option<&'f str>,
+	pub name: Option<Vec<&'f str>>,
 	pub input_params: Vec<VarDecl<'f>>,
 	pub return_type: Option<&'f str>,
 	pub body: Box<Node<'f>>,

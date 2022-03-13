@@ -48,7 +48,7 @@ pub fn parse_param_list<'a>(
 				input_token_index += 1;
 				let param_dec = VarDecl {
 					var_type: VarType::Let,
-					name: param_name,
+					name: vec![param_name],
 					type_annotation: None,
 					value: Box::new(Node::Literal(Literal::Undefined)),
 				};
