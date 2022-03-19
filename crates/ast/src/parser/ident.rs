@@ -1,6 +1,6 @@
 use super::{
 	super::types::{fn_call::FnCall, node::Node},
-	param_list::parse_param_list,
+	param_list::parse_input_list,
 };
 use anyhow::Result;
 use lexer::token::{
@@ -29,7 +29,7 @@ pub fn ident_parse<'a>(
 	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
 			TokenType::Punctuation(Punctuation::BracketOpen) => {
-				let params = parse_param_list(token_iter)?;
+				let params = parse_input_list(token_iter)?;
 				let fn_name = ident_parts.to_owned();
 
 				let fn_call_node = Node::FnCall(FnCall { fn_name, params });
