@@ -31,6 +31,7 @@ pub fn parse_input_list<'a>(
 			}
 			TokenType::Identifier(param_name) => {
 				input_token_index += 1;
+
 				let param_dec = VarDecl {
 					var_type: VarType::Let,
 					name: vec![param_name],
@@ -39,19 +40,26 @@ pub fn parse_input_list<'a>(
 				};
 				params.push(param_dec);
 			}
-			TokenType::Punctuation(Punctuation::Colon) => match token_iter.next() {
-				Some(Token {
-					value: TokenType::Identifier(fn_return_type),
-					..
-				}) => {
-					if let Some(last_param) = params.last_mut() {
-						last_param.type_annotation = Some(fn_return_type);
+			TokenType::Punctuation(Punctuation::Colon) => {
+				if input_token_index == 0 {
+					bail!(
+						"Shouldn't put a colon as the first char in the fn input @ {}",
+						&position
+					);
+				}
+
+				match token_iter.next() {
+					Some(Token {
+						value: TokenType::Identifier(fn_return_type),
+						..
+					}) => {
+						params.last_mut().unwrap().type_annotation = Some(fn_return_type);
+					}
+					other => {
+						bail!("Wasn't expecting {:?} @ {:?}", &other, &position);
 					}
 				}
-				other => {
-					bail!("Wasn't expecting {:?} @ {:?}", &other, &position);
-				}
-			},
+			}
 			other => {
 				bail!("Wasn't expecting {:?} @ {:?}", &other, &position);
 			}
