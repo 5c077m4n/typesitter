@@ -328,3 +328,49 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 	);
 	Ok(())
 }
+
+#[test]
+pub fn parse_fn_return_number_test() -> Result<()> {
+	let init_str = r#"function() {
+        return 1;
+    }"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens)?;
+
+	assert_eq!(
+		ast,
+		vec![Node::FnDecl(FnDec {
+			fn_type: FnType::Classic,
+			name: None,
+			input_params: vec![],
+			return_type: None,
+			body: Box::new(Node::Block(vec![Node::Return(Box::new(Node::Literal(
+				Literal::Number(1.)
+			)))])),
+		})]
+	);
+	Ok(())
+}
+
+#[test]
+pub fn parse_fn_return_string_test() -> Result<()> {
+	let init_str = r#"function() {
+        return 'string';
+    }"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens)?;
+
+	assert_eq!(
+		ast,
+		vec![Node::FnDecl(FnDec {
+			fn_type: FnType::Classic,
+			name: None,
+			input_params: vec![],
+			return_type: None,
+			body: Box::new(Node::Block(vec![Node::Return(Box::new(Node::Literal(
+				Literal::String("string")
+			)))])),
+		})]
+	);
+	Ok(())
+}
