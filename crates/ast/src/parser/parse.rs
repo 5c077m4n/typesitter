@@ -43,7 +43,7 @@ pub fn parse<'a>(
 								..
 							}) => {
 								let body = parse(token_iter)?;
-								let named_fn_node = Node::FnDec(FnDec {
+								let named_fn_node = Node::FnDecl(FnDec {
 									fn_type: FnType::Classic,
 									name: Some(vec![fn_name]),
 									input_params,
@@ -65,7 +65,7 @@ pub fn parse<'a>(
 										..
 									}) => {
 										let body = parse(token_iter)?;
-										let named_fn_node = Node::FnDec(FnDec {
+										let named_fn_node = Node::FnDecl(FnDec {
 											fn_type: FnType::Classic,
 											name: Some(vec![fn_name]),
 											input_params,
@@ -108,7 +108,7 @@ pub fn parse<'a>(
 					}) = token_iter.next()
 					{
 						let body = parse(token_iter)?;
-						let unnamed_fn_node = Node::FnDec(FnDec {
+						let unnamed_fn_node = Node::FnDecl(FnDec {
 							fn_type: FnType::Classic,
 							name: None,
 							input_params,
@@ -233,6 +233,13 @@ pub fn parse<'a>(
 				let mut ident_list = ident_parse(ident, token_iter)?;
 				expr_list.append(&mut ident_list);
 			}
+			TokenType::Keyword(Keyword::Return) => match token_iter.next() {
+				Some(Token {
+					value: TokenType::Identifier(ret_ident),
+					..
+				}) => expr_list.push(Node::Return(Box::new(Node::VarCall(ret_ident)))),
+				_ => {}
+			},
 			other => {
 				error!("{:?} @ {:?}", &other, &position);
 				unimplemented!("Main @ {:?}", &position);
