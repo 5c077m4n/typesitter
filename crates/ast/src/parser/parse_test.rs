@@ -374,3 +374,33 @@ pub fn parse_fn_return_string_test() -> Result<()> {
 	);
 	Ok(())
 }
+
+#[test]
+pub fn parse_fn_return_param_test() -> Result<()> {
+	let init_str = r#"function() {
+        const a = 1;
+        return a;
+    }"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens)?;
+
+	assert_eq!(
+		ast,
+		vec![Node::FnDecl(FnDec {
+			fn_type: FnType::Classic,
+			name: None,
+			input_params: vec![],
+			return_type: None,
+			body: Box::new(Node::Block(vec![
+				Node::VarDecl(VarDecl {
+					var_type: VarType::Const,
+					name: vec!["a"],
+					type_annotation: None,
+					value: Box::new(Node::Literal(Literal::Number(1.)))
+				}),
+				Node::Return(Box::new(Node::VarCall("a")))
+			])),
+		})]
+	);
+	Ok(())
+}
