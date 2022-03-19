@@ -237,7 +237,15 @@ pub fn parse<'a>(
 				Some(Token {
 					value: TokenType::Identifier(ret_ident),
 					..
-				}) => expr_list.push(Node::Return(Box::new(Node::VarCall(ret_ident)))),
+				}) => {
+					expr_list.push(Node::Return(Box::new(Node::VarCall(ret_ident))));
+				}
+				Some(Token {
+					value: TokenType::Literal(lit),
+					..
+				}) => {
+					expr_list.push(Node::Return(Box::new(Node::Literal(lit.try_into()?))));
+				}
 				_ => {}
 			},
 			other => {
