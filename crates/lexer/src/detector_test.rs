@@ -154,6 +154,14 @@ fn identifier_dollar_test() -> Result<()> {
 }
 
 #[test]
+#[should_panic]
+fn identifier_no_digit_at_start_test() -> () {
+	let origin = "1_param_name";
+	let input = Span::new_extra(origin, None);
+	let (_, Token { .. }) = identifier(input).unwrap();
+}
+
+#[test]
 fn all_tokens_number_test() -> Result<()> {
 	let input = Span::new_extra("123", None);
 	let (_, Token { value, .. }) = all_tokens(input)?;
