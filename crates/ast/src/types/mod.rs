@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 pub mod array;
 pub mod bin_op;
 pub mod fn_call;
