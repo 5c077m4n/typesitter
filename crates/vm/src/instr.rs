@@ -11,6 +11,8 @@ pub enum Instr {
 	Jump(Pointer),
 	JE(Pointer),
 	JNE(Pointer),
+	Get(Pointer),
+	Set(Pointer),
 }
 
 pub type Program<'p> = &'p [Instr];

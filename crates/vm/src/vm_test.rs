@@ -10,8 +10,8 @@ fn sanity() -> Result<()> {
 		Instr::Push(1.),
 		Instr::Add,
 		Instr::Sub,
-	])?;
+	]);
 
-	assert_eq!(result, 5.);
+	assert_eq!(result, Some(5.));
 	Ok(())
 }
