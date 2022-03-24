@@ -1,4 +1,5 @@
 use super::instr::Pointer;
+use anyhow::{anyhow, Result};
 
 #[derive(Debug)]
 pub struct Stack(Vec<f64>);
@@ -13,22 +14,32 @@ impl Stack {
 		Self(Vec::with_capacity(capacity))
 	}
 	pub fn push(&mut self, v: f64) {
-		self.0.push(v)
+		self.0.push(v);
 	}
-	pub fn get(&self, p: Pointer) -> Option<&f64> {
-		self.0.get(p)
+	pub fn get(&self, p: Pointer) -> Result<&f64> {
+		self.0
+			.get(p)
+			.ok_or_else(|| anyhow!("There should be an {}th item in the stack", p))
 	}
-	pub fn get_mut(&mut self, p: Pointer) -> Option<&mut f64> {
-		self.0.get_mut(p)
+	pub fn get_mut(&mut self, p: Pointer) -> Result<&mut f64> {
+		self.0
+			.get_mut(p)
+			.ok_or_else(|| anyhow!("There should be a mutable {}th item in the stack", p))
 	}
-	pub fn peek(&self) -> Option<&f64> {
-		self.0.last()
+	pub fn peek(&self) -> Result<&f64> {
+		self.0
+			.last()
+			.ok_or_else(|| anyhow!("There should be a last item in the stack"))
 	}
-	pub fn peek_mut(&mut self) -> Option<&mut f64> {
-		self.0.last_mut()
+	pub fn peek_mut(&mut self) -> Result<&mut f64> {
+		self.0
+			.last_mut()
+			.ok_or_else(|| anyhow!("There should be a last mutable item in the stack"))
 	}
-	pub fn pop(&mut self) -> Option<f64> {
-		self.0.pop()
+	pub fn pop(&mut self) -> Result<f64> {
+		self.0
+			.pop()
+			.ok_or_else(|| anyhow!("There should be a last item on the stack"))
 	}
 	#[allow(dead_code)]
 	pub(crate) fn debug(&self) {

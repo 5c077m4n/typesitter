@@ -2,6 +2,7 @@ use super::{
 	instr::{Instr, Pointer, Program},
 	stack::Stack,
 };
+use anyhow::Result;
 use log::debug;
 
 #[derive(Default, Debug)]
@@ -11,7 +12,7 @@ pub struct VM {
 	ip: Pointer,
 }
 impl VM {
-	pub fn handle_instr(&mut self, instr: &Instr) {
+	pub fn handle_instr(&mut self, instr: &Instr) -> Result<()> {
 		match instr {
 			Instr::Push(n) => {
 				self.stack.push(*n);
@@ -21,70 +22,61 @@ impl VM {
 				debug!("{:?}", tmp);
 			}
 			Instr::Add => {
-				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
-					self.stack.push(b + a);
-				}
+				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
+				self.stack.push(b + a);
 				debug!("{:?}", self.stack.peek());
 			}
 			Instr::Incr => *self.stack.peek_mut().unwrap() += 1.,
 			Instr::Sub => {
-				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
-					self.stack.push(b - a);
-				}
+				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
+				self.stack.push(b - a);
 				debug!("{:?}", self.stack.peek());
 			}
 			Instr::Decr => *self.stack.peek_mut().unwrap() -= 1.,
 			Instr::Mul => {
-				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
-					self.stack.push(b * a);
-				}
+				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
+				self.stack.push(b * a);
 				debug!("{:?}", self.stack.peek());
 			}
 			Instr::Div => {
-				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
-					self.stack.push(b / a);
-				}
+				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
+				self.stack.push(b / a);
 				debug!("{:?}", self.stack.peek());
 			}
 			Instr::Jump(ip) => {
 				self.ip = *ip;
 			}
 			Instr::JumpEqual0(ip) => {
-				if self.stack.peek() == Some(&0.) {
-					let _ = self.stack.pop();
+				if *self.stack.peek()? == 0. {
+					self.stack.pop()?;
 					self.ip = *ip;
 				}
 			}
 			Instr::JumpNotEqual0(ip) => {
-				if self.stack.peek() != Some(&0.) {
-					let _ = self.stack.pop();
+				if *self.stack.peek()? != 0. {
+					self.stack.pop()?;
 					self.ip = *ip;
 				}
 			}
 			Instr::Get(ip) => {
-				if let Some(&v) = self.stack.get(*ip) {
-					self.stack.push(v);
-				}
+				let value = *self.stack.get(*ip)?;
+				self.stack.push(value);
 			}
 			Instr::Set(ip) => {
-				if let Some(v) = self.stack.pop() {
-					let val = self.stack.get_mut(*ip).unwrap();
-					*val = v;
-				}
+				let last_value = self.stack.pop()?;
+				*self.stack.get_mut(*ip)? = last_value;
 			}
-			Instr::Print => {
-				println!("{:?}", self.stack.peek().unwrap());
-			}
-			Instr::PrintChar => {
-				println!("{:?}", *self.stack.peek().unwrap() as u8 as char);
-			}
+			Instr::Print => println!("{:?}", *self.stack.peek()?),
+			Instr::PrintChar => println!("{:?}", *self.stack.peek()? as u8 as char),
+			Instr::PrintDebug => self.stack.debug(),
 		}
+		Ok(())
 	}
-	pub fn interpret(&mut self, program: Program) -> Option<f64> {
+	pub fn interpret(&mut self, program: Program) -> Result<f64> {
 		self.ip = 0;
 
 		while let Some(instr) = program.get(self.ip) {
-			self.handle_instr(&instr);
+			self.handle_instr(&instr)?;
 			self.ip += 1;
 		}
 
