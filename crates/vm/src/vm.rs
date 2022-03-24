@@ -38,7 +38,6 @@ impl VM {
 				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
 					self.stack.push(b * a);
 				}
-
 				debug!("{:?}", self.stack.peek());
 			}
 			Instr::Div => {
