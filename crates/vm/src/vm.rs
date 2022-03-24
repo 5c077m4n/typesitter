@@ -47,32 +47,35 @@ impl VM {
 				}
 				debug!("{:?}", self.stack.peek());
 			}
-			Instr::Print => {
-				println!("{:?}", self.stack.peek().unwrap());
+			Instr::Jump(ip) => {
+				self.ip = *ip;
 			}
-			Instr::Jump(p) => {
-				self.ip = *p;
-			}
-			Instr::JumpEqual(p) => {
+			Instr::JumpEqual(ip) => {
 				if self.stack.peek() == Some(&0.) {
-					self.ip = *p;
+					self.ip = *ip;
 				}
 			}
-			Instr::JumpNotEqual(p) => {
+			Instr::JumpNotEqual(ip) => {
 				if self.stack.peek() != Some(&0.) {
-					self.ip = *p;
+					self.ip = *ip;
 				}
 			}
-			Instr::Get(p) => {
-				if let Some(&v) = self.stack.get(*p) {
+			Instr::Get(ip) => {
+				if let Some(&v) = self.stack.get(*ip) {
 					self.stack.push(v);
 				}
 			}
-			Instr::Set(p) => {
+			Instr::Set(ip) => {
 				if let Some(v) = self.stack.pop() {
-					let val = self.stack.get_mut(*p).unwrap();
+					let val = self.stack.get_mut(*ip).unwrap();
 					*val = v;
 				}
+			}
+			Instr::Print => {
+				println!("{:?}", self.stack.peek().unwrap());
+			}
+			Instr::PrintChar => {
+				println!("{:?}", *self.stack.peek().unwrap() as u8 as char);
 			}
 		}
 	}
