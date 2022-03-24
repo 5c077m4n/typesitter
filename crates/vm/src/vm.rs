@@ -1,5 +1,5 @@
 use super::{
-	instr::{Instr, Program},
+	instr::{Instr, Pointer, Program},
 	stack::Stack,
 };
 use log::debug;
@@ -8,7 +8,7 @@ use log::debug;
 pub struct VM {
 	stack: Stack,
 	/// Instruction pointer
-	ip: usize,
+	ip: Pointer,
 }
 impl VM {
 	pub fn handle_instr(&mut self, instr: &Instr) {
@@ -65,7 +65,7 @@ impl VM {
 			}
 			Instr::Get(p) => {
 				if let Some(&v) = self.stack.get(*p) {
-					self.stack.get(v.round() as usize);
+					self.stack.push(v);
 				}
 			}
 			Instr::Set(p) => {
