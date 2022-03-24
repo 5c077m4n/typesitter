@@ -6,7 +6,7 @@ fn simple_arith_one_plus_one() -> Result<()> {
 	use Instr::*;
 
 	let mut vm = VM::default();
-	let result = vm.interpret(&[Push(1.), Push(1.), Instr::Add])?;
+	let result = vm.interpret(&[Push(1.), Push(1.), AddRegReg])?;
 
 	assert_eq!(result, 2.);
 	Ok(())
@@ -17,7 +17,7 @@ fn complex_arith() -> Result<()> {
 	use Instr::*;
 
 	let mut vm = VM::default();
-	let result = vm.interpret(&[Push(9.), Push(3.), Push(1.), Add, Sub])?;
+	let result = vm.interpret(&[Push(9.), Push(3.), Push(1.), AddRegReg, SubRegReg])?;
 
 	assert_eq!(result, 5.);
 	Ok(())
