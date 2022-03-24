@@ -5,9 +5,7 @@ use anyhow::Result;
 fn simple_arith_one_plus_one() -> Result<()> {
 	use Instr::*;
 
-	let mut vm = VM::default();
-	let result = vm.interpret(&[Push(1.), Push(1.), AddRegReg])?;
-
+	let result = VM::default().interpret(&[Push(1.), Push(1.), AddRegReg])?;
 	assert_eq!(result, 2.);
 	Ok(())
 }
@@ -16,20 +14,16 @@ fn simple_arith_one_plus_one() -> Result<()> {
 fn complex_arith() -> Result<()> {
 	use Instr::*;
 
-	let mut vm = VM::default();
-	let result = vm.interpret(&[Push(9.), Push(3.), Push(1.), AddRegReg, SubRegReg])?;
-
+	let result = VM::default().interpret(&[Push(9.), Push(3.), Push(1.), AddRegReg, SubRegReg])?;
 	assert_eq!(result, 5.);
 	Ok(())
 }
 
 #[test]
-#[ignore]
 fn sum_first_100_ints() -> Result<()> {
 	use Instr::*;
 
-	let mut vm = VM::default();
-	let result = vm.interpret(&[
+	let result = VM::default().interpret(&[
 		Push(0.), // [accumilator = 0]
 		Push(0.), // [accumilator = 0, index = 0]
 		// stack: [accumilator, index]
@@ -38,10 +32,9 @@ fn sum_first_100_ints() -> Result<()> {
 		AddRegReg, // [accumilator, index, (accumilator + index)]
 		Set(0),    // [(accumilator + index), index]
 		// stack: [accumilator, index]
-		AddRegLit(1.),   // [accumilator, index + 1]
-		Get(1),          // [accumilator, index, index]
-		SubRegLit(100.), // [accumilator, index, index - 100]
-		PrintDebug,
+		AddRegLit(1.),    // [accumilator, index + 1]
+		Get(1),           // [accumilator, index, index]
+		SubRegLit(100.),  // [accumilator, index, index - 100]
 		JumpNotEqual0(2), // [accumilator, index] <- Loop end
 		Get(0),           // [accumilator, index, accumilator]
 	])?;

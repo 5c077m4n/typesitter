@@ -12,7 +12,7 @@ pub struct VM {
 	ip: Pointer,
 }
 impl VM {
-	pub fn handle_instr(&mut self, instr: &Instr) -> Result<()> {
+	fn handle_instr(&mut self, instr: &Instr) -> Result<()> {
 		match instr {
 			Instr::Push(n) => {
 				self.stack.push(*n);
@@ -61,14 +61,12 @@ impl VM {
 				self.ip = *ip;
 			}
 			Instr::JumpEqual0(ip) => {
-				if *self.stack.peek()? == 0. {
-					self.stack.pop()?;
+				if self.stack.pop()? == 0. {
 					self.ip = *ip;
 				}
 			}
 			Instr::JumpNotEqual0(ip) => {
-				if *self.stack.peek()? != 0. {
-					self.stack.pop()?;
+				if self.stack.pop()? != 0. {
 					self.ip = *ip;
 				}
 			}
@@ -90,8 +88,8 @@ impl VM {
 		self.ip = 0;
 
 		while let Some(instr) = program.get(self.ip) {
-			self.handle_instr(&instr)?;
 			self.ip += 1;
+			self.handle_instr(&instr)?;
 		}
 
 		self.stack.pop()
