@@ -32,6 +32,10 @@ pub enum Instr {
 	Get(Pointer),
 	/// Set value at stack item
 	Set(Pointer),
+	/// Call a function
+	Call(Pointer),
+	/// Return from a function
+	Ret,
 	/// Print top stack item
 	Print,
 	/// Print top stack item as a char

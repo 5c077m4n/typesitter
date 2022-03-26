@@ -41,6 +41,9 @@ impl Stack {
 			.pop()
 			.ok_or_else(|| anyhow!("There should be a last item on the stack"))
 	}
+	pub fn len(&self) -> usize {
+		self.0.len()
+	}
 	#[allow(dead_code)]
 	pub(crate) fn debug(&self) {
 		println!("{:#?}", self.0);
