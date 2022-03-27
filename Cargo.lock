@@ -240,7 +240,10 @@ dependencies = [
 name = "jit"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
+ "env_logger",
  "inkwell",
+ "log",
 ]
 
 [[package]]
