@@ -32,6 +32,10 @@ pub enum Instr {
 	Get(Pointer),
 	/// Set value at stack item
 	Set(Pointer),
+	/// Get an arg from before the fn start
+	GetArg(Pointer),
+	/// Set an arg from before the fn start
+	SetArg(Pointer),
 	/// Call a function
 	Call(Pointer),
 	/// Return from a function
