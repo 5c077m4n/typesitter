@@ -1,7 +1,4 @@
 use super::node::Node;
+use std::collections::BTreeMap;
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct Object<'o> {
-	keys: Vec<&'o str>,
-	values: Vec<Node<'o>>,
-}
+pub type Object<'o> = BTreeMap<&'o str, Node<'o>>;
