@@ -3,6 +3,7 @@ use super::{
 		fn_dec::{FnDec, FnType},
 		literal::Literal,
 		node::Node,
+		type_annotation::TypeAnnotation,
 		var_dec::VarDecl,
 	},
 	ident::ident_parse,
@@ -69,7 +70,9 @@ pub fn parse<'a>(
 											fn_type: FnType::Classic,
 											name: Some(vec![fn_name]),
 											input_params,
-											return_type: Some(fn_return_type),
+											return_type: Some(TypeAnnotation::try_from(
+												fn_return_type,
+											)?),
 											body: Box::new(Node::Block(body)),
 										});
 										expr_list.push(named_fn_node);
@@ -148,7 +151,9 @@ pub fn parse<'a>(
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: vec![param_name],
-												type_annotation: Some(var_type),
+												type_annotation: Some(TypeAnnotation::try_from(
+													var_type,
+												)?),
 												value: Box::new(Node::Literal(Literal::Number(n))),
 											});
 											expr_list.push(init_node);
@@ -160,7 +165,9 @@ pub fn parse<'a>(
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: vec![param_name],
-												type_annotation: Some(var_type),
+												type_annotation: Some(TypeAnnotation::try_from(
+													var_type,
+												)?),
 												value: Box::new(Node::Literal(Literal::String(s))),
 											});
 											expr_list.push(init_node);

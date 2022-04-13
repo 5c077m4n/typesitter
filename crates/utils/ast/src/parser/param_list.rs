@@ -1,6 +1,7 @@
 use super::super::types::{
 	literal::Literal,
 	node::Node,
+	type_annotation::TypeAnnotation,
 	var_dec::{VarDecl, VarType},
 };
 use anyhow::{bail, Result};
@@ -53,7 +54,8 @@ pub fn parse_input_list<'a>(
 						value: TokenType::Identifier(fn_return_type),
 						..
 					}) => {
-						params.last_mut().unwrap().type_annotation = Some(fn_return_type);
+						params.last_mut().unwrap().type_annotation =
+							Some(TypeAnnotation::try_from(fn_return_type)?);
 					}
 					other => {
 						bail!("Wasn't expecting {:?} @ {:?}", &other, &position);
