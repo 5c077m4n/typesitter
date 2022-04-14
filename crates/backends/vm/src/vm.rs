@@ -111,7 +111,7 @@ impl VM {
 		self.ip = 0;
 		while let Some(instr) = program.get(self.ip) {
 			self.ip += 1;
-			self.handle_instr(&instr)?;
+			self.handle_instr(instr)?;
 		}
 		self.stack.pop()
 	}
