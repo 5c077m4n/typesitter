@@ -1,7 +1,7 @@
 use super::{
 	super::types::{
 		fn_call::FnCall,
-		fn_dec::{FnDec, FnType},
+		fn_dec::{FnDecl, FnType},
 		literal::Literal,
 		node::Node,
 		type_annotation::TypeAnnotation,
@@ -173,7 +173,7 @@ pub fn parse_fn_declaration_empty_body_empty_params_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: Some(vec!["fn1"]),
 			input_params: Vec::new(),
@@ -192,7 +192,7 @@ pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: Some(vec!["fn1"]),
 			input_params: vec![VarDecl {
@@ -218,7 +218,7 @@ pub fn parse_fn_declaration_empty_params_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: Some(vec!["fn1"]),
 			input_params: Vec::new(),
@@ -242,7 +242,7 @@ pub fn parse_anonymous_fn_declaration_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: None,
 			input_params: vec![],
@@ -261,7 +261,7 @@ pub fn parse_fn_declaration_return_type_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: Some(vec!["fn"]),
 			input_params: vec![],
@@ -301,7 +301,7 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: Some(vec!["fn1"]),
 			input_params: vec![VarDecl {
@@ -340,7 +340,7 @@ pub fn parse_fn_return_number_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: None,
 			input_params: vec![],
@@ -363,7 +363,7 @@ pub fn parse_fn_return_string_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: None,
 			input_params: vec![],
@@ -387,7 +387,7 @@ pub fn parse_fn_return_param_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		vec![Node::FnDecl(FnDec {
+		vec![Node::FnDecl(FnDecl {
 			fn_type: FnType::Classic,
 			name: None,
 			input_params: vec![],

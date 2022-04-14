@@ -2,7 +2,7 @@ use super::{
 	array::Array,
 	bin_op::BinOp,
 	fn_call::FnCall,
-	fn_dec::FnDec,
+	fn_dec::FnDecl,
 	literal::Literal,
 	object::Object,
 	r#if::If,
@@ -21,7 +21,7 @@ pub enum Node<'n> {
 	If(If<'n>),
 	VarDecl(VarDecl<'n>),
 	VarCall(&'n str),
-	FnDecl(FnDec<'n>),
+	FnDecl(FnDecl<'n>),
 	FnCall(FnCall<'n>),
 	Return(Box<Node<'n>>),
 }
