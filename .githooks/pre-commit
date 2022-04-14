@@ -1,5 +1,9 @@
-#!/bin/sh -eu
+#!/usr/bin/env zsh
 
-cargo +nightly fmt --all
-cargo clippy --fix --allow-staged --allow-dirty
+for file in $(cargo +nightly fmt -- --emit json | jq -r '.[].name'); do
+	cargo +nightly fmt -- $file
+	git add $file
+done
+
+cargo clippy --fix --all-targets --workspace --allow-staged --allow-dirty
 cargo test --workspace
