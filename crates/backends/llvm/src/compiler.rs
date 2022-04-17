@@ -12,7 +12,7 @@ use inkwell::{
 	module::Module,
 	passes::PassManager,
 	types::{AnyTypeEnum, BasicMetadataTypeEnum},
-	values::{BasicValueEnum, FunctionValue},
+	values::{BasicValueEnum, FloatValue, FunctionValue},
 };
 
 pub struct Compiler<'c, 'ctx> {
@@ -83,11 +83,30 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 
 	fn compile_instr(&self, node: &Node) -> Result<()> {
 		match node {
+			Node::Block(instr_list) => {
+				for instr in instr_list {
+					self.compile_instr(instr)?;
+				}
+			}
 			Node::VarDecl(var_decl) => {
-				self.compile_var_decl(var_decl)?;
+				let _var_decl_value = self.compile_var_decl(var_decl)?;
 			}
 			Node::FnDecl(fn_decl) => {
-				self.compile_fn_signature(fn_decl)?;
+				let fn_decl_value = self.compile_fn_signature(fn_decl)?;
+				let block = self.context.append_basic_block(fn_decl_value, "entry");
+				self.builder.position_at_end(block);
+				// TODO: compile function body
+				let result = &self.context.f64_type().const_float(1.);
+				self.builder.build_return(Some(result));
+
+				if fn_decl_value.verify(true) {
+					self.pass_manager.run_on(&fn_decl_value);
+				} else {
+					unsafe {
+						fn_decl_value.delete();
+					}
+					bail!("Invalid generarated function")
+				}
 			}
 			other => unimplemented!("Compile instruction for {:?}", other),
 		}
