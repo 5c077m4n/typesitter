@@ -1,7 +1,10 @@
 use anyhow::Result;
-use ast::parser::parse::parse;
+use ast::{
+	parser::parse::{parse, parse_into_block},
+};
 use clap::Parser;
 use lexer::scanner::scan;
+use llvm::run;
 use log::debug;
 use std::{
 	fs,
@@ -26,15 +29,19 @@ fn main() -> Result<()> {
 		let input = fs::read_to_string(filepath)?;
 		let input = &input.trim();
 
-		let mut tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(&mut tokens)?;
-		debug!("{:?}", &ast);
+		let mut tokens = scan(input, Some("File".to_owned()));
+		let ast = parse_into_block(&mut tokens)?;
+		debug!("{:?}", ast);
+
+		run(&ast)?;
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
 		let mut tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(&mut tokens)?;
-		debug!("{:?}", &ast);
+		let ast = parse_into_block(&mut tokens)?;
+		debug!("{:?}", ast);
+
+		run(&ast)?;
 	} else {
 		loop {
 			print!(">>> ");
