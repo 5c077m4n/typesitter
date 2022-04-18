@@ -143,6 +143,7 @@ dependencies = [
  "lexer",
  "llvm",
  "log",
+ "vm",
 ]
 
 [[package]]

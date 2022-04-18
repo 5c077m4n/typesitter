@@ -2,8 +2,6 @@ use anyhow::Result;
 use ast::parser::parse::{parse, parse_into_block};
 use clap::Parser;
 use lexer::scanner::scan;
-// #[cfg(feature = "llvm")]
-// use llvm::run;
 use log::debug;
 use std::{
 	fs,
@@ -32,8 +30,8 @@ fn main() -> Result<()> {
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
 
-	// #[cfg(feature = "llvm")]
-	// run(&ast)?;
+		#[cfg(feature = "llvm")]
+		llvm::run(&ast)?;
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
@@ -41,8 +39,8 @@ fn main() -> Result<()> {
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
 
-	// #[cfg(feature = "llvm")]
-	// run(&ast)?;
+		#[cfg(feature = "llvm")]
+		llvm::run(&ast)?;
 	} else {
 		loop {
 			print!(">>> ");
