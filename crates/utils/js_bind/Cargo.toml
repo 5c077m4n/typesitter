@@ -16,11 +16,8 @@ wasm-bindgen = "0.2"
 console_error_panic_hook = { version = "0.1", optional = true }
 serde_json = "1.0"
 serde = "1.0"
-ast = { path = "../../utils/ast" }
+ast = { path = "../../utils/ast", features = ["js_bind"] }
 lexer = { path = "../../utils/lexer" }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"
-
-[profile.release]
-opt-level = "s"

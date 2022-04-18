@@ -1,11 +1,11 @@
 use super::node::Node;
-use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, PartialEq)]
 pub struct If<'i> {
-	#[serde(borrow)]
+	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub expr: Box<Node<'i>>,
-	#[serde(borrow)]
+	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub block: Box<Node<'i>>,
 	pub else_block: Option<Box<Node<'i>>>,
 }
