@@ -10,6 +10,7 @@ impl Default for Stack {
 	}
 }
 impl Stack {
+	#[allow(dead_code)]
 	pub fn new(capacity: usize) -> Self {
 		Self(Vec::with_capacity(capacity))
 	}
