@@ -31,7 +31,7 @@ impl<'t> serde::Serialize for Token<'t> {
 
 		let mut state = serializer.serialize_struct("Token", 6)?;
 
-        state.skip_field("position")?;
+		state.skip_field("position")?;
 		state.serialize_field("fragment", &self.position.fragment())?;
 		state.serialize_field("offset", &self.position.location_offset())?;
 		state.serialize_field("line", &self.position.location_line())?;
