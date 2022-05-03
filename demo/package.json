@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
+		"build:prod": "tsc && vite build --base=/typesitter/",
 		"preview": "vite preview"
 	},
 	"dependencies": {
@@ -29,6 +30,5 @@
 		"vite": "^2.9.5",
 		"vite-plugin-checker": "^0.4.6",
 		"vite-plugin-pwa": "^0.12.0"
-	},
-	"packageManager": "yarn@3.2.0"
+	}
 }
