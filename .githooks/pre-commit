@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+for file in $(cargo +nightly fmt -- --emit json | jq -r '.[].name'); do
+	cargo +nightly fmt -- $file
+	git add $file
+done
+unset file
+
+cargo clippy --fix --all-targets --workspace --allow-staged --allow-dirty --color='always'
+cargo test --workspace --color='always'
