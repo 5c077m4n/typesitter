@@ -1,3 +1,0 @@
-[env]
-#LLVM_SYS_130_PREFIX = "$(\"$(brew --prefix llvm)/bin/llvm-config\" --prefix)"
-LLVM_SYS_130_PREFIX = "/opt/homebrew/Cellar/llvm/13.0.1_1"
