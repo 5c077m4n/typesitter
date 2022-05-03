@@ -15,10 +15,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_BASE: crates/frontends/web/
+          NETLIFY_BASE: demo/
           NETLIFY_CMD: |
+            rustup default stable && \
             curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh && \
-            yarn && \
-            yarn build:wasm && \
+            cd crates/frontends/web/ && \
+            yarn run build:wasm && \
+            yarn install --immutable && \
             yarn build
-          NETLIFY_DIR: crates/frontends/web/dist/
+          NETLIFY_DIR: demo/dist/

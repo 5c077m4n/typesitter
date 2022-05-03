@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# yarn
+# Yarn
 .pnp.*
 .yarn/*
 !.yarn/patches

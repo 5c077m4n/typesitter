@@ -6,5 +6,5 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react(), checker({ typescript: true }), wasmPack('../../utils/js_bind'), VitePWA()],
+	plugins: [react(), checker({ typescript: true }), wasmPack('../crates/utils/js_bind'), VitePWA()],
 });
