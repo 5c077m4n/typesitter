@@ -32,5 +32,9 @@
 			"error",
 			"always"
 		]
-	}
+	},
+	"ignorePatterns": [
+		"node_modules/",
+		"dist/"
+	]
 }
