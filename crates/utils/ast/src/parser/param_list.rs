@@ -23,7 +23,7 @@ pub fn parse_input_list<'a>(
 			TokenType::Punctuation(Punctuation::Comma) => {
 				if input_token_index == 0 {
 					bail!(
-						"Shouldn't put a comma as the first char in the fn input @ {}",
+						"Shouldn't put a comma as the first char in the fn input @ {:?}",
 						&position
 					);
 				} else {
@@ -44,7 +44,7 @@ pub fn parse_input_list<'a>(
 			TokenType::Punctuation(Punctuation::Colon) => {
 				if input_token_index == 0 {
 					bail!(
-						"Shouldn't put a colon as the first char in the fn input @ {}",
+						"Shouldn't put a colon as the first char in the fn input @ {:?}",
 						&position
 					);
 				}
