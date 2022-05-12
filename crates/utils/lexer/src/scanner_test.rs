@@ -7,10 +7,11 @@ use super::{
 		token_variance::TokenType,
 	},
 };
+use anyhow::Result;
 use macros::test_with_logger;
 
 #[test_with_logger]
-fn scan_basic_number_init_test() -> anyhow::Result<()> {
+fn scan_basic_number_init_test() -> Result<()> {
 	let input = r#"const a = 123;"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
 		.map(|t| t.value)
@@ -30,7 +31,7 @@ fn scan_basic_number_init_test() -> anyhow::Result<()> {
 }
 
 #[test_with_logger]
-fn scan_typed_number_init_test() -> anyhow::Result<()> {
+fn scan_typed_number_init_test() -> Result<()> {
 	let input = r#"const a: number = 123;"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
 		.map(|t| t.value)
@@ -52,7 +53,7 @@ fn scan_typed_number_init_test() -> anyhow::Result<()> {
 }
 
 #[test_with_logger]
-fn scan_basic_string_init_test() -> anyhow::Result<()> {
+fn scan_basic_string_init_test() -> Result<()> {
 	let input = r#"const a = 'what?!';"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
 		.map(|t| t.value)
@@ -72,7 +73,7 @@ fn scan_basic_string_init_test() -> anyhow::Result<()> {
 }
 
 #[test_with_logger]
-fn scan_console_log_test() -> anyhow::Result<()> {
+fn scan_console_log_test() -> Result<()> {
 	let input = r#"console.log(123);"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
 		.map(|t| t.value)
