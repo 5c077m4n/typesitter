@@ -12,6 +12,7 @@ anyhow = "1.0"
 serde = { version = "1.0.136", features = ["derive"], optional = true }
 serde_json = { version = "1.0.79", optional = true }
 lexer = { path = "../lexer" }
+macros = { path = "../macros" }
 
 [features]
 js_bind = ["dep:serde", "dep:serde_json"]
