@@ -7,7 +7,17 @@ use super::token::{
 use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
-	character::complete::{alpha1, alphanumeric1, char, digit1, multispace1, one_of, space1},
+	character::complete::{
+		alpha1,
+		alphanumeric1,
+		char,
+		digit1,
+		line_ending,
+		multispace1,
+		one_of,
+		space1,
+		tab,
+	},
 	combinator::{map_res, recognize, value},
 	multi::{many0, many1},
 	sequence::{delimited, preceded, terminated, tuple},
@@ -101,6 +111,9 @@ pub fn punctuation(input: Span) -> IResult<Span, Token> {
 		value(Punctuation::Semicolon, tag(Punctuation::Semicolon.as_str())),
 		value(Punctuation::Dot, tag(Punctuation::Dot.as_str())),
 		value(Punctuation::Comma, tag(Punctuation::Comma.as_str())),
+		value(Punctuation::Space, tag(Punctuation::Space.as_str())),
+		value(Punctuation::Tab, tab),
+		value(Punctuation::EOL, line_ending),
 	))(input)?;
 	let (tail, pos) = position(tail)?;
 

@@ -37,6 +37,10 @@ pub enum Punctuation {
 	Dot,
 	/// `,`
 	Comma,
+	Space,
+	Tab,
+	/// End of line
+	EOL,
 }
 impl Punctuation {
 	pub fn as_str(&self) -> &str {
@@ -59,6 +63,9 @@ impl Punctuation {
 			Self::Ampersand => "&",
 			Self::Dot => ".",
 			Self::Comma => ",",
+			Self::Space => " ",
+			Self::Tab => "	",
+			Self::EOL => r"\n",
 		}
 	}
 }

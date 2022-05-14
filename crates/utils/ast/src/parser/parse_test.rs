@@ -147,8 +147,8 @@ pub fn parse_2_param_fn_call_test() -> Result<()> {
 					value: Box::new(Node::Literal(Literal::Undefined))
 				},
 				VarDecl {
-					name: vec!["param2"],
 					var_type: VarType::Let,
+					name: vec!["param2"],
 					type_annotation: None,
 					value: Box::new(Node::Literal(Literal::Undefined)),
 				}

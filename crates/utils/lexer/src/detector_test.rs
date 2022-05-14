@@ -1,11 +1,12 @@
 use super::{
-	detector::{all_tokens, binary, boolean, decimal, identifier, keyword, string},
+	detector::{all_tokens, binary, boolean, decimal, identifier, keyword, punctuation, string},
 	token::{
 		keyword::Keyword,
 		literal::Literal,
 		token_variance::{Span, Token, TokenType},
 	},
 };
+use crate::token::punctuation::Punctuation;
 use anyhow::Result;
 use macros::test_with_logger;
 
@@ -160,6 +161,30 @@ fn identifier_no_digit_at_start_test() {
 	let origin = "1_param_name";
 	let input = Span::new_extra(origin, None);
 	let (_, Token { .. }) = identifier(input).unwrap();
+}
+
+#[test_with_logger]
+fn punctuation_space() -> Result<()> {
+	let origin = " ";
+	let input = Span::new_extra(origin, None);
+	let (tail, Token { value, position }) = punctuation(input)?;
+
+	assert_eq!(tail.fragment().to_owned(), "");
+	assert_eq!(value, TokenType::Punctuation(Punctuation::Space));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test_with_logger]
+fn punctuation_tab() -> Result<()> {
+	let origin = "	";
+	let input = Span::new_extra(origin, None);
+	let (tail, Token { value, position }) = punctuation(input)?;
+
+	assert_eq!(tail.fragment().to_owned(), "");
+	assert_eq!(value, TokenType::Punctuation(Punctuation::Tab));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
 }
 
 #[test_with_logger]
