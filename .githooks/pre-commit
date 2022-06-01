@@ -1,10 +1,16 @@
 #!/usr/bin/env zsh
 
-for file in $(cargo +nightly fmt -- --emit json | jq -r '.[].name'); do
-	cargo +nightly fmt -- $file
-	git add $file
-done
-unset file
+() {
+	local file
+	for file in $(git diff --name-only --staged); do
+		local file_ext="${file##*.}"
 
-cargo clippy --fix --all-targets --workspace --allow-staged --allow-dirty --color='always'
-cargo test --workspace --color='always'
+		if [[ "$file_ext" == "rs" ]]; then
+			cargo +nightly fmt -- "$file"
+			git add "$file"
+		fi
+	done
+
+	cargo clippy --fix --all-targets --workspace --allow-staged --allow-dirty --color='always'
+	cargo test --workspace --color='always'
+}
