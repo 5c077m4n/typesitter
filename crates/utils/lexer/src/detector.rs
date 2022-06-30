@@ -4,6 +4,7 @@ use super::token::{
 	punctuation::Punctuation,
 	token_variance::{Span, Token, TokenType},
 };
+use anyhow::Result;
 use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
@@ -129,7 +130,17 @@ pub fn punctuation(input: Span) -> IResult<Span, Token> {
 pub fn decimal(input: Span) -> IResult<Span, Token> {
 	let (tail, token) = map_res(
 		recognize(many1(terminated(digit1, many0(char('_'))))),
-		|token: Span| token.fragment().replace('_', "").parse::<f64>(),
+		|token: Span| -> Result<f64> {
+			let n_str = token
+				.fragment()
+				.iter()
+				.copied()
+				.filter(|c| *c != b'_')
+				.collect::<Vec<_>>();
+			let n_str = std::str::from_utf8(&n_str[..])?;
+			let n = n_str.parse::<f64>()?;
+			Ok(n)
+		},
 	)(input)?;
 	let (tail, pos) = position(tail)?;
 

@@ -12,7 +12,7 @@ pub enum FnType {
 pub struct FnDecl<'f> {
 	pub fn_type: FnType,
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
-	pub name: Option<Vec<&'f str>>,
+	pub name: Option<Vec<&'f [u8]>>,
 	pub input_params: Vec<VarDecl<'f>>,
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub return_type: Option<TypeAnnotation<'f>>,

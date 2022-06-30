@@ -4,6 +4,7 @@ use super::{
 	stack::Stack,
 };
 use anyhow::Result;
+use ast::types::node::Node;
 use log::debug;
 
 #[derive(Debug, Default)]
@@ -115,4 +116,6 @@ impl VM {
 		}
 		self.stack.pop()
 	}
+
+	pub fn build_stack(_tree: Box<Node>) {}
 }

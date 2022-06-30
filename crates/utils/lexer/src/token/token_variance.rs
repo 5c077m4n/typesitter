@@ -1,15 +1,15 @@
 use super::{keyword::Keyword, literal::Literal, punctuation::Punctuation};
 use nom_locate::LocatedSpan;
 
-pub type Span<'s> = LocatedSpan<&'s str, Option<String>>;
+pub type Span<'s> = LocatedSpan<&'s [u8], Option<String>>;
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Debug, PartialEq)]
 pub enum TokenType<'t> {
 	// TODO: find out why this is needed & remove this
 	Empty,
-	Generic(&'t str),
-	Identifier(&'t str),
+	Generic(&'t [u8]),
+	Identifier(&'t [u8]),
 	Keyword(Keyword),
 	Punctuation(Punctuation),
 	Literal(Literal<'t>),

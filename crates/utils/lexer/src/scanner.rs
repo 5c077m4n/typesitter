@@ -8,7 +8,7 @@ use super::{
 use log::{debug, error};
 use std::iter::{self, Peekable};
 
-pub fn scan(input: &str, extra: Option<String>) -> Box<Peekable<impl Iterator<Item = Token<'_>>>> {
+pub fn scan(input: &[u8], extra: Option<String>) -> Box<Peekable<impl Iterator<Item = Token<'_>>>> {
 	Box::new(
 		iter::from_fn({
 			let mut input = Span::new_extra(input, extra);

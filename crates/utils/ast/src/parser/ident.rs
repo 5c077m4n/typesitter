@@ -11,7 +11,7 @@ use log::error;
 use std::iter::Peekable;
 
 pub fn ident_parse<'a>(
-	ident: &'a str,
+	ident: &'a [u8],
 	token_iter: &mut Peekable<impl Iterator<Item = Token<'a>>>,
 ) -> Result<Vec<Node<'a>>> {
 	let mut expr_list: Vec<Node<'a>> = Vec::new();

@@ -24,7 +24,7 @@ impl TryFrom<Keyword> for VarType {
 #[derive(Clone, Debug, PartialEq)]
 pub struct VarDecl<'v> {
 	pub var_type: VarType,
-	pub name: Vec<&'v str>,
+	pub name: Vec<&'v [u8]>,
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub type_annotation: Option<TypeAnnotation<'v>>,
 	pub value: Box<Node<'v>>,
