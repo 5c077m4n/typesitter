@@ -1,7 +1,7 @@
 use super::{node::Node, type_annotation::TypeAnnotation, var_dec::VarDecl};
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum FnType {
 	Arrow,
 	Classic,

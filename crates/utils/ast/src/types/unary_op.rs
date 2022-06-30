@@ -1,7 +1,7 @@
 use super::node::Node;
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Operator {
 	Typeof,
 	Plus,

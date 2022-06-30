@@ -3,7 +3,7 @@ use anyhow::{bail, Error};
 use lexer::token::keyword::Keyword;
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum VarType {
 	Const,
 	Let,
