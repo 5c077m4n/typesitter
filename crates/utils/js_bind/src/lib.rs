@@ -7,13 +7,15 @@ pub mod demo {
 	use super::*;
 
 	#[wasm_bindgen]
-	pub fn tokenize(text: &[u8]) -> String {
+	pub fn tokenize(text: String) -> String {
+		let text = text.as_bytes();
 		let tokens: Vec<_> = scan(text, Some("WASM".to_string())).collect();
 		serde_json::to_string(&tokens).unwrap()
 	}
 
 	#[wasm_bindgen]
-	pub fn build_ast(text: &[u8]) -> String {
+	pub fn build_ast(text: String) -> String {
+		let text = text.as_bytes();
 		let mut token_iter = scan(text, Some("WASM".to_string()));
 		let ast = parse_into_block(&mut token_iter);
 		let ast = ast.as_ref().unwrap();
@@ -22,7 +24,8 @@ pub mod demo {
 }
 
 #[wasm_bindgen]
-pub fn ts_eval(text: &[u8]) -> String {
+pub fn ts_eval(text: String) -> String {
+	let text = text.as_bytes();
 	let mut token_iter = scan(text, Some("WASM".to_string()));
 	let ast = parse_into_block(&mut token_iter);
 	let ast = ast.as_ref().unwrap();
