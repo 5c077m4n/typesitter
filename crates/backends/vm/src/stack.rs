@@ -46,7 +46,6 @@ impl Stack {
 		self.0.len()
 	}
 
-	#[allow(dead_code)]
 	pub(crate) fn debug(&self) {
 		println!("{:#?}", self.0);
 	}
