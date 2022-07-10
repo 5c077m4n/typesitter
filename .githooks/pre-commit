@@ -3,8 +3,9 @@
 () {
 	local file
 	for file in $(git diff --name-only --staged); do
-		local file_ext="${file##*.}"
+		[[ ! -d $file ]] && continue
 
+		local file_ext="${file##*.}"
 		if [[ "$file_ext" == "rs" ]]; then
 			cargo +nightly fmt -- "$file"
 			git add "$file"
