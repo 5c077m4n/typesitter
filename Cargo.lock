@@ -672,7 +672,6 @@ name = "vm"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "ast",
  "env_logger 0.8.4",
  "log",
  "macros",

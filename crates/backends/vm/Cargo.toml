@@ -9,7 +9,6 @@ edition = "2021"
 log = "0.4"
 env_logger = "0.8"
 anyhow = "1.0"
-ast = { path = '../../utils/ast' }
 
 [dev-dependencies]
 macros = { path = "../../utils/macros" }

@@ -7,21 +7,21 @@ pub enum Instr {
 	/// Get the top stack value and remove it
 	Pop,
 	/// Sum the two top reg entries together
-	AddRegReg,
+	Add,
 	/// Add the given number to the last stack entry
-	AddRegLit(f64),
+	AddLit(f64),
 	/// Subtract the two top reg entries together
-	SubRegReg,
+	Sub,
 	/// Subtract the given number from the last stack entry
-	SubRegLit(f64),
+	SubLit(f64),
 	/// Multiply the two top stack entries together
-	MulRegReg,
+	Mul,
 	/// Multiply the top stack entry with the given number
-	MulRegLit(f64),
+	MulLit(f64),
 	/// Divide the top stack entry by the second top
-	DivRegReg,
+	Div,
 	/// Divide the top stack entry by the given literal
-	DivRegLit(f64),
+	DivLit(f64),
 	/// Jump to instruction number
 	Jump(Pointer),
 	/// Jump to instruction number if stack top is equal to 0
