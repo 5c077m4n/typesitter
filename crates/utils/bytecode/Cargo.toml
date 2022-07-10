@@ -1,5 +1,5 @@
 [package]
-name = "vm"
+name = "bytecode"
 version = "0.0.0"
 edition = "2021"
 
@@ -9,7 +9,7 @@ edition = "2021"
 log = "0.4"
 env_logger = "0.8"
 anyhow = "1.0"
-bytecode = { path = "../../utils/bytecode" }
+ast = { path = "../ast" }
 
 [dev-dependencies]
-macros = { path = "../../utils/macros" }
+macros = { path = "../macros" }

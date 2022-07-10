@@ -85,6 +85,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37ccbd214614c6783386c1af30caf03192f17891059cecc394b4fb119e363de3"
 
 [[package]]
+name = "bytecode"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "ast",
+ "env_logger 0.8.4",
+ "log",
+ "macros",
+]
+
+[[package]]
 name = "bytecount"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -142,6 +153,7 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "ast",
+ "bytecode",
  "clap",
  "env_logger 0.8.4",
  "lexer",
@@ -558,6 +570,7 @@ name = "vm"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "bytecode",
  "env_logger 0.8.4",
  "log",
  "macros",

@@ -12,6 +12,7 @@ clap = { version = "3.0", features = ["derive"] }
 anyhow = "1.0"
 ast = { path = "../../utils/ast" }
 lexer = { path = "../../utils/lexer" }
+bytecode = { path = "../../utils/bytecode" }
 vm = { path = "../../backends/vm" }
 
 [dev-dependencies]

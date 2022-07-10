@@ -1,5 +1,5 @@
-use super::instr::Pointer;
 use anyhow::{anyhow, Result};
+use bytecode::instr::Pointer;
 
 #[derive(Debug, Default)]
 pub struct StackFrame {

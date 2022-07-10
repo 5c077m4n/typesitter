@@ -1,9 +1,9 @@
 use super::{
 	call_stack::{CallStack, StackFrame},
-	instr::{Instr, Pointer, Program},
 	stack::Stack,
 };
 use anyhow::Result;
+use bytecode::instr::{Instr, Pointer, Program};
 use log::debug;
 use std::io;
 
@@ -155,7 +155,7 @@ impl VM {
 		}
 		Ok(())
 	}
-	pub fn interpret(&mut self, program: Program) -> Result<f64> {
+	pub fn interpret(&mut self, program: &Program) -> Result<f64> {
 		self.ip = 0;
 		while let Some(instr) = program.get(self.ip) {
 			self.ip += 1;
