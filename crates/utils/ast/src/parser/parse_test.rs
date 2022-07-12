@@ -5,7 +5,7 @@ use super::{
 		literal::Literal,
 		node::Node,
 		type_annotation::TypeAnnotation,
-		var_dec::{VarDecl, VarType},
+		var_decl::{VarDecl, VarType},
 	},
 	parse::parse,
 };

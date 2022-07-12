@@ -1,5 +1,5 @@
 use super::{node::Node, type_annotation::TypeAnnotation};
-use anyhow::{bail, Error};
+use anyhow::{bail, Error, Result};
 use lexer::token::keyword::Keyword;
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
@@ -28,4 +28,13 @@ pub struct VarDecl<'v> {
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub type_annotation: Option<TypeAnnotation<'v>>,
 	pub value: Box<Node<'v>>,
+}
+
+impl VarDecl<'_> {
+	pub fn get_name(&self) -> Vec<String> {
+		self.name
+			.iter()
+			.map(|v| String::from_utf8(v.to_vec()).unwrap())
+			.collect::<Vec<_>>()
+	}
 }

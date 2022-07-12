@@ -4,7 +4,7 @@ use super::{
 		literal::Literal,
 		node::Node,
 		type_annotation::TypeAnnotation,
-		var_dec::VarDecl,
+		var_decl::VarDecl,
 	},
 	ident::ident_parse,
 	param_list::parse_input_list,

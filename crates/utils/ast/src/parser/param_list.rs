@@ -2,7 +2,7 @@ use super::super::types::{
 	literal::Literal,
 	node::Node,
 	type_annotation::TypeAnnotation,
-	var_dec::{VarDecl, VarType},
+	var_decl::{VarDecl, VarType},
 };
 use anyhow::{bail, Result};
 use lexer::token::{
