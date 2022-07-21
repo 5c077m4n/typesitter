@@ -74,12 +74,17 @@ impl VM {
 				reg_1,
 				reg_2,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] =
+					self.register_file[*reg_1] + self.register_file[*reg_2];
+			}
 			Instr::AddRegLit {
 				reg_1,
 				value,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] = self.register_file[*reg_1] + *value;
+			}
 			Instr::Sub => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b - a);
@@ -93,12 +98,17 @@ impl VM {
 				reg_1,
 				reg_2,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] =
+					self.register_file[*reg_1] - self.register_file[*reg_2];
+			}
 			Instr::SubRegLit {
 				reg_1,
 				value,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] = self.register_file[*reg_1] - *value;
+			}
 			Instr::Mul => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b * a);
@@ -112,12 +122,17 @@ impl VM {
 				reg_1,
 				reg_2,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] =
+					self.register_file[*reg_1] * self.register_file[*reg_2];
+			}
 			Instr::MulRegLit {
 				reg_1,
 				value,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] = self.register_file[*reg_1] * *value;
+			}
 			Instr::Div => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b / a);
@@ -131,22 +146,27 @@ impl VM {
 				reg_1,
 				reg_2,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] =
+					self.register_file[*reg_1] / self.register_file[*reg_2];
+			}
 			Instr::DivRegLit {
 				reg_1,
 				value,
 				reg_result,
-			} => {}
+			} => {
+				self.register_file[*reg_result] = self.register_file[*reg_1] / *value;
+			}
 			Instr::Jump(ip) => {
 				self.ip = *ip;
 			}
-			Instr::JumpEqual0(ip) => {
-				if self.stack.pop()? == 0. {
+			Instr::JumpEqual { ip, value } => {
+				if self.stack.pop()? == *value {
 					self.ip = *ip;
 				}
 			}
-			Instr::JumpNotEqual0(ip) => {
-				if self.stack.pop()? != 0. {
+			Instr::JumpNotEqual { ip, value } => {
+				if self.stack.pop()? != *value {
 					self.ip = *ip;
 				}
 			}

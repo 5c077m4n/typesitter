@@ -21,7 +21,7 @@ pub enum Instr {
 		reg_1: Pointer,
 		value: f64,
 		reg_result: Pointer,
-    },
+	},
 	/// Subtract the two top reg entries together
 	Sub,
 	/// Subtract the given number from the last stack entry
@@ -37,7 +37,7 @@ pub enum Instr {
 		reg_1: Pointer,
 		value: f64,
 		reg_result: Pointer,
-    },
+	},
 	/// Multiply the two top stack entries together
 	Mul,
 	/// Multiply the top stack entry with the given number
@@ -53,7 +53,7 @@ pub enum Instr {
 		reg_1: Pointer,
 		value: f64,
 		reg_result: Pointer,
-    },
+	},
 	/// Divide the top stack entry by the second top
 	Div,
 	/// Divide the top stack entry by the given literal
@@ -69,13 +69,13 @@ pub enum Instr {
 		reg_1: Pointer,
 		value: f64,
 		reg_result: Pointer,
-    },
+	},
 	/// Jump to instruction number
 	Jump(Pointer),
 	/// Jump to instruction number if stack top is equal to 0
-	JumpEqual0(Pointer),
+	JumpEqual { ip: Pointer, value: f64 },
 	/// Jump to instruction number if stack top is not equal to 0
-	JumpNotEqual0(Pointer),
+	JumpNotEqual { ip: Pointer, value: f64 },
 	/// Get value at stack item
 	Get(Pointer),
 	/// Set value at stack item
