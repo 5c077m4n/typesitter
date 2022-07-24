@@ -4,7 +4,6 @@ use assert_cmd::Command;
 const BIN_NAME: &str = env!("CARGO_PKG_NAME");
 
 #[test]
-#[ignore]
 fn eval_number_var_init_test() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
@@ -15,7 +14,7 @@ fn eval_number_var_init_test() -> Result<()> {
 }
 
 #[test]
-#[ignore]
+#[ignore = "strings aren't implemented yet"]
 fn eval_string_var_init_test() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
@@ -26,7 +25,6 @@ fn eval_string_var_init_test() -> Result<()> {
 }
 
 #[test]
-#[ignore]
 fn stdin_test() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
@@ -38,8 +36,16 @@ fn stdin_test() -> Result<()> {
 }
 
 #[test]
-#[ignore]
-fn file_read_test() -> Result<()> {
+fn file_read_decl_call_var() -> Result<()> {
+	let mut cmd = Command::cargo_bin(BIN_NAME)?;
+
+	cmd.arg("tests/assets/0.ts").assert().success();
+	Ok(())
+}
+
+#[test]
+#[ignore = "scopes aren't implemented yet"]
+fn file_read_fn_with_scope() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
 	cmd.arg("tests/assets/1.ts").assert().success();
