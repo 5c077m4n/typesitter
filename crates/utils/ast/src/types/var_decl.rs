@@ -31,10 +31,10 @@ pub struct VarDecl<'v> {
 }
 
 impl VarDecl<'_> {
-	pub fn get_name(&self) -> Vec<String> {
+	pub fn get_name(&self) -> Vec<&str> {
 		self.name
 			.iter()
-			.map(|v| String::from_utf8(v.to_vec()).unwrap())
+			.map(|v| std::str::from_utf8(v).unwrap())
 			.collect::<Vec<_>>()
 	}
 }
