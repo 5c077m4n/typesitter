@@ -36,6 +36,17 @@ fn stdin_test() -> Result<()> {
 }
 
 #[test]
+#[ignore = "complex assignment isn't supported yet"]
+fn read_param() -> Result<()> {
+	let mut cmd = Command::cargo_bin(BIN_NAME)?;
+
+	cmd.args(&["--eval", "const n1: number = 123; const n2: number = n1;"])
+		.assert()
+		.success();
+	Ok(())
+}
+
+#[test]
 fn file_read_decl_call_var() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
