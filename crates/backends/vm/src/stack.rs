@@ -43,8 +43,7 @@ impl Stack {
 			.ok_or_else(|| anyhow!("There should be a last item on the stack"))
 	}
 	pub fn last(&mut self) -> Result<&f64> {
-		self
-			.0
+		self.0
 			.last()
 			.ok_or_else(|| anyhow!("There should be a last item on the stack"))
 	}

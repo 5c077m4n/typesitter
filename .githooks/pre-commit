@@ -3,7 +3,7 @@
 () {
 	local file
 	for file in $(git diff --name-only --staged); do
-		[[ ! -d $file ]] && continue
+		[[ -f $file ]] || continue
 
 		local file_ext="${file##*.}"
 		if [[ "$file_ext" == "rs" ]]; then
