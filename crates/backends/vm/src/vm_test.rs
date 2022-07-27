@@ -7,7 +7,7 @@ use macros::test_with_logger;
 fn simple_arith_one_plus_one() -> Result<()> {
 	use Instr::*;
 
-	let result = VM::default().interpret(&vec![Push(1.), Push(1.), Add])?;
+	let result = *VM::default().interpret(&vec![Push(1.), Push(1.), Add])?;
 	assert_eq!(result, 2.);
 	Ok(())
 }
@@ -16,7 +16,7 @@ fn simple_arith_one_plus_one() -> Result<()> {
 fn complex_arith() -> Result<()> {
 	use Instr::*;
 
-	let result = VM::default().interpret(&vec![Push(9.), Push(3.), Push(1.), Add, Sub])?;
+	let result = *VM::default().interpret(&vec![Push(9.), Push(3.), Push(1.), Add, Sub])?;
 	assert_eq!(result, 5.);
 	Ok(())
 }
@@ -25,7 +25,7 @@ fn complex_arith() -> Result<()> {
 fn sum_first_100_ints() -> Result<()> {
 	use Instr::*;
 
-	let result = VM::default().interpret(&vec![
+	let result = *VM::default().interpret(&vec![
 		Push(0.), // [accumilator = 0]
 		Push(0.), // [accumilator = 0, index = 0]
 		// stack: [accumilator, index]
