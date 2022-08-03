@@ -281,10 +281,12 @@ name = "js_bind"
 version = "0.1.0"
 dependencies = [
  "ast",
+ "bytecode",
  "console_error_panic_hook",
  "lexer",
  "serde",
  "serde_json",
+ "vm",
  "wasm-bindgen",
  "wasm-bindgen-test",
 ]
