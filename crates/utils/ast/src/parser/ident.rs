@@ -1,6 +1,6 @@
 use super::{
 	super::types::{fn_call::FnCall, node::Node},
-	param_list::parse_input_list,
+	param_list::parse_fn_call_input_list,
 };
 use anyhow::Result;
 use lexer::token::{
@@ -15,8 +15,8 @@ pub fn ident_parse<'a>(
 	token_iter: &mut Peekable<impl Iterator<Item = Token<'a>>>,
 ) -> Result<Vec<Node<'a>>> {
 	let mut expr_list: Vec<Node<'a>> = Vec::new();
-	let mut ident_parts = vec![ident];
 
+	let mut ident_parts = vec![ident];
 	while let Some(Token { value, .. }) = token_iter.peek() {
 		match value {
 			TokenType::Identifier(ident_part) => ident_parts.push(ident_part),
@@ -28,9 +28,10 @@ pub fn ident_parse<'a>(
 
 	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
+			TokenType::Punctuation(Punctuation::Semicolon) => break,
 			TokenType::Punctuation(Punctuation::BracketOpen) => {
-				let params = parse_input_list(token_iter)?;
 				let fn_name = ident_parts.to_owned();
+				let params = parse_fn_call_input_list(token_iter)?;
 
 				let fn_call_node = Node::FnCall(FnCall { fn_name, params });
 				expr_list.push(fn_call_node);
@@ -38,7 +39,6 @@ pub fn ident_parse<'a>(
 			TokenType::Punctuation(Punctuation::Equal) => {
 				todo!("Param assignment");
 			}
-			TokenType::Punctuation(Punctuation::Semicolon) => break,
 			other => {
 				error!("{:?} @ {:?}", &other, &position);
 				unimplemented!("Identifier {:?} @ {:?}", &other, &position);

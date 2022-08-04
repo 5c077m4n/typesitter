@@ -7,7 +7,7 @@ use super::{
 		var_decl::VarDecl,
 	},
 	ident::ident_parse,
-	param_list::parse_input_list,
+	param_list::parse_fn_decl_input_list,
 };
 use anyhow::{bail, Result};
 use lexer::token::{
@@ -37,7 +37,7 @@ pub fn parse<'p>(
 						value: TokenType::Punctuation(Punctuation::BracketOpen),
 						position,
 					}) => {
-						let input_params = parse_input_list(token_iter)?;
+						let input_params = parse_fn_decl_input_list(token_iter)?;
 						match token_iter.next() {
 							Some(Token {
 								value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
@@ -96,7 +96,7 @@ pub fn parse<'p>(
 					value: TokenType::Punctuation(Punctuation::BracketOpen),
 					..
 				}) => {
-					let input_params = parse_input_list(token_iter)?;
+					let input_params = parse_fn_decl_input_list(token_iter)?;
 					if let Some(Token {
 						value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 						..
