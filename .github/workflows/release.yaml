@@ -1,0 +1,84 @@
+name: Tagged Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tagged_release:
+    name: Tagged Release
+    env:
+      PROJECT_FINAL_BIN_NAME: cli
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Tag version
+        id: tag_version
+        run: |
+          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Set SDK for macOS aarch64
+        if: ${{ matrix.os == 'macos-latest' && matrix.target == 'aarch64-apple-darwin' }}
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_12.4.app"
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+
+      - uses: ./.github/workflows/toolchain
+      - uses: ./.github/workflows/cache
+
+      - name: Cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --all -- --check
+
+      - name: Clippy check
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-features
+
+      - name: Cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace
+
+      - name: Release build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }}
+
+      - name: Release artifacts
+        uses: softprops/action-gh-release@v1
+        env:
+          TAG_VERSION: ${{ steps.tag_version.outputs.VERSION }}
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ env.TAG_VERSION }}
+          prerelease: contains(env.TAG_VERSION, 'alpha') || contains(env.TAG_VERSION, 'beta')
+          files: |
+            target/${{ matrix.target }}/release/${{ env.PROJECT_FINAL_BIN_NAME }}
+          fail_on_unmatched_files: true
