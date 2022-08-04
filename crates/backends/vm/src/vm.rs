@@ -16,8 +16,6 @@ pub struct VM {
 	call_stack: CallStack,
 	/// Instruction pointer
 	ip: Pointer,
-	/// Stack pointer
-	sp: Pointer,
 
 	register_file: RegisterFile,
 
@@ -31,7 +29,6 @@ impl Default for VM {
 			stack: Stack::default(),
 			call_stack: CallStack::default(),
 			ip: 0,
-			sp: 0,
 
 			register_file: RegisterFile::default(),
 
@@ -257,7 +254,6 @@ impl VM {
 		Ok(())
 	}
 	pub fn interpret(&mut self, program: &Program) -> Result<&f64> {
-		self.ip = 0;
 		while let Some(instr) = program.get(self.ip) {
 			self.ip += 1;
 			self.handle_instr(instr)?;
