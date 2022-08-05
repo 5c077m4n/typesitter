@@ -1,7 +1,7 @@
 use super::var_decl::VarDecl;
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Default)]
 pub struct FnCall<'f> {
 	pub fn_name: Vec<&'f [u8]>,
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
