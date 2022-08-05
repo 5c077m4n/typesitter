@@ -1,4 +1,4 @@
-use ast::parser::parse::parse_into_block;
+use ast::parser::parse::Parser;
 use bytecode::codegen::CodeGen;
 use lexer::scanner::scan;
 use vm::vm::VM;
@@ -18,8 +18,11 @@ pub mod demo {
 	#[wasm_bindgen]
 	pub fn build_ast(text: String) -> String {
 		let text = text.as_bytes();
-		let mut token_iter = scan(text, Some("WASM".to_string()));
-		let ast = parse_into_block(&mut token_iter).unwrap();
+		let token_iter = scan(text, Some("WASM".to_string()));
+
+		let mut parser = Parser::new(token_iter);
+		let ast = parser.parse_into_block().unwrap();
+
 		serde_json::to_string(&ast).unwrap()
 	}
 }
@@ -27,8 +30,10 @@ pub mod demo {
 #[wasm_bindgen]
 pub fn ts_eval(text: String) -> String {
 	let text = text.as_bytes();
-	let mut token_iter = scan(text, Some("WASM".to_string()));
-	let ast = parse_into_block(&mut token_iter).unwrap();
+	let token_iter = scan(text, Some("WASM".to_string()));
+
+	let mut parser = Parser::new(token_iter);
+	let ast = parser.parse_into_block().unwrap();
 
 	let mut codegen = CodeGen::default();
 	let program = codegen.run(&ast).unwrap();
