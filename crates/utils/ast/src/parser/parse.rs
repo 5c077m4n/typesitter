@@ -1,126 +1,158 @@
-use super::{
-	super::types::{
-		fn_dec::{FnDecl, FnType},
-		literal::Literal,
-		node::Node,
-		type_annotation::TypeAnnotation,
-		var_decl::VarDecl,
-	},
-	ident::ident_parse,
-	param_list::parse_fn_decl_input_list,
+use super::super::types::{
+	fn_dec::{FnDecl, FnType},
+	literal::Literal,
+	node::Node,
+	type_annotation::TypeAnnotation,
+	var_decl::VarDecl,
 };
-use anyhow::{bail, Result};
+use crate::types::{fn_call::FnCall, var_decl::VarType};
+use anyhow::Result;
 use lexer::token::{
 	keyword::Keyword,
 	literal::Literal as TokenLiteral,
 	punctuation::Punctuation,
 	token_variance::{Token, TokenType},
 };
-use log::error;
 use std::iter::Peekable;
 
-pub fn parse<'p>(
-	token_iter: &mut Box<Peekable<impl Iterator<Item = Token<'p>>>>,
-) -> Result<Vec<Node<'p>>> {
-	let mut expr_list: Vec<Node<'p>> = Vec::new();
+pub struct Parser<'p, I: Iterator<Item = Token<'p>>> {
+	token_iter: Box<Peekable<I>>,
+	errors: Vec<String>,
+}
+impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
+	pub fn new(token_iter: Box<Peekable<I>>) -> Self {
+		Self {
+			token_iter,
+			errors: vec![],
+		}
+	}
 
-	while let Some(Token { value, position }) = token_iter.next() {
-		match value {
-			TokenType::Punctuation(Punctuation::Semicolon) => (), // This makes the `;` optional - but only at the right placement
-			TokenType::Punctuation(Punctuation::BracketCurlyClose) => break,
-			TokenType::Keyword(Keyword::Function) => match token_iter.next() {
-				Some(Token {
-					value: TokenType::Identifier(fn_name),
-					..
-				}) => match token_iter.next() {
+	pub fn get_errors(&self) -> &[String] {
+		&self.errors
+	}
+
+	pub fn parse_into_block(&mut self) -> Result<Node<'p>> {
+		let ast = self.parse()?;
+		Ok(Node::Block(ast.to_vec()))
+	}
+
+	pub fn parse(&mut self) -> Result<Vec<Node<'p>>> {
+		let mut expr_list: Vec<Node<'p>> = vec![];
+
+		while let Some(Token { value, position }) = self.token_iter.next() {
+			match value {
+				TokenType::Punctuation(Punctuation::Semicolon) => (), // This makes the `;` optional - but only at the right placement
+				TokenType::Punctuation(Punctuation::BracketCurlyClose) => break,
+				TokenType::Keyword(Keyword::Function) => match self.token_iter.next() {
 					Some(Token {
-						value: TokenType::Punctuation(Punctuation::BracketOpen),
-						position,
-					}) => {
-						let input_params = parse_fn_decl_input_list(token_iter)?;
-						match token_iter.next() {
-							Some(Token {
-								value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
-								..
-							}) => {
-								let body = parse(token_iter)?;
-								let named_fn_node = Node::FnDecl(FnDecl {
-									fn_type: FnType::Classic,
-									name: Some(vec![fn_name]),
-									input_params,
-									return_type: None,
-									body: Box::new(Node::Block(body)),
-								});
-								expr_list.push(named_fn_node);
-							}
-							Some(Token {
-								value: TokenType::Punctuation(Punctuation::Colon),
-								position,
-							}) => match token_iter.next() {
+						value: TokenType::Identifier(fn_name),
+						..
+					}) => match self.token_iter.next() {
+						Some(Token {
+							value: TokenType::Punctuation(Punctuation::BracketOpen),
+							position,
+						}) => {
+							let input_params = self.parse_fn_decl_input_list()?;
+							match self.token_iter.next() {
 								Some(Token {
-									value: TokenType::Identifier(fn_return_type),
+									value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 									..
-								}) => match token_iter.next() {
+								}) => {
+									let body = self.parse()?;
+									let named_fn_node = Node::FnDecl(FnDecl {
+										fn_type: FnType::Classic,
+										name: Some(vec![fn_name]),
+										input_params,
+										return_type: None,
+										body: Box::new(Node::Block(body)),
+									});
+									expr_list.push(named_fn_node);
+								}
+								Some(Token {
+									value: TokenType::Punctuation(Punctuation::Colon),
+									position,
+								}) => match self.token_iter.next() {
 									Some(Token {
-										value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
+										value: TokenType::Identifier(fn_return_type),
 										..
-									}) => {
-										let body = parse(token_iter)?;
-										let named_fn_node = Node::FnDecl(FnDecl {
-											fn_type: FnType::Classic,
-											name: Some(vec![fn_name]),
-											input_params,
-											return_type: Some(TypeAnnotation::try_from(
-												fn_return_type,
-											)?),
-											body: Box::new(Node::Block(body)),
-										});
-										expr_list.push(named_fn_node);
-									}
+									}) => match self.token_iter.next() {
+										Some(Token {
+											value:
+												TokenType::Punctuation(Punctuation::BracketCurlyOpen),
+											..
+										}) => {
+											let body = self.parse()?;
+											let named_fn_node = Node::FnDecl(FnDecl {
+												fn_type: FnType::Classic,
+												name: Some(vec![fn_name]),
+												input_params,
+												return_type: Some(TypeAnnotation::try_from(
+													fn_return_type,
+												)?),
+												body: Box::new(Node::Block(body)),
+											});
+											expr_list.push(named_fn_node);
+										}
+										other => {
+											self.errors.push(format!(
+												"Wasn't expecting {:?} @ {:?}",
+												&other, &position
+											));
+										}
+									},
 									other => {
-										bail!("Wasn't expecting {:?} @ {:?}", &other, &position)
+										self.errors.push(format!(
+											"Wasn't expecting {:?} @ {:?}",
+											&other, &position
+										));
 									}
 								},
-								other => bail!("Wasn't expecting {:?} @ {:?}", &other, &position),
-							},
-							other => {
-								error!("Was not expecting {:?} @ {:?}", &other, &position);
+								other => {
+									self.errors.push(format!(
+										"Wasn't expecting {:?} @ {:?}",
+										&other, &position
+									));
+								}
 							}
 						}
-					}
-					other => {
-						bail!("The character `(` was expected here, but got: {:?}", &other);
-					}
-				},
-				Some(Token {
-					value: TokenType::Punctuation(Punctuation::BracketOpen),
-					..
-				}) => {
-					let input_params = parse_fn_decl_input_list(token_iter)?;
-					if let Some(Token {
-						value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
+						other => {
+							self.errors.push(format!(
+								"The character `(` was expected here, but got: {:?}",
+								&other
+							));
+						}
+					},
+					Some(Token {
+						value: TokenType::Punctuation(Punctuation::BracketOpen),
 						..
-					}) = token_iter.next()
-					{
-						let body = parse(token_iter)?;
-						let unnamed_fn_node = Node::FnDecl(FnDecl {
-							fn_type: FnType::Classic,
-							name: None,
-							input_params,
-							return_type: None,
-							body: Box::new(Node::Block(body)),
-						});
-						expr_list.push(unnamed_fn_node);
+					}) => {
+						let input_params = self.parse_fn_decl_input_list()?;
+						if let Some(Token {
+							value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
+							..
+						}) = self.token_iter.next()
+						{
+							let body = self.parse()?;
+							let unnamed_fn_node = Node::FnDecl(FnDecl {
+								fn_type: FnType::Classic,
+								name: None,
+								input_params,
+								return_type: None,
+								body: Box::new(Node::Block(body)),
+							});
+							expr_list.push(unnamed_fn_node);
+						}
 					}
-				}
-				_ => {}
-			},
-			TokenType::Keyword(init_type @ (Keyword::Const | Keyword::Let)) => {
-				match token_iter.next() {
+					_ => {}
+				},
+				TokenType::Keyword(init_type @ (Keyword::Const | Keyword::Let)) => match self
+					.token_iter
+					.next()
+				{
 					Some(Token {
 						value: TokenType::Identifier(param_name),
 						..
-					}) => match token_iter.next() {
+					}) => match self.token_iter.next() {
 						Some(Token {
 							value: TokenType::Punctuation(Punctuation::Colon),
 							..
@@ -128,14 +160,14 @@ pub fn parse<'p>(
 							if let Some(Token {
 								value: TokenType::Identifier(var_type),
 								..
-							}) = token_iter.next()
+							}) = self.token_iter.next()
 							{
 								if let Some(Token {
 									value: TokenType::Punctuation(Punctuation::Equal),
 									..
-								}) = token_iter.next()
+								}) = self.token_iter.next()
 								{
-									match token_iter.next() {
+									match self.token_iter.next() {
 										Some(Token {
 											value: TokenType::Literal(TokenLiteral::Number(n)),
 											..
@@ -165,8 +197,10 @@ pub fn parse<'p>(
 											expr_list.push(init_node);
 										}
 										other => {
-											error!("{:?}", &other);
-											unimplemented!("Node::Literal");
+											self.errors.push(format!(
+												"Unimplemented Node::Literal {:?}",
+												&other
+											));
 										}
 									}
 								}
@@ -175,7 +209,7 @@ pub fn parse<'p>(
 						Some(Token {
 							value: TokenType::Punctuation(Punctuation::Equal),
 							..
-						}) => match token_iter.next() {
+						}) => match self.token_iter.next() {
 							Some(Token {
 								value: TokenType::Literal(TokenLiteral::Number(n)),
 								..
@@ -201,8 +235,8 @@ pub fn parse<'p>(
 								expr_list.push(init_node);
 							}
 							other => {
-								error!("{:?}", &other);
-								unimplemented!("VarDecl");
+								self.errors
+									.push(format!("Unimplemented VarDecl {:?}", &other));
 							}
 						},
 						Some(Token {
@@ -218,48 +252,203 @@ pub fn parse<'p>(
 							expr_list.push(init_node);
 						}
 						other => {
-							error!("{:?}", &other);
-							unimplemented!("Not initialized VarDecl");
+							self.errors.push(format!(
+								"Unimplemented not initialized VarDecl {:?}",
+								&other
+							));
 						}
 					},
 					other => {
-						error!("{:?}", &other);
-						unimplemented!("VarDecl");
+						self.errors
+							.push(format!("Unimplemented VarDecl {:?}", &other));
 					}
+				},
+				TokenType::Identifier(ident) => {
+					let mut ident_list = self.ident_parse(ident)?;
+					expr_list.append(&mut ident_list);
 				}
-			}
-			TokenType::Identifier(ident) => {
-				let mut ident_list = ident_parse(ident, token_iter)?;
-				expr_list.append(&mut ident_list);
-			}
-			TokenType::Keyword(Keyword::Return) => match token_iter.next() {
-				Some(Token {
-					value: TokenType::Identifier(ret_ident),
-					..
-				}) => {
-					expr_list.push(Node::Return(Box::new(Node::VarCall(ret_ident))));
+				TokenType::Keyword(Keyword::Return) => match self.token_iter.next() {
+					Some(Token {
+						value: TokenType::Identifier(ret_ident),
+						..
+					}) => {
+						expr_list.push(Node::Return(Box::new(Node::VarCall(ret_ident))));
+					}
+					Some(Token {
+						value: TokenType::Literal(lit),
+						..
+					}) => {
+						expr_list.push(Node::Return(Box::new(Node::Literal(lit.try_into()?))));
+					}
+					_ => {}
+				},
+				other => {
+					self.errors
+						.push(format!("Unimplemented Main {:?} @ {:?}", &other, &position));
 				}
-				Some(Token {
-					value: TokenType::Literal(lit),
-					..
-				}) => {
-					expr_list.push(Node::Return(Box::new(Node::Literal(lit.try_into()?))));
-				}
-				_ => {}
-			},
-			other => {
-				error!("{:?} @ {:?}", &other, &position);
-				unimplemented!("[Main] {:?} @ {:?}", &other, &position);
 			}
 		}
+
+		Ok(expr_list)
 	}
 
-	Ok(expr_list)
-}
+	fn ident_parse(&mut self, ident: &'p [u8]) -> Result<Vec<Node<'p>>> {
+		let mut expr_list: Vec<Node<'p>> = vec![];
+		let mut ident_parts: Vec<&[u8]> = vec![ident];
 
-pub fn parse_into_block<'p>(
-	token_iter: &mut Box<Peekable<impl Iterator<Item = Token<'p>>>>,
-) -> Result<Node<'p>> {
-	let ast = parse(token_iter)?;
-	Ok(Node::Block(ast))
+		while let Some(Token { value, .. }) = self.token_iter.peek() {
+			match value {
+				TokenType::Identifier(ident_part) => ident_parts.push(ident_part),
+				TokenType::Punctuation(Punctuation::Dot) => {}
+				_ => break,
+			}
+			self.token_iter.next();
+		}
+
+		while let Some(Token { value, position }) = self.token_iter.next() {
+			match value {
+				TokenType::Punctuation(Punctuation::Semicolon) => break,
+				TokenType::Punctuation(Punctuation::BracketOpen) => {
+					let fn_name = ident_parts.to_owned();
+					let params = self.parse_fn_call_input_list()?;
+
+					let fn_call_node = Node::FnCall(FnCall { fn_name, params });
+					expr_list.push(fn_call_node);
+				}
+				TokenType::Punctuation(Punctuation::Equal) => {
+					self.errors.push(format!(
+						"Param assignment is unsupported yet @ {:?}",
+						&position
+					));
+				}
+				other => {
+					self.errors.push(format!(
+						"Unimplemented Identifier {:?} @ {:?}",
+						&other, &position
+					));
+				}
+			}
+		}
+
+		Ok(expr_list)
+	}
+
+	fn parse_fn_decl_input_list(&mut self) -> Result<Vec<VarDecl<'p>>> {
+		let mut input_token_index: usize = 0;
+		let mut params: Vec<VarDecl> = Vec::new();
+
+		while let Some(Token { value, position }) = self.token_iter.next() {
+			match value {
+				TokenType::Punctuation(Punctuation::BracketClose) => break,
+				TokenType::Punctuation(Punctuation::Comma) => {
+					if input_token_index == 0 {
+						self.errors.push(format!(
+							"Shouldn't put a comma as the first char in the fn input @ {:?}",
+							&position
+						));
+					} else {
+						input_token_index += 1;
+					}
+				}
+				TokenType::Identifier(param_name) => {
+					input_token_index += 1;
+
+					let param_dec = VarDecl {
+						var_type: VarType::Let,
+						name: vec![param_name],
+						type_annotation: None,
+						value: Box::new(Node::Literal(Literal::Undefined)),
+					};
+					params.push(param_dec);
+				}
+				TokenType::Punctuation(Punctuation::Colon) => {
+					if input_token_index == 0 {
+						self.errors.push(format!(
+							"Shouldn't put a colon as the first char in the fn input @ {:?}",
+							&position
+						));
+					}
+
+					match self.token_iter.next() {
+						Some(Token {
+							value: TokenType::Identifier(fn_return_type),
+							..
+						}) => {
+							params.last_mut().unwrap().type_annotation =
+								Some(TypeAnnotation::try_from(fn_return_type)?);
+						}
+						other => {
+							self.errors
+								.push(format!("Wasn't expecting {:?} @ {:?}", &other, &position));
+						}
+					}
+				}
+				other => {
+					self.errors
+						.push(format!("Wasn't expecting {:?} @ {:?}", &other, &position));
+				}
+			}
+		}
+
+		Ok(params)
+	}
+
+	fn parse_fn_call_input_list(&mut self) -> Result<Vec<VarDecl<'p>>> {
+		let mut input_token_index: usize = 0;
+		let mut params: Vec<VarDecl> = Vec::new();
+
+		for Token { value, position } in self.token_iter.by_ref() {
+			match value {
+				TokenType::Punctuation(Punctuation::BracketClose) => break,
+				TokenType::Punctuation(Punctuation::Comma) => {
+					if input_token_index == 0 {
+						self.errors.push(format!(
+							"Shouldn't put a comma as the first char in the fn input @ {:?}",
+							&position
+						));
+					} else {
+						input_token_index += 1;
+					}
+				}
+				TokenType::Literal(lit) => {
+					input_token_index += 1;
+
+					match lit {
+						TokenLiteral::Number(n) => {
+							let param_dec = VarDecl {
+								var_type: VarType::Let,
+								name: vec![],
+								type_annotation: Some(TypeAnnotation::Number),
+								value: Box::new(Node::Literal(Literal::Number(n))),
+							};
+							params.push(param_dec);
+						}
+						other => {
+							self.errors.push(format!(
+								"Non-number types aren't supported yet ({:?} @ {:?})",
+								&other, &position
+							));
+						}
+					}
+				}
+				TokenType::Identifier(param_name) => {
+					input_token_index += 1;
+
+					let param_dec = VarDecl {
+						var_type: VarType::Let,
+						name: vec![param_name],
+						type_annotation: None,
+						value: Box::new(Node::Literal(Literal::Undefined)),
+					};
+					params.push(param_dec);
+				}
+				other => {
+					self.errors
+						.push(format!("Wasn't expecting {:?} @ {:?}", &other, &position));
+				}
+			}
+		}
+
+		Ok(params)
+	}
 }
