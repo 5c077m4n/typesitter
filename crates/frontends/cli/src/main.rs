@@ -5,7 +5,7 @@ use clap::Parser;
 use lexer::scanner::scan;
 use std::{
 	fs,
-	io::{stdin, stdout, Read, Write},
+	io::{stdin, stdout, BufRead, Write},
 	path::PathBuf,
 };
 use vm::vm::VM;
@@ -55,17 +55,18 @@ fn main() -> Result<()> {
 
 		vm.interpret(&program)?;
 	} else {
+		let mut stdout_handle = stdout().lock();
+		let mut stdin_handle = stdin().lock();
+
 		loop {
 			print!(">>> ");
-			let _ = stdout().flush();
+			let _ = stdout_handle.flush();
 
-			let mut input = vec![];
-			let _ = stdin().read(&mut input)?;
-			if input == b"\n" {
-				break;
-			}
+			let mut input = String::new();
+			stdin_handle.read_line(&mut input)?;
+			let input = input.trim().as_bytes();
 
-			let tokens = scan(&input, Some("REPL".to_owned()));
+			let tokens = scan(input, Some("REPL".to_owned()));
 			let mut parser = ASTParser::new(tokens);
 			let ast = parser.parse_into_block()?;
 

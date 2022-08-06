@@ -17,8 +17,7 @@ fn eval_number_var_init() -> Result<()> {
 fn stdin() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
-	cmd.write_stdin("const n: number = 1234;")
-		.write_stdin("\n")
+	cmd.write_stdin("const n: number = 1234;\n")
 		.assert()
 		.success();
 	Ok(())
