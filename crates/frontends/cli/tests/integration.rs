@@ -1,5 +1,6 @@
 use anyhow::Result;
 use assert_cmd::Command;
+use std::time::Duration;
 
 const BIN_NAME: &str = env!("CARGO_PKG_NAME");
 
@@ -17,7 +18,9 @@ fn eval_number_var_init() -> Result<()> {
 fn stdin() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
-	cmd.write_stdin("const n: number = 1234;\n")
+	cmd.write_stdin("const n: number = 1234;")
+		.write_stdin("\n")
+		.timeout(Duration::from_secs(30))
 		.assert()
 		.success();
 	Ok(())
