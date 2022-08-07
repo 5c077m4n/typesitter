@@ -26,11 +26,9 @@ fn main() -> Result<()> {
 	let mut codegen = CodeGen::default();
 
 	if let Some(filepath) = args.filepath {
-		let input = fs::read_to_string(&filepath)?;
-		let input = &input.trim();
-		let input = input.as_bytes();
+		let input = fs::read(&filepath)?;
 
-		let tokens = scan(input, filepath.into_os_string().into_string().ok());
+		let tokens = scan(&input, filepath.into_os_string().into_string().ok());
 		let mut parser = ASTParser::new(tokens);
 		let ast = parser.parse_into_block()?;
 
