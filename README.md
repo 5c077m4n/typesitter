@@ -11,6 +11,8 @@ A native [typescript](https://www.typescriptlang.org/) runtime ([demo](https://5
 | `const`/`let` assignment (f64 only for now) |  x   |      |             |
 | `console.log`/`console.error`               |  x   |      |             |
 | Aggregate errors                            |  x   |      |             |
+| Boolean/unary operators                     |      |      |      x      |
+| Functions                                   |      |  x   |             |
 | Passing raw values into function calls      |      |  x   |             |
 | Support more literal (primitive) types      |      |  x   |             |
 | Support arrays/objects                      |      |  x   |             |
