@@ -24,7 +24,7 @@ impl TryFrom<Keyword> for VarType {
 #[derive(Clone, Debug, PartialEq)]
 pub struct VarDecl<'v> {
 	pub var_type: VarType,
-	pub name: Vec<&'v [u8]>,
+	pub name: Vec<&'v str>,
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub type_annotation: Option<TypeAnnotation<'v>>,
 	pub value: Box<Node<'v>>,
@@ -32,9 +32,6 @@ pub struct VarDecl<'v> {
 
 impl VarDecl<'_> {
 	pub fn get_name(&self) -> Vec<&str> {
-		self.name
-			.iter()
-			.map(|v| std::str::from_utf8(v).unwrap())
-			.collect::<Vec<_>>()
+		self.name.to_vec()
 	}
 }

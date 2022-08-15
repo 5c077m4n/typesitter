@@ -58,7 +58,7 @@ parser_test!(
 	b"const n: number = 123;",
 	vec![Node::VarDecl(VarDecl {
 		var_type: VarType::Const,
-		name: vec![b"n"],
+		name: vec!["n"],
 		type_annotation: Some(TypeAnnotation::Number),
 		value: Box::new(Node::Literal(Literal::Number(123.)))
 	})]
@@ -71,13 +71,13 @@ parser_test!(
 	vec![
 		Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
-			name: vec![b"n"],
+			name: vec!["n"],
 			type_annotation: Some(TypeAnnotation::Number),
 			value: Box::new(Node::Literal(Literal::Number(123.)))
 		}),
 		Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
-			name: vec![b"n"],
+			name: vec!["n"],
 			type_annotation: Some(TypeAnnotation::Number),
 			value: Box::new(Node::Literal(Literal::Number(123.)))
 		}),
@@ -89,7 +89,7 @@ parser_test!(
 	b"let s: string = '123';",
 	vec![Node::VarDecl(VarDecl {
 		var_type: VarType::Let,
-		name: vec![b"s"],
+		name: vec!["s"],
 		type_annotation: Some(TypeAnnotation::String),
 		value: Box::new(Node::Literal(Literal::String(b"123"))),
 	})]
@@ -100,7 +100,7 @@ parser_test!(
 	b"let x = 42",
 	vec![Node::VarDecl(VarDecl {
 		var_type: VarType::Let,
-		name: vec![b"x"],
+		name: vec!["x"],
 		type_annotation: None,
 		value: Box::new(Node::Literal(Literal::Number(42.)))
 	})]
@@ -111,7 +111,7 @@ parser_test!(
 	b"let x;",
 	vec![Node::VarDecl(VarDecl {
 		var_type: VarType::Let,
-		name: vec![b"x"],
+		name: vec!["x"],
 		type_annotation: None,
 		value: Box::new(Node::Literal(Literal::Undefined))
 	})]
@@ -134,13 +134,13 @@ parser_test!(
 		params: vec![
 			VarDecl {
 				var_type: VarType::Let,
-				name: vec![b"param1"],
+				name: vec!["param1"],
 				type_annotation: None,
 				value: Box::new(Node::Literal(Literal::Undefined))
 			},
 			VarDecl {
 				var_type: VarType::Let,
-				name: vec![b"param2"],
+				name: vec!["param2"],
 				type_annotation: None,
 				value: Box::new(Node::Literal(Literal::Undefined)),
 			}
@@ -168,7 +168,7 @@ parser_test!(
 		name: Some(vec![b"fn1"]),
 		input_params: vec![VarDecl {
 			var_type: VarType::Let,
-			name: vec![b"param1"],
+			name: vec!["param1"],
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Undefined))
 		}],
@@ -189,7 +189,7 @@ parser_test!(
 		return_type: None,
 		body: Box::new(Node::Block(vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
-			name: vec![b"a"],
+			name: vec!["a"],
 			type_annotation: Some(TypeAnnotation::String),
 			value: Box::new(Node::Literal(Literal::String(b"123"))),
 		})])),
@@ -244,7 +244,7 @@ parser_test!(
 			name: Some(vec![b"fn1"]),
 			input_params: vec![VarDecl {
 				var_type: VarType::Let,
-				name: vec![b"param1"],
+				name: vec!["param1"],
 				type_annotation: Some(TypeAnnotation::Any),
 				value: Box::new(Node::Literal(Literal::Undefined))
 			}],
@@ -252,13 +252,13 @@ parser_test!(
 			body: Box::new(Node::Block(vec![
 				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
-					name: vec![b"a"],
+					name: vec!["a"],
 					type_annotation: Some(TypeAnnotation::String),
 					value: Box::new(Node::Literal(Literal::String(b"123"))),
 				}),
 				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
-					name: vec![b"b"],
+					name: vec!["b"],
 					type_annotation: Some(TypeAnnotation::Number),
 					value: Box::new(Node::Literal(Literal::Number(123.))),
 				})
@@ -282,7 +282,7 @@ parser_test!(
 		name: Some(vec![b"fn1"]),
 		input_params: vec![VarDecl {
 			var_type: VarType::Let,
-			name: vec![b"param1"],
+			name: vec!["param1"],
 			type_annotation: Some(TypeAnnotation::Any),
 			value: Box::new(Node::Literal(Literal::Undefined))
 		}],
@@ -290,13 +290,13 @@ parser_test!(
 		body: Box::new(Node::Block(vec![
 			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
-				name: vec![b"a"],
+				name: vec!["a"],
 				type_annotation: Some(TypeAnnotation::String),
 				value: Box::new(Node::Literal(Literal::String(b"123"))),
 			}),
 			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
-				name: vec![b"b"],
+				name: vec!["b"],
 				type_annotation: Some(TypeAnnotation::Number),
 				value: Box::new(Node::Literal(Literal::Number(123.))),
 			})
@@ -350,11 +350,11 @@ parser_test!(
 		body: Box::new(Node::Block(vec![
 			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
-				name: vec![b"a"],
+				name: vec!["a"],
 				type_annotation: None,
 				value: Box::new(Node::Literal(Literal::Number(1.)))
 			}),
-			Node::Return(Box::new(Node::VarCall(b"a")))
+			Node::Return(Box::new(Node::VarCall("a")))
 		])),
 	})]
 );

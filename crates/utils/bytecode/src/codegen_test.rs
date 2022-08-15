@@ -22,7 +22,7 @@ fn empty_program() -> Result<()> {
 fn long_number_decl() -> Result<()> {
 	let tree = Node::Block(vec![Node::VarDecl(VarDecl {
 		var_type: VarType::Const,
-		name: vec![b"a"],
+		name: vec!["a"],
 		type_annotation: Some(TypeAnnotation::Number),
 		value: Box::new(Node::Literal(Literal::Number(12345.))),
 	})]);
@@ -37,7 +37,7 @@ fn long_number_decl() -> Result<()> {
 fn number_decl() -> Result<()> {
 	let tree = Node::Block(vec![Node::VarDecl(VarDecl {
 		var_type: VarType::Const,
-		name: vec![b"param_1"],
+		name: vec!["param_1"],
 		type_annotation: None,
 		value: Box::new(Node::Literal(Literal::Number(1.))),
 	})]);
@@ -53,11 +53,11 @@ fn number_decl_and_call() -> Result<()> {
 	let tree = Node::Block(vec![
 		Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
-			name: vec![b"param_1"],
+			name: vec!["param_1"],
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Number(1.))),
 		}),
-		Node::VarCall(b"param_1"),
+		Node::VarCall("param_1"),
 	]);
 	let mut codegen = CodeGen::default();
 	let prog = codegen.run(&tree)?;
@@ -72,11 +72,11 @@ fn number_decl_and_call_wrong_param() {
 	let tree = Node::Block(vec![
 		Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
-			name: vec![b"param_1"],
+			name: vec!["param_1"],
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Number(1.))),
 		}),
-		Node::VarCall(b"does_not_exist"),
+		Node::VarCall("does_not_exist"),
 	]);
 	let mut codegen = CodeGen::default();
 	let _prog = codegen.run(&tree).unwrap();
@@ -87,7 +87,7 @@ fn builtin_console_log() -> Result<()> {
 	let tree = Node::Block(vec![
 		Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
-			name: vec![b"param_1"],
+			name: vec!["param_1"],
 			type_annotation: None,
 			value: Box::new(Node::Literal(Literal::Number(1.))),
 		}),
@@ -95,7 +95,7 @@ fn builtin_console_log() -> Result<()> {
 			fn_name: vec![b"console", b"log"],
 			params: vec![VarDecl {
 				var_type: VarType::Const,
-				name: vec![b"param_1"],
+				name: vec!["param_1"],
 				type_annotation: None,
 				value: Box::new(Node::Literal(Literal::Number(1.))),
 			}],

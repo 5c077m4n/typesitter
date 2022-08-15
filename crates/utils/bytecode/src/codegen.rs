@@ -33,8 +33,7 @@ impl CodeGen {
 				other => unimplemented!("{:?} type is not supported yet", &other),
 			},
 			Node::VarCall(var_name) => {
-				let var_name = String::from_utf8(var_name.to_vec())?;
-				let pointer = self.get_var(&var_name)?;
+				let pointer = self.get_var(var_name)?;
 
 				self.program.push(Instr::Get(*pointer));
 			}
