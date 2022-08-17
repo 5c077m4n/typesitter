@@ -17,16 +17,13 @@ pub enum TokenType<'t> {
 
 #[derive(Debug, PartialEq)]
 pub struct Token<'t> {
-	pub position: Span<'t>,
 	pub value: TokenType<'t>,
+	pub position: Span<'t>,
 }
 
 #[cfg(feature = "js_bind")]
-impl<'t> serde::Serialize for Token<'t> {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: serde::Serializer,
-	{
+impl serde::Serialize for Token<'_> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 		use serde::ser::SerializeStruct;
 
 		let mut state = serializer.serialize_struct("Token", 6)?;
