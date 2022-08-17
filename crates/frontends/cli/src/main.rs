@@ -17,6 +17,9 @@ struct Args {
 
 	#[clap(short, long)]
 	eval: Option<String>,
+
+	#[clap(short, long)]
+	check_only: bool,
 }
 
 fn main() -> Result<()> {
@@ -35,9 +38,11 @@ fn main() -> Result<()> {
 		if !parser.get_errors().is_empty() {
 			eprintln!("{:#?}", parser.get_errors());
 		}
-		let program = codegen.run(&ast)?;
 
-		vm.interpret(&program)?;
+		if !args.check_only {
+			let program = codegen.run(&ast)?;
+			vm.interpret(&program)?;
+		}
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 		let input = input.as_bytes();
@@ -49,9 +54,11 @@ fn main() -> Result<()> {
 		if !parser.get_errors().is_empty() {
 			eprintln!("{:#?}", parser.get_errors());
 		}
-		let program = codegen.run(&ast)?;
 
-		vm.interpret(&program)?;
+		if !args.check_only {
+			let program = codegen.run(&ast)?;
+			vm.interpret(&program)?;
+		}
 	} else {
 		let mut stdout_handle = stdout().lock();
 		let mut stdin_handle = stdin().lock();
@@ -71,9 +78,11 @@ fn main() -> Result<()> {
 			if !parser.get_errors().is_empty() {
 				eprintln!("{:#?}", parser.get_errors());
 			}
-			let program = codegen.run(&ast)?;
 
-			vm.interpret(&program)?;
+			if !args.check_only {
+				let program = codegen.run(&ast)?;
+				vm.interpret(&program)?;
+			}
 		}
 	}
 
