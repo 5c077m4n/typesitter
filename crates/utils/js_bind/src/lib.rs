@@ -25,6 +25,18 @@ pub mod demo {
 
 		serde_json::to_string(&ast).unwrap()
 	}
+
+	#[wasm_bindgen]
+	pub fn check(text: String) -> String {
+		let text = text.as_bytes();
+		let token_iter = scan(text, Some("WASM".to_string()));
+
+		let mut parser = Parser::new(token_iter);
+		let _ast = parser.parse_into_block().unwrap();
+
+		let errors = parser.get_errors();
+		serde_json::to_string(&errors).unwrap()
+	}
 }
 
 #[wasm_bindgen]
