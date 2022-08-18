@@ -12,7 +12,7 @@ impl<'e> Error<'e> {
 	pub fn new(message: String, position: &Span<'e>) -> Self {
 		Error {
 			message,
-			fragment: std::str::from_utf8(*position.fragment()).unwrap(),
+			fragment: std::str::from_utf8(position.fragment()).unwrap(),
 			line: position.location_line() as usize,
 			column: position.get_utf8_column() as usize,
 		}
