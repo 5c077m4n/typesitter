@@ -1,5 +1,3 @@
-use anyhow::{Error, Result};
-
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TypeAnnotation<'t> {
@@ -13,39 +11,35 @@ pub enum TypeAnnotation<'t> {
 	Array,
 	Generic(&'t [u8]),
 }
-impl<'t> TryFrom<&'t str> for TypeAnnotation<'t> {
-	type Error = Error;
-
-	fn try_from(value: &'t str) -> Result<Self, Self::Error> {
+impl<'t> From<&'t str> for TypeAnnotation<'t> {
+	fn from(value: &'t str) -> Self {
 		match value {
-			"unknown" => Ok(Self::Unknown),
-			"never" => Ok(Self::Never),
-			"void" => Ok(Self::Void),
-			"any" => Ok(Self::Any),
-			"number" => Ok(Self::Number),
-			"string" => Ok(Self::String),
-			"Record" => Ok(Self::Record),
-			"Array" => Ok(Self::Array),
-			"[]" => Ok(Self::Array),
-			other => Ok(Self::Generic(other.as_bytes())),
+			"unknown" => Self::Unknown,
+			"never" => Self::Never,
+			"void" => Self::Void,
+			"any" => Self::Any,
+			"number" => Self::Number,
+			"string" => Self::String,
+			"Record" => Self::Record,
+			"Array" => Self::Array,
+			"[]" => Self::Array,
+			other => Self::Generic(other.as_bytes()),
 		}
 	}
 }
-impl<'t> TryFrom<&'t [u8]> for TypeAnnotation<'t> {
-	type Error = Error;
-
-	fn try_from(value: &'t [u8]) -> Result<Self, Self::Error> {
+impl<'t> From<&'t [u8]> for TypeAnnotation<'t> {
+	fn from(value: &'t [u8]) -> Self {
 		match value {
-			b"unknown" => Ok(Self::Unknown),
-			b"never" => Ok(Self::Never),
-			b"void" => Ok(Self::Void),
-			b"any" => Ok(Self::Any),
-			b"number" => Ok(Self::Number),
-			b"string" => Ok(Self::String),
-			b"Record" => Ok(Self::Record),
-			b"Array" => Ok(Self::Array),
-			b"[]" => Ok(Self::Array),
-			other => Ok(Self::Generic(other)),
+			b"unknown" => Self::Unknown,
+			b"never" => Self::Never,
+			b"void" => Self::Void,
+			b"any" => Self::Any,
+			b"number" => Self::Number,
+			b"string" => Self::String,
+			b"Record" => Self::Record,
+			b"Array" => Self::Array,
+			b"[]" => Self::Array,
+			other => Self::Generic(other),
 		}
 	}
 }
