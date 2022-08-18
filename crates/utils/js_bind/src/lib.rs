@@ -47,6 +47,12 @@ pub fn ts_eval(text: String) -> String {
 	let mut parser = Parser::new(token_iter);
 	let ast = parser.parse_into_block().unwrap();
 
+	let errors = parser.get_errors();
+	let errors = serde_json::to_string(errors).unwrap();
+	let errors: JsValue = errors.into();
+
+	web_sys::console::error(&errors.into());
+
 	let mut codegen = CodeGen::default();
 	let program = codegen.run(&ast).unwrap();
 
