@@ -1,6 +1,7 @@
-use super::{node::Node, type_annotation::TypeAnnotation};
 use anyhow::{bail, Error, Result};
 use lexer::token::keyword::Keyword;
+
+use super::{node::Node, type_annotation::TypeAnnotation};
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]

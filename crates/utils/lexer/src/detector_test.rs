@@ -1,3 +1,6 @@
+use anyhow::Result;
+use macros::test_with_logger;
+
 use super::{
 	detector::{all_tokens, binary, boolean, decimal, identifier, keyword, punctuation, string},
 	token::{
@@ -7,8 +10,6 @@ use super::{
 	},
 };
 use crate::token::punctuation::Punctuation;
-use anyhow::Result;
-use macros::test_with_logger;
 
 #[test_with_logger]
 fn const_kw_test() -> Result<()> {

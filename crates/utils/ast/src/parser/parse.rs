@@ -1,3 +1,13 @@
+use std::iter::Peekable;
+
+use anyhow::Result;
+use lexer::token::{
+	keyword::Keyword,
+	literal::Literal as TokenLiteral,
+	punctuation::Punctuation,
+	token_variance::{Token, TokenType},
+};
+
 use super::{
 	super::types::{
 		fn_dec::{FnDecl, FnType},
@@ -13,14 +23,6 @@ use crate::types::{
 	fn_call::FnCall,
 	var_decl::VarType,
 };
-use anyhow::Result;
-use lexer::token::{
-	keyword::Keyword,
-	literal::Literal as TokenLiteral,
-	punctuation::Punctuation,
-	token_variance::{Token, TokenType},
-};
-use std::iter::Peekable;
 
 pub struct Parser<'p, I: Iterator<Item = Token<'p>>> {
 	token_iter: Box<Peekable<I>>,
