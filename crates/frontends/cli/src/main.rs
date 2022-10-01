@@ -5,11 +5,9 @@ use std::{
 };
 
 use anyhow::Result;
-use ast::parser::parse::Parser as ASTParser;
-use bytecode::codegen::CodeGen;
+use ast::{parser::parse::Parser as ASTParser, types::node::Node};
 use clap::Parser;
 use lexer::scanner::scan;
-use vm::vm::VM;
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
@@ -23,12 +21,37 @@ struct Args {
 	check_only: bool,
 }
 
-fn main() -> Result<()> {
-	env_logger::init();
-	let args: Args = Args::parse();
+#[cfg(all(feature = "vm", feature = "llvm"))]
+compile_error!("The two features `vm` and `llvm` cannot be used at the same time");
+
+#[cfg(feature = "vm")]
+fn start(tree: &Node, check_only: bool) -> Result<()> {
+	use bytecode::codegen::CodeGen;
+	use vm::vm::VM;
+
 	let mut vm = VM::default();
 	let mut codegen = CodeGen::default();
 
+	if !check_only {
+		let program = codegen.run(tree)?;
+		vm.interpret(&program)?;
+	}
+
+	Ok(())
+}
+#[cfg(all(feature = "llvm", not(feature = "vm")))]
+fn start(tree: &Node, check_only: bool) -> Result<()> {
+	if !check_only {
+		llvm::run(tree)?;
+	}
+
+	Ok(())
+}
+
+fn main() -> Result<()> {
+	env_logger::init();
+
+	let args: Args = Args::parse();
 	if let Some(filepath) = args.filepath {
 		let input = fs::read(&filepath)?;
 
@@ -40,10 +63,7 @@ fn main() -> Result<()> {
 			eprintln!("{:#?}", parser.get_errors());
 		}
 
-		if !args.check_only {
-			let program = codegen.run(&ast)?;
-			vm.interpret(&program)?;
-		}
+		start(&ast, args.check_only)?;
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 		let input = input.as_bytes();
@@ -56,10 +76,7 @@ fn main() -> Result<()> {
 			eprintln!("{:#?}", parser.get_errors());
 		}
 
-		if !args.check_only {
-			let program = codegen.run(&ast)?;
-			vm.interpret(&program)?;
-		}
+		start(&ast, args.check_only)?;
 	} else {
 		let mut stdout_handle = stdout().lock();
 		let mut stdin_handle = stdin().lock();
@@ -80,10 +97,7 @@ fn main() -> Result<()> {
 				eprintln!("{:#?}", parser.get_errors());
 			}
 
-			if !args.check_only {
-				let program = codegen.run(&ast)?;
-				vm.interpret(&program)?;
-			}
+			start(&ast, args.check_only)?;
 		}
 	}
 
