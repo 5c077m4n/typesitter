@@ -4,7 +4,15 @@
 
 A native [typescript](https://www.typescriptlang.org/) runtime ([demo](https://5c077m4n.github.io/typesitter/))
 
-### Features table
+## Usage
+
+-   Custom interpreter:
+    -   `cargo run`
+-   LLVM:
+-   Make sure that LLVM is installed on your system and that the param `LLVM_SYS_<version>0_PREFIX` is exported by your shell (my setup is using v14 since it's the latest one supported by the [`inkwell`](https://thedan64.github.io/inkwell/inkwell/index.html) crate)
+    -   `cargo run --no-default-features --features llvm`
+
+## Feature table (`vm` feature only for now)
 
 | Feature                                     | Done | Todo | In progress |
 | ------------------------------------------- | :--: | :--: | :---------: |
