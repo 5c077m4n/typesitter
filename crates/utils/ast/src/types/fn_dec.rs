@@ -19,3 +19,15 @@ pub struct FnDecl<'f> {
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub body: Box<Node<'f>>,
 }
+
+impl FnDecl<'_> {
+	pub fn get_name(&self) -> Option<String> {
+		self.name.as_ref().map(|name_ls| {
+			name_ls
+				.iter()
+				.map(|&name| std::str::from_utf8(name).unwrap())
+				.collect::<Vec<_>>()
+				.join(".")
+		})
+	}
+}
