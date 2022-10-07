@@ -46,7 +46,7 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 
 			Ok(builder.build_alloca(basic_type, name))
 		} else {
-			bail!("No current function")
+			bail!("No current function");
 		}
 	}
 
@@ -126,10 +126,8 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 				if fn_decl_value.verify(true) {
 					self.pass_manager.run_on(&fn_decl_value);
 				} else {
-					unsafe {
-						fn_decl_value.delete();
-					}
-					bail!("Invalid generarated function")
+					unsafe { fn_decl_value.delete() };
+					bail!("Invalid generarated function");
 				}
 			}
 			other => unimplemented!("Compile instruction for {:?}", other),
