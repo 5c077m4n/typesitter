@@ -36,7 +36,7 @@ jobs:
         if: ${{ matrix.target == 'aarch64-apple-darwin' && matrix.os == 'macos-latest' }}
         run: |
           # Version from https://github.com/actions/runner-images/blob/main/images/macos/macos-12-Readme.md#xcode
-          sudo xcode-select -s "/Applications/Xcode_14.0.1.app"
+          sudo xcode-select -s "/Applications/Xcode_13.4.1.app"
           sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
 
       - name: Cargo check
