@@ -2,11 +2,18 @@
 name: Toolchain
 description: Rust toolchain setup
 
+inputs:
+  target:
+    description: "The rust toolchain target"
+    required: true
+
+
 runs:
   using: composite
   steps:
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
+        target: ${{ inputs.target }}
         toolchain: nightly
         override: true
