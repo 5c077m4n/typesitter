@@ -6,7 +6,7 @@ use std::{
 };
 
 use anyhow::Result;
-use ast::{parser::parse::Parser as ASTParser, types::node::Node};
+use ast::parser::parse::Parser as ASTParser;
 use clap::Parser;
 use cli_argv::Args;
 use lexer::scanner::scan;
@@ -15,7 +15,7 @@ use lexer::scanner::scan;
 compile_error!("The two features `vm` and `llvm` cannot be used at the same time");
 
 #[cfg(all(feature = "vm", not(feature = "llvm")))]
-fn start(tree: &Node, check_only: bool) -> Result<()> {
+fn start(tree: &ast::types::node::Node, check_only: bool) -> Result<()> {
 	use bytecode::codegen::CodeGen;
 	use vm::vm::VM;
 

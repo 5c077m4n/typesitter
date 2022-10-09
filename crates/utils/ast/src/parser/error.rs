@@ -14,7 +14,7 @@ impl<'e> Error<'e> {
 			message,
 			fragment: std::str::from_utf8(position.fragment()).unwrap(),
 			line: position.location_line() as usize,
-			column: position.get_utf8_column() as usize,
+			column: position.get_utf8_column(),
 		}
 	}
 }
