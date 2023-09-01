@@ -1,4 +1,8 @@
-use super::{super::ast::keyword::Keyword, token::*, tokenizer::*};
+use super::{
+	super::ast::{keyword::Keyword, literal::Literal},
+	token::*,
+	tokenizer::*,
+};
 use anyhow::Result;
 
 #[test]
@@ -25,9 +29,9 @@ fn detect_let_test() -> Result<()> {
 fn decimal_test() -> Result<()> {
 	let origin = "42";
 	let input = Span::new_extra(origin, None);
-	let (_, GenericToken { token, position }) = decimal(input)?;
+	let (_, LiteralToken { token, position }) = decimal(input)?;
 
-	assert_eq!(token, origin);
+	assert_eq!(token, Literal::Number(42.));
 	assert_eq!(position.location_line(), 1);
 	Ok(())
 }
@@ -58,9 +62,9 @@ fn binary_without_dashes_test() -> Result<()> {
 fn string_single_quote_test() -> Result<()> {
 	let origin = r#"'234'"#;
 	let input = Span::new_extra(origin, None);
-	let (_, GenericToken { token, position }) = string(input)?;
+	let (_, LiteralToken { token, position }) = string(input)?;
 
-	assert_eq!(token, "234");
+	assert_eq!(token, Literal::String("234"));
 	assert_eq!(position.location_line(), 1);
 	Ok(())
 }
@@ -69,9 +73,9 @@ fn string_single_quote_test() -> Result<()> {
 fn string_double_quote_test() -> Result<()> {
 	let origin = r#""2 34""#;
 	let input = Span::new_extra(origin, None);
-	let (_, GenericToken { token, position }) = string(input)?;
+	let (_, LiteralToken { token, position }) = string(input)?;
 
-	assert_eq!(token, "2 34");
+	assert_eq!(token, Literal::String("2 34"));
 	assert_eq!(position.location_line(), 1);
 	Ok(())
 }
