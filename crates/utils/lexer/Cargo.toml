@@ -11,3 +11,8 @@ env_logger = "0.8"
 anyhow = "1.0"
 nom = "7.1"
 nom_locate = "4.0"
+serde = { version = "1.0.136", features = ["derive"], optional = true }
+serde_json = { version = "1.0.79", optional = true }
+
+[features]
+js_bind = ["dep:serde", "dep:serde_json"]

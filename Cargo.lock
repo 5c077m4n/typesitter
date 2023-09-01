@@ -308,6 +308,8 @@ dependencies = [
  "log",
  "nom",
  "nom_locate",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
