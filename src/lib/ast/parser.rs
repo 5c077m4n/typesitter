@@ -110,15 +110,62 @@ pub fn parse<'a>(
 						Some(Token {
 							value: TokenType::Punctuation(Punctuation::Equal),
 							..
-						}) => {
-							if let Some(Token {
-								value: TokenType::Generic(_var_value),
+						}) => match token_iter.next() {
+							Some(Token {
+								value: TokenType::Literal(TokenLiteral::Number(n)),
 								..
-							}) = token_iter.next()
-							{
-								todo!();
+							}) => {
+								if let Some(Token {
+									value: TokenType::Punctuation(Punctuation::Semicolon),
+									..
+								}) = token_iter.next()
+								{
+									let init_node = Node::VarDec(Box::new(VarDec {
+										var_type: if init_type == Keyword::Let {
+											VarType::Let
+										} else {
+											VarType::Const
+										},
+										name: param_name,
+										type_annotation: None,
+										value: Box::new(Node::Literal(Box::new(Literal::Number(
+											n,
+										)))),
+									}));
+
+									expr_list.push(init_node);
+								}
 							}
-						}
+							Some(Token {
+								value: TokenType::Literal(TokenLiteral::String(s)),
+								..
+							}) => {
+								if let Some(Token {
+									value: TokenType::Punctuation(Punctuation::Semicolon),
+									..
+								}) = token_iter.next()
+								{
+									let init_node = Node::VarDec(Box::new(VarDec {
+										var_type: if init_type == Keyword::Let {
+											VarType::Let
+										} else {
+											VarType::Const
+										},
+										name: param_name,
+										type_annotation: None,
+										value: Box::new(Node::Literal(Box::new(Literal::String(
+											s,
+										)))),
+									}));
+
+									expr_list.push(init_node);
+								}
+							}
+							other => {
+								error!("{:?}", &other);
+								unimplemented!();
+							}
+						},
 						other => {
 							error!("{:?}", other);
 							unimplemented!();
