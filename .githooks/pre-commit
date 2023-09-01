@@ -1,9 +1,5 @@
-#!/bin/sh
-
-set -eu
+#!/bin/sh -eu
 
 cargo +nightly fmt --all
 cargo clippy --fix --allow-staged --allow-dirty
 cargo test --workspace
-
-git add --update
