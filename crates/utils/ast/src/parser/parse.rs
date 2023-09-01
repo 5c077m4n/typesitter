@@ -180,30 +180,40 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 									match self.token_iter.next() {
 										Some(Token {
 											value: TokenType::Literal(TokenLiteral::Number(n)),
-											..
+											position,
 										}) => {
 											let param_name = std::str::from_utf8(param_name)?;
+
+											let type_annotation = TypeAnnotation::from(var_type);
+											if type_annotation != TypeAnnotation::Number {
+												self.errors
+													.push(Error::new(format!("A parameter of value `{:?}` was expected here", &type_annotation), &position));
+											}
+
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: vec![param_name],
-												type_annotation: Some(TypeAnnotation::try_from(
-													var_type,
-												)?),
+												type_annotation: Some(type_annotation),
 												value: Box::new(Node::Literal(Literal::Number(n))),
 											});
 											expr_list.push(init_node);
 										}
 										Some(Token {
 											value: TokenType::Literal(TokenLiteral::String(s)),
-											..
+											position,
 										}) => {
 											let param_name = std::str::from_utf8(param_name)?;
+
+											let type_annotation = TypeAnnotation::from(var_type);
+											if type_annotation != TypeAnnotation::String {
+												self.errors
+													.push(Error::new(format!("A parameter of value `{:?}` was expected here", &type_annotation), &position));
+											}
+
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: vec![param_name],
-												type_annotation: Some(TypeAnnotation::try_from(
-													var_type,
-												)?),
+												type_annotation: Some(type_annotation),
 												value: Box::new(Node::Literal(Literal::String(s))),
 											});
 											expr_list.push(init_node);
