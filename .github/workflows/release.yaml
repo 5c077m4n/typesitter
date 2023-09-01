@@ -32,12 +32,11 @@ jobs:
       - name: Tag version
         run: echo "TAG_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
-      - name: Set SDK for macOS aarch64 builds
+      - name: Set Xcode version for macOS aarch64 builds
         if: ${{ matrix.target == 'aarch64-apple-darwin' && matrix.os == 'macos-latest' }}
-        run: |
-          # Version from https://github.com/actions/runner-images/blob/main/images/macos/macos-12-Readme.md#xcode
-          sudo xcode-select -s "/Applications/Xcode_14.0.1.app"
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Cargo check
         uses: actions-rs/cargo@v1
