@@ -1,3 +1,10 @@
 [workspace]
-members = ["crates/utils/*", "crates/frontends/*", "crates/backends/*"]
+members = [
+  "crates/utils/lexer",
+  "crates/utils/ast",
+  "crates/utils/js_bind",
+  "crates/frontends/cli",
+  "crates/backends/vm",
+  "crates/backends/llvm",
+]
 default-members = ["crates/frontends/cli"]
