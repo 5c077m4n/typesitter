@@ -1,25 +1,15 @@
+mod cli_argv;
+
 use std::{
 	fs,
 	io::{stdin, stdout, BufRead, Write},
-	path::PathBuf,
 };
 
 use anyhow::Result;
 use ast::{parser::parse::Parser as ASTParser, types::node::Node};
 use clap::Parser;
+use cli_argv::Args;
 use lexer::scanner::scan;
-
-#[derive(Parser, Debug)]
-#[clap(about, version, author)]
-struct Args {
-	filepath: Option<PathBuf>,
-
-	#[clap(short, long)]
-	eval: Option<String>,
-
-	#[clap(short, long)]
-	check_only: bool,
-}
 
 #[cfg(all(feature = "vm", feature = "llvm"))]
 compile_error!("The two features `vm` and `llvm` cannot be used at the same time");
@@ -50,9 +40,13 @@ fn start(tree: &Node, check_only: bool) -> Result<()> {
 
 fn main() -> Result<()> {
 	env_logger::init();
+	let Args {
+		filepath,
+		check_only,
+		eval,
+	} = Args::parse();
 
-	let args: Args = Args::parse();
-	if let Some(filepath) = args.filepath {
+	if let Some(filepath) = filepath {
 		let input = fs::read(&filepath)?;
 
 		let tokens = scan(&input, filepath.into_os_string().into_string().ok());
@@ -63,8 +57,8 @@ fn main() -> Result<()> {
 			eprintln!("{:#?}", &errors);
 		}
 
-		start(&ast, args.check_only)?;
-	} else if let Some(input) = args.eval {
+		start(&ast, check_only)?;
+	} else if let Some(input) = eval {
 		let input = &input.trim();
 		let input = input.as_bytes();
 
@@ -76,7 +70,7 @@ fn main() -> Result<()> {
 			eprintln!("{:#?}", errors);
 		}
 
-		start(&ast, args.check_only)?;
+		start(&ast, check_only)?;
 	} else {
 		let mut stdout_handle = stdout().lock();
 		let mut stdin_handle = stdin().lock();
@@ -97,7 +91,7 @@ fn main() -> Result<()> {
 				eprintln!("{:#?}", errors);
 			}
 
-			start(&ast, args.check_only)?;
+			start(&ast, check_only)?;
 		}
 	}
 
