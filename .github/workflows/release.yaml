@@ -75,7 +75,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ env.TAG_VERSION }}
+          tag_name: ${{ env.TAG_VERSION }}-${{ matrix.os }}-${{ matrix.target }}
           prerelease: contains(env.TAG_VERSION, 'alpha') || contains(env.TAG_VERSION, 'beta')
           files: |
             target/${{ matrix.target }}/release/cli
