@@ -1,6 +1,7 @@
 use super::node::Node;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum Operator {
 	Eq,
 	EqEq,
@@ -18,9 +19,11 @@ pub enum Operator {
 	Mul,
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct BinOp<'u> {
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct BinOp<'b> {
 	op: Operator,
-	lhs: Box<Node<'u>>,
-	rhs: Box<Node<'u>>,
+	#[serde(borrow)]
+	lhs: Box<Node<'b>>,
+	#[serde(borrow)]
+	rhs: Box<Node<'b>>,
 }
