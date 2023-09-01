@@ -4,7 +4,6 @@ use lexer::scanner::scan;
 use vm::vm::VM;
 use wasm_bindgen::prelude::*;
 
-#[cfg(feature = "demo")]
 pub mod demo {
 	use super::*;
 
@@ -21,7 +20,7 @@ pub mod demo {
 		let token_iter = scan(text, Some("WASM".to_string()));
 
 		let mut parser = Parser::new(token_iter);
-		let ast = parser.parse_into_block().unwrap();
+		let (ast, _errors) = parser.parse().unwrap();
 
 		serde_json::to_string(&ast).unwrap()
 	}
@@ -32,9 +31,8 @@ pub mod demo {
 		let token_iter = scan(text, Some("WASM".to_string()));
 
 		let mut parser = Parser::new(token_iter);
-		let _ast = parser.parse_into_block().unwrap();
+		let (_ast, errors) = parser.parse().unwrap();
 
-		let errors = parser.get_errors();
 		serde_json::to_string(&errors).unwrap()
 	}
 }
@@ -45,9 +43,8 @@ pub fn ts_eval(text: String) -> String {
 	let token_iter = scan(text, Some("WASM".to_string()));
 
 	let mut parser = Parser::new(token_iter);
-	let ast = parser.parse_into_block().unwrap();
+	let (ast, errors) = parser.parse().unwrap();
 
-	let errors = parser.get_errors();
 	let errors = serde_json::to_string(errors).unwrap();
 	let errors: JsValue = errors.into();
 

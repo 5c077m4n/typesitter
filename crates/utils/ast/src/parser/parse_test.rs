@@ -16,39 +16,37 @@ macro_rules! parser_test {
 	($name:ident, $input:literal, $num_errors:literal) => {
 		#[test]
 		fn $name() {
-			use env_logger;
 			let _ = env_logger::builder().is_test(true).try_init();
 
 			let tokens = scan($input, Some("Parser test".to_string()));
 
 			let mut parser = Parser::new(tokens);
-			let _ast = parser.parse().unwrap();
+			let _ast = parser.parse_raw().unwrap();
 
 			assert_eq!(
-				parser.get_errors().len(),
+				parser.errors.len(),
 				$num_errors,
 				"The wrong number of errors was detected ({:#?})",
-				parser.get_errors()
+				parser.errors
 			);
 		}
 	};
 	($name:ident, $input:literal, $test_nodes:expr) => {
 		#[test]
 		fn $name() {
-			use env_logger;
 			let _ = env_logger::builder().is_test(true).try_init();
 
 			let tokens = scan($input, Some("Parser test".to_string()));
 
 			let mut parser = Parser::new(tokens);
-			let ast = parser.parse().unwrap();
+			let ast = parser.parse_raw().unwrap();
 
-			assert_eq!(*ast, $test_nodes);
+			assert_eq!(ast, $test_nodes);
 			assert_eq!(
-				parser.get_errors().len(),
+				parser.errors.len(),
 				0,
 				"There should be no errors in parsing ({:#?})",
-				parser.get_errors()
+				parser.errors
 			);
 		}
 	};

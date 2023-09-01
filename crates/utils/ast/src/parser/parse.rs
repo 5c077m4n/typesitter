@@ -10,23 +10,20 @@ use lexer::token::{
 
 use super::{
 	super::types::{
+		bin_op::{BinOp, Operator},
+		fn_call::FnCall,
 		fn_dec::{FnDecl, FnType},
 		literal::Literal,
 		node::Node,
 		type_annotation::TypeAnnotation,
-		var_decl::VarDecl,
+		var_decl::{VarDecl, VarType},
 	},
 	error::Error,
-};
-use crate::types::{
-	bin_op::{BinOp, Operator},
-	fn_call::FnCall,
-	var_decl::VarType,
 };
 
 pub struct Parser<'p, I: Iterator<Item = Token<'p>>> {
 	token_iter: Box<Peekable<I>>,
-	errors: Vec<Error<'p>>,
+	pub(super) errors: Vec<Error<'p>>,
 }
 impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 	pub fn new(token_iter: Box<Peekable<I>>) -> Self {
@@ -36,16 +33,12 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 		}
 	}
 
-	pub fn get_errors(&self) -> &[Error] {
-		&self.errors
+	pub fn parse(&mut self) -> Result<(Node<'p>, &[Error])> {
+		let ast = self.parse_raw()?;
+		Ok((Node::Block(ast), &self.errors))
 	}
 
-	pub fn parse_into_block(&mut self) -> Result<Node<'p>> {
-		let ast = self.parse()?;
-		Ok(Node::Block(ast.to_vec()))
-	}
-
-	pub fn parse(&mut self) -> Result<Vec<Node<'p>>> {
+	pub(super) fn parse_raw(&mut self) -> Result<Vec<Node<'p>>> {
 		let mut expr_list: Vec<Node<'p>> = vec![];
 
 		while let Some(Token { value, position }) = self.token_iter.next() {
@@ -67,7 +60,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 									value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 									..
 								}) => {
-									let body = self.parse()?;
+									let body = self.parse_raw()?;
 									let named_fn_node = Node::FnDecl(FnDecl {
 										fn_type: FnType::Classic,
 										name: Some(vec![fn_name]),
@@ -90,7 +83,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 												TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 											..
 										}) => {
-											let body = self.parse()?;
+											let body = self.parse_raw()?;
 											let named_fn_node = Node::FnDecl(FnDecl {
 												fn_type: FnType::Classic,
 												name: Some(vec![fn_name]),
@@ -144,7 +137,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 							..
 						}) = self.token_iter.next()
 						{
-							let body = self.parse()?;
+							let body = self.parse_raw()?;
 							let unnamed_fn_node = Node::FnDecl(FnDecl {
 								fn_type: FnType::Classic,
 								name: None,
@@ -350,7 +343,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 					expr_list.push(fn_call_node);
 				}
 				TokenType::Punctuation(Punctuation::Equal) => {
-					let body = self.parse()?;
+					let body = self.parse_raw()?;
 					let var_name: Vec<String> = ident_parts
 						.iter()
 						.map(|p| String::from_utf8(p.to_vec()).unwrap())

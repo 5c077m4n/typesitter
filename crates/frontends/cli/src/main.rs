@@ -57,10 +57,10 @@ fn main() -> Result<()> {
 
 		let tokens = scan(&input, filepath.into_os_string().into_string().ok());
 		let mut parser = ASTParser::new(tokens);
-		let ast = parser.parse_into_block()?;
+		let (ast, errors) = parser.parse()?;
 
-		if !parser.get_errors().is_empty() {
-			eprintln!("{:#?}", parser.get_errors());
+		if !errors.is_empty() {
+			eprintln!("{:#?}", &errors);
 		}
 
 		start(&ast, args.check_only)?;
@@ -70,10 +70,10 @@ fn main() -> Result<()> {
 
 		let tokens = scan(input, Some("Evaluate".to_owned()));
 		let mut parser = ASTParser::new(tokens);
-		let ast = parser.parse_into_block()?;
+		let (ast, errors) = parser.parse()?;
 
-		if !parser.get_errors().is_empty() {
-			eprintln!("{:#?}", parser.get_errors());
+		if !errors.is_empty() {
+			eprintln!("{:#?}", errors);
 		}
 
 		start(&ast, args.check_only)?;
@@ -91,10 +91,10 @@ fn main() -> Result<()> {
 
 			let tokens = scan(input, Some("REPL".to_owned()));
 			let mut parser = ASTParser::new(tokens);
-			let ast = parser.parse_into_block()?;
+			let (ast, errors) = parser.parse()?;
 
-			if !parser.get_errors().is_empty() {
-				eprintln!("{:#?}", parser.get_errors());
+			if !errors.is_empty() {
+				eprintln!("{:#?}", errors);
 			}
 
 			start(&ast, args.check_only)?;
