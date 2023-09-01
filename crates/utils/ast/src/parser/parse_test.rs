@@ -23,7 +23,12 @@ macro_rules! parser_test {
 			let mut parser = Parser::new(tokens);
 			let _ast = parser.parse().unwrap();
 
-			assert_eq!(parser.get_errors().len(), $num_errors);
+			assert_eq!(
+				parser.get_errors().len(),
+				$num_errors,
+				"The wrong number of errors was detected ({:#?})",
+				parser.get_errors()
+			);
 		}
 	};
 	($name:ident, $input:literal, $test_nodes:expr) => {
@@ -38,7 +43,12 @@ macro_rules! parser_test {
 			let ast = parser.parse().unwrap();
 
 			assert_eq!(*ast, $test_nodes);
-			assert_eq!(parser.get_errors().len(), 0);
+			assert_eq!(
+				parser.get_errors().len(),
+				0,
+				"There should be no errors in parsing ({:#?})",
+				parser.get_errors()
+			);
 		}
 	};
 }

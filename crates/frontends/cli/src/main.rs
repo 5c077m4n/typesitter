@@ -1,11 +1,11 @@
 use anyhow::Result;
-use ast::parser::parse::parse_into_block;
+use ast::parser::parse::Parser as ASTParser;
 use bytecode::codegen::CodeGen;
 use clap::Parser;
 use lexer::scanner::scan;
 use std::{
 	fs,
-	io::{stdin, stdout, Write},
+	io::{stdin, stdout, Read, Write},
 	path::PathBuf,
 };
 use vm::vm::VM;
@@ -30,8 +30,9 @@ fn main() -> Result<()> {
 		let input = &input.trim();
 		let input = input.as_bytes();
 
-		let mut tokens = scan(input, filepath.into_os_string().into_string().ok());
-		let ast = parse_into_block(&mut tokens)?;
+		let tokens = scan(input, filepath.into_os_string().into_string().ok());
+		let mut parser = ASTParser::new(tokens);
+		let ast = parser.parse_into_block()?;
 		let program = codegen.run(&ast)?;
 
 		vm.interpret(&program)?;
@@ -39,8 +40,9 @@ fn main() -> Result<()> {
 		let input = &input.trim();
 		let input = input.as_bytes();
 
-		let mut tokens = scan(input, Some("Evaluate".to_owned()));
-		let ast = parse_into_block(&mut tokens)?;
+		let tokens = scan(input, Some("Evaluate".to_owned()));
+		let mut parser = ASTParser::new(tokens);
+		let ast = parser.parse_into_block()?;
 		let program = codegen.run(&ast)?;
 
 		vm.interpret(&program)?;
@@ -49,16 +51,15 @@ fn main() -> Result<()> {
 			print!(">>> ");
 			let _ = stdout().flush();
 
-			let mut input = String::new();
-			stdin().read_line(&mut input)?;
-			if input == "\n" {
+			let mut input = vec![];
+			let _ = stdin().read(&mut input)?;
+			if input == b"\n" {
 				break;
 			}
 
-			let input = &input.trim();
-			let input = input.as_bytes();
-			let mut tokens = scan(input, Some("REPL".to_owned()));
-			let ast = parse_into_block(&mut tokens)?;
+			let tokens = scan(&input, Some("REPL".to_owned()));
+			let mut parser = ASTParser::new(tokens);
+			let ast = parser.parse_into_block()?;
 			let program = codegen.run(&ast)?;
 
 			vm.interpret(&program)?;

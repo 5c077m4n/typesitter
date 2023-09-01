@@ -4,7 +4,7 @@ use assert_cmd::Command;
 const BIN_NAME: &str = env!("CARGO_PKG_NAME");
 
 #[test]
-fn eval_number_var_init_test() -> Result<()> {
+fn eval_number_var_init() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
 	cmd.args(&["--eval", "const n: number = 123;"])
@@ -14,7 +14,7 @@ fn eval_number_var_init_test() -> Result<()> {
 }
 
 #[test]
-fn stdin_test() -> Result<()> {
+fn stdin() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
 	cmd.write_stdin("const n: number = 1234;")
