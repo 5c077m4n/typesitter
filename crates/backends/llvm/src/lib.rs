@@ -2,9 +2,8 @@ mod compiler;
 
 use anyhow::Result;
 use ast::types::node::Node;
+use compiler::Compiler;
 use inkwell::{context::Context, passes::PassManager, OptimizationLevel};
-
-use self::compiler::Compiler;
 
 pub type ExternFn = unsafe extern "C" fn() -> f64;
 
@@ -27,7 +26,7 @@ pub fn run(tree: &Node) -> Result<()> {
 	Compiler::compile(context, module, builder, pass_manager, tree)?;
 
 	let exec_engine = module
-		.create_jit_execution_engine(OptimizationLevel::None)
+		.create_jit_execution_engine(OptimizationLevel::Default)
 		.unwrap();
 	let compiled_fn = unsafe { exec_engine.get_function::<ExternFn>("main") }?;
 	unsafe { compiled_fn.call() };
