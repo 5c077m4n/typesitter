@@ -20,12 +20,12 @@ pub fn parse_const_number_init_number_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		[Node::VarDec(Box::new(VarDec {
+		Node::Block(Box::new(vec![Node::VarDec(Box::new(VarDec {
 			var_type: VarType::Const,
 			name: "n",
 			type_annotation: Some("number"),
 			value: Box::new(Node::Literal(Box::new(Literal::Number(123.))))
-		}))]
+		}))]))
 	);
 	Ok(())
 }
@@ -38,12 +38,12 @@ pub fn parse_let_number_init_string_test() -> Result<()> {
 
 	assert_eq!(
 		ast,
-		[Node::VarDec(Box::new(VarDec {
+		Node::Block(Box::new(vec![Node::VarDec(Box::new(VarDec {
 			var_type: VarType::Let,
 			name: "s",
 			type_annotation: Some("string"),
 			value: Box::new(Node::Literal(Box::new(Literal::String("123"))))
-		}))]
+		}))]))
 	);
 	Ok(())
 }
