@@ -30,13 +30,13 @@ fn main() -> Result<()> {
 		let input = &input.trim();
 
 		let tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(tokens)?;
+		let ast = parse(tokens, None)?;
 		debug!("{:?}", &ast);
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
 		let tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(tokens)?;
+		let ast = parse(tokens, None)?;
 		debug!("{:?}", &ast);
 	} else {
 		loop {
@@ -51,7 +51,7 @@ fn main() -> Result<()> {
 
 			let input = &input.trim();
 			let tokens = scan(input, Some("REPL".to_owned()));
-			let ast = parse(tokens)?;
+			let ast = parse(tokens, None)?;
 			debug!("{:?}", &ast);
 		}
 	}
