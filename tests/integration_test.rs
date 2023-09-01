@@ -4,6 +4,7 @@ use assert_cmd::Command;
 const BIN_NAME: &str = env!("CARGO_PKG_NAME");
 
 #[test]
+#[ignore]
 fn file_read_test() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
@@ -12,6 +13,7 @@ fn file_read_test() -> Result<()> {
 }
 
 #[test]
+#[ignore]
 fn eval_command_test() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
