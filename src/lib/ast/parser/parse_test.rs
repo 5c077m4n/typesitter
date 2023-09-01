@@ -132,7 +132,7 @@ pub fn parse_empty_fn_call_test() -> Result<()> {
 
 #[test]
 pub fn parse_2_param_fn_call_test() -> Result<()> {
-	let init_str = r#"fnName(param_1, param_2);"#;
+	let init_str = r#"fnName(param1, param2);"#;
 	let mut tokens = scan(init_str, Some("Parser test".to_string()));
 	let ast = parse(&mut tokens, None)?;
 
@@ -143,12 +143,12 @@ pub fn parse_2_param_fn_call_test() -> Result<()> {
 			params: vec![
 				VarDec {
 					var_type: VarType::Let,
-					name: "param_1",
+					name: "param1",
 					type_annotation: None,
 					value: Box::new(Node::Literal(Literal::Undefined))
 				},
 				VarDec {
-					name: "param_2",
+					name: "param2",
 					var_type: VarType::Let,
 					type_annotation: None,
 					value: Box::new(Node::Literal(Literal::Undefined)),
@@ -162,14 +162,33 @@ pub fn parse_2_param_fn_call_test() -> Result<()> {
 #[test]
 #[should_panic]
 pub fn bad_parse_2_param_fn_call_test() {
-	let init_str = r#"fnName(, param_1, param_2);"#;
+	let init_str = r#"fnName(, param1, param2);"#;
 	let mut tokens = scan(init_str, Some("Parser test".to_string()));
 	let _ast = parse(&mut tokens, None).unwrap();
 }
 
 #[test]
+pub fn parse_fn_declaration_empty_body_empty_params_test() -> Result<()> {
+	let init_str = r#"function fn1() {}"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
+
+	assert_eq!(
+		ast,
+		vec![Box::new(Node::FnDec(FnDec {
+			fn_type: FnType::Classic,
+			name: Some("fn1"),
+			input_params: Vec::new(),
+			return_type: None,
+			body: Box::new(Node::Block(Vec::new())),
+		}))]
+	);
+	Ok(())
+}
+
+#[test]
 pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
-	let init_str = r#"function fn1(param_1) {}"#;
+	let init_str = r#"function fn1(param1) {}"#;
 	let mut tokens = scan(init_str, Some("Parser test".to_string()));
 	let ast = parse(&mut tokens, None)?;
 
@@ -180,7 +199,7 @@ pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
 			name: Some("fn1"),
 			input_params: vec![VarDec {
 				var_type: VarType::Let,
-				name: "param_1",
+				name: "param1",
 				type_annotation: None,
 				value: Box::new(Node::Literal(Literal::Undefined))
 			}],
@@ -192,8 +211,11 @@ pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
 }
 
 #[test]
-pub fn parse_fn_declaration_empty_body_empty_params_test() -> Result<()> {
-	let init_str = r#"function fn1() {}"#;
+#[ignore]
+pub fn parse_fn_declaration_empty_params_test() -> Result<()> {
+	let init_str = r#"function fn1() {
+        console.log(123);
+    }"#;
 	let mut tokens = scan(init_str, Some("Parser test".to_string()));
 	let ast = parse(&mut tokens, None)?;
 
