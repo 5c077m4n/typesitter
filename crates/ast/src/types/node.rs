@@ -20,7 +20,8 @@ pub enum Node<'n> {
 	UnaryOp(UnaryOp<'n>),
 	If(If<'n>),
 	VarDecl(VarDecl<'n>),
-	FnDec(FnDec<'n>),
+	VarCall(&'n str),
+	FnDecl(FnDec<'n>),
 	FnCall(FnCall<'n>),
 	Return(Box<Node<'n>>),
 }
