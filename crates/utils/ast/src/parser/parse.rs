@@ -19,10 +19,10 @@ use lexer::token::{
 use log::{error, warn};
 use std::iter::Peekable;
 
-pub fn parse<'a>(
-	token_iter: &mut Box<Peekable<impl Iterator<Item = Token<'a>>>>,
-) -> Result<Vec<Node<'a>>> {
-	let mut expr_list: Vec<Node<'a>> = Vec::new();
+pub fn parse<'p>(
+	token_iter: &mut Box<Peekable<impl Iterator<Item = Token<'p>>>>,
+) -> Result<Vec<Node<'p>>> {
+	let mut expr_list: Vec<Node<'p>> = Vec::new();
 
 	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
@@ -263,4 +263,11 @@ pub fn parse<'a>(
 	}
 
 	Ok(expr_list)
+}
+
+pub fn parse_into_block<'p>(
+	token_iter: &mut Box<Peekable<impl Iterator<Item = Token<'p>>>>,
+) -> Result<Node<'p>> {
+	let ast = parse(token_iter)?;
+	Ok(Node::Block(ast))
 }

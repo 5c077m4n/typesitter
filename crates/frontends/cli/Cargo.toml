@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 ast = { path = "../../utils/ast" }
 lexer = { path = "../../utils/lexer" }
+llvm = { path = "../../backends/llvm" }
 log = "0.4"
 env_logger = "0.8"
 clap = { version = "3.0", features = ["derive"] }
