@@ -117,5 +117,5 @@ impl VM {
 		self.stack.pop()
 	}
 
-	pub fn build_stack(_tree: Box<Node>) {}
+	pub fn build_stack(_tree: Node) {}
 }
