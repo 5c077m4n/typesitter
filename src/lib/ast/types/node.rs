@@ -12,7 +12,7 @@ use super::{
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Node<'n> {
-	Block(Box<Vec<Node<'n>>>),
+	Block(Vec<Node<'n>>),
 	Literal(Box<Literal<'n>>),
 	Object(Box<Object<'n>>),
 	Array(Box<Array<'n>>),
