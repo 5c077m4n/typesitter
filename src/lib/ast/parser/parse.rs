@@ -27,7 +27,28 @@ pub fn parse<'a>(
 	while let Some(Token { value, .. }) = token_iter.next() {
 		match value {
 			// This makes the `;` optional - but only at the right placement
-			TokenType::Punctuation(Punctuation::Semicolon) => {}
+			TokenType::Punctuation(Punctuation::Semicolon) => (),
+			TokenType::Keyword(Keyword::Function) => match token_iter.next() {
+				Some(Token {
+					value: TokenType::Identifier(_fn_name),
+					..
+				}) => match token_iter.next() {
+					Some(Token {
+						value: TokenType::Punctuation(Punctuation::BracketOpen),
+						..
+					}) => {
+						let _params = parse_param_list(token_iter.by_ref())?;
+					}
+					_ => {}
+				},
+				Some(Token {
+					value: TokenType::Punctuation(Punctuation::BracketOpen),
+					..
+				}) => {
+					let _params = parse_param_list(token_iter.by_ref())?;
+				}
+				_ => {}
+			},
 			TokenType::Keyword(init_type @ (Keyword::Const | Keyword::Let)) => {
 				match token_iter.next() {
 					Some(Token {
