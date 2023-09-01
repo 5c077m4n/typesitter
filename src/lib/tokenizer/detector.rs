@@ -224,6 +224,19 @@ pub fn space(input: Span) -> IResult<Span, Token> {
 	))
 }
 
+pub fn empty(input: Span) -> IResult<Span, Token> {
+	let (tail, _token) = tag("")(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		Token {
+			position: pos,
+			value: TokenType::Empty,
+		},
+	))
+}
+
 pub fn all_tokens(input: Span) -> IResult<Span, Token> {
 	// The order here is **critical** as the `alt` function runs them in the order that they appear in
 	alt((
@@ -236,5 +249,6 @@ pub fn all_tokens(input: Span) -> IResult<Span, Token> {
 		null,
 		space,
 		identifier,
+		empty,
 	))(input)
 }
