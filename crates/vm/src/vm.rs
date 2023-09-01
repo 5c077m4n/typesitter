@@ -49,13 +49,15 @@ impl VM {
 			Instr::Jump(ip) => {
 				self.ip = *ip;
 			}
-			Instr::JumpEqual(ip) => {
+			Instr::JumpEqual0(ip) => {
 				if self.stack.peek() == Some(&0.) {
+					let _ = self.stack.pop();
 					self.ip = *ip;
 				}
 			}
-			Instr::JumpNotEqual(ip) => {
+			Instr::JumpNotEqual0(ip) => {
 				if self.stack.peek() != Some(&0.) {
+					let _ = self.stack.pop();
 					self.ip = *ip;
 				}
 			}

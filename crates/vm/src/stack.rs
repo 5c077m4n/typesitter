@@ -1,9 +1,17 @@
 use super::instr::Pointer;
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Stack(Vec<f64>);
 
+impl Default for Stack {
+	fn default() -> Self {
+		Self(Vec::with_capacity(1024))
+	}
+}
 impl Stack {
+	pub fn new(capacity: usize) -> Self {
+		Self(Vec::with_capacity(capacity))
+	}
 	pub fn push(&mut self, v: f64) {
 		self.0.push(v)
 	}
@@ -13,7 +21,7 @@ impl Stack {
 	pub fn get_mut(&mut self, p: Pointer) -> Option<&mut f64> {
 		self.0.get_mut(p)
 	}
-	pub fn peek(&mut self) -> Option<&f64> {
+	pub fn peek(&self) -> Option<&f64> {
 		self.0.last()
 	}
 	pub fn peek_mut(&mut self) -> Option<&mut f64> {
