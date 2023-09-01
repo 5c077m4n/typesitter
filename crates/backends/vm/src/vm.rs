@@ -1,8 +1,8 @@
 use super::{
 	call_stack::{CallStack, StackFrame},
+	register_file::RegisterFile,
 	stack::Stack,
 };
-use crate::register_file::RegisterFile;
 use anyhow::Result;
 use bytecode::instr::{Instr, Pointer, Program};
 use log::debug;
@@ -50,6 +50,37 @@ impl VM {
 			writer_err,
 			..Self::default()
 		}
+	}
+
+	fn call_builtin(&mut self, fn_name: &str, params: &[Pointer]) -> Result<()> {
+		match fn_name {
+			"console.log" => {
+				let params: Vec<String> = params
+					.iter()
+					.map(|pointer| {
+						let value = self.stack.get(*pointer).unwrap();
+						format!("{}", &value)
+					})
+					.collect();
+				self.writer_out
+					.write_fmt(format_args!("{}\n", params.join(", ")))?;
+			}
+			"console.error" => {
+				let params: Vec<String> = params
+					.iter()
+					.map(|pointer| {
+						let value = self.stack.get(*pointer).unwrap();
+						format!("{}", &value)
+					})
+					.collect();
+				self.writer_err
+					.write_fmt(format_args!("{}\n", params.join(", ")))?;
+			}
+			other => {
+				todo!("Support other builtins `{:?}`", other)
+			}
+		}
+		Ok(())
 	}
 
 	fn handle_instr(&mut self, instr: &Instr) -> Result<()> {
@@ -195,6 +226,9 @@ impl VM {
 					ip: self.ip,
 				});
 				self.ip = *ip;
+			}
+			Instr::CallBuiltin(fn_name, params) => {
+				self.call_builtin(fn_name, params)?;
 			}
 			Instr::Ret => {
 				self.ip = self.call_stack.pop()?.ip;

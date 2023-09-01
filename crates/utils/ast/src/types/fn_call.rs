@@ -7,3 +7,12 @@ pub struct FnCall<'f> {
 	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	pub params: Vec<VarDecl<'f>>,
 }
+
+impl FnCall<'_> {
+	pub fn get_name(&self) -> Vec<&str> {
+		self.fn_name
+			.iter()
+			.map(|v| std::str::from_utf8(v).unwrap())
+			.collect::<Vec<_>>()
+	}
+}

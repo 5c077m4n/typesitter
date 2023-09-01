@@ -80,12 +80,14 @@ pub enum Instr {
 	Get(Pointer),
 	/// Set value at stack item
 	Set(Pointer),
-	/// Get an arg from before the fn start
+	/// Get an argument from before the fn start
 	GetArg(Pointer),
-	/// Set an arg from before the fn start
+	/// Set an argument from before the fn start
 	SetArg(Pointer),
 	/// Call a function
 	Call(Pointer),
+	/// Call a built-in funtion
+	CallBuiltin(String, Vec<Pointer>),
 	/// Return from a function
 	Ret,
 	/// Print top stack item into stdout
