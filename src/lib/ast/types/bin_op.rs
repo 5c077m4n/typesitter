@@ -21,6 +21,6 @@ pub enum Operator {
 #[derive(Clone, Debug, PartialEq)]
 pub struct BinOp<'u> {
 	op: Operator,
-	lhs: &'u Node<'u>,
-	rhs: &'u Node<'u>,
+	lhs: Box<Node<'u>>,
+	rhs: Box<Node<'u>>,
 }
