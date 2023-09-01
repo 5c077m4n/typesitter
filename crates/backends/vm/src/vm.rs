@@ -78,7 +78,18 @@ impl VM {
 			}
 			Instr::Set(ip) => {
 				let last_value = self.stack.pop()?;
-				*self.stack.get_mut(*ip + self.call_stack.last_offset())? = last_value;
+				let offset = *ip + self.call_stack.last_offset();
+				*self.stack.get_mut(offset)? = last_value;
+			}
+			Instr::GetArg(i) => {
+				let offset = self.call_stack.get_offset()? - *i;
+				let arg = *self.stack.get(offset)?;
+				self.stack.push(arg);
+			}
+			Instr::SetArg(i) => {
+				let offset_i = self.call_stack.get_offset()? - *i;
+				let last_val = *self.stack.peek()?;
+				*self.stack.get_mut(offset_i)? = last_val;
 			}
 			Instr::Call(ip) => {
 				self.call_stack.push(StackFrame {
