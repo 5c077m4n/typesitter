@@ -70,6 +70,16 @@ impl VM {
 				*self.stack.peek_mut()? += lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
+			Instr::AddRegReg {
+				reg_1,
+				reg_2,
+				reg_result,
+			} => {}
+			Instr::AddRegLit {
+				reg_1,
+				value,
+				reg_result,
+			} => {}
 			Instr::Sub => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b - a);
@@ -79,6 +89,16 @@ impl VM {
 				*self.stack.peek_mut()? -= lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
+			Instr::SubRegReg {
+				reg_1,
+				reg_2,
+				reg_result,
+			} => {}
+			Instr::SubRegLit {
+				reg_1,
+				value,
+				reg_result,
+			} => {}
 			Instr::Mul => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b * a);
@@ -88,6 +108,16 @@ impl VM {
 				*self.stack.peek_mut()? -= lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
+			Instr::MulRegReg {
+				reg_1,
+				reg_2,
+				reg_result,
+			} => {}
+			Instr::MulRegLit {
+				reg_1,
+				value,
+				reg_result,
+			} => {}
 			Instr::Div => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b / a);
@@ -97,6 +127,16 @@ impl VM {
 				*self.stack.peek_mut()? -= lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
+			Instr::DivRegReg {
+				reg_1,
+				reg_2,
+				reg_result,
+			} => {}
+			Instr::DivRegLit {
+				reg_1,
+				value,
+				reg_result,
+			} => {}
 			Instr::Jump(ip) => {
 				self.ip = *ip;
 			}
