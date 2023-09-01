@@ -2,6 +2,7 @@ use super::{
 	call_stack::{CallStack, StackFrame},
 	stack::Stack,
 };
+use crate::register_file::RegisterFile;
 use anyhow::Result;
 use bytecode::instr::{Instr, Pointer, Program};
 use log::debug;
@@ -12,6 +13,10 @@ pub struct VM {
 	call_stack: CallStack,
 	/// Instruction pointer
 	ip: Pointer,
+	/// Stack pointer
+	sp: Pointer,
+
+	register_file: RegisterFile,
 
 	reader: Box<dyn io::Read>,
 	writer_out: Box<dyn io::Write>,
@@ -23,6 +28,9 @@ impl Default for VM {
 			stack: Stack::default(),
 			call_stack: CallStack::default(),
 			ip: 0,
+			sp: 0,
+
+			register_file: RegisterFile::default(),
 
 			reader: Box::new(io::stdin()),
 			writer_out: Box::new(io::stdout()),
