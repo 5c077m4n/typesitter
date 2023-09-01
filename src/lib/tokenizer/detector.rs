@@ -99,6 +99,7 @@ pub fn punctuation(input: Span) -> IResult<Span, Token> {
 		value(Punctuation::Colon, tag(Punctuation::Colon.as_str())),
 		value(Punctuation::Semicolon, tag(Punctuation::Semicolon.as_str())),
 		value(Punctuation::Dot, tag(Punctuation::Dot.as_str())),
+		value(Punctuation::Comma, tag(Punctuation::Comma.as_str())),
 	))(input)?;
 	let (tail, pos) = position(tail)?;
 
