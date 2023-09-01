@@ -15,8 +15,8 @@ use anyhow::Result;
 #[test]
 pub fn parse_const_init_number_test() -> Result<()> {
 	let init_str = "const n: number = 123;";
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let ast = parse(tokens, None)?;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
@@ -35,8 +35,8 @@ pub fn parse_2_const_init_number_test() -> Result<()> {
 	let init_str = r#"const n: number = 123;
     const n: number = 123;
     "#;
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let ast = parse(tokens, None)?;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
@@ -61,8 +61,8 @@ pub fn parse_2_const_init_number_test() -> Result<()> {
 #[test]
 pub fn parse_let_init_string_test() -> Result<()> {
 	let init_str = r#"let s: string = '123';"#;
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let ast = parse(tokens, None)?;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
@@ -79,8 +79,8 @@ pub fn parse_let_init_string_test() -> Result<()> {
 #[test]
 pub fn parse_let_number_init_no_type_test() -> Result<()> {
 	let init_str = r#"let x = 42;"#;
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let ast = parse(tokens, None)?;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
@@ -98,8 +98,8 @@ pub fn parse_let_number_init_no_type_test() -> Result<()> {
 #[ignore]
 pub fn parse_let_no_int_value_test() -> Result<()> {
 	let init_str = r#"let x;"#;
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let ast = parse(tokens, None)?;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
@@ -116,8 +116,8 @@ pub fn parse_let_no_int_value_test() -> Result<()> {
 #[test]
 pub fn parse_empty_fn_call_test() -> Result<()> {
 	let init_str = r#"fnName();"#;
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let ast = parse(tokens, None)?;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
@@ -132,8 +132,8 @@ pub fn parse_empty_fn_call_test() -> Result<()> {
 #[test]
 pub fn parse_2_param_fn_call_test() -> Result<()> {
 	let init_str = r#"fnName(param_1, param_2);"#;
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let ast = parse(tokens, None)?;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
@@ -162,6 +162,6 @@ pub fn parse_2_param_fn_call_test() -> Result<()> {
 #[should_panic]
 pub fn bad_parse_2_param_fn_call_test() {
 	let init_str = r#"fnName(, param_1, param_2);"#;
-	let tokens = scan(init_str, Some("Parser test".to_string()));
-	let _ast = parse(tokens, None).unwrap();
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let _ast = parse(&mut tokens, None).unwrap();
 }
