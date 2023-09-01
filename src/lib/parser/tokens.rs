@@ -2,12 +2,12 @@
 
 use nom::{
 	branch::alt,
-	bytes::complete::{tag, take_until},
-	character::complete::{char, digit1, multispace0, not_line_ending, one_of},
-	combinator::{recognize, value},
+	bytes::complete::tag,
+	character::complete::{char, digit1, multispace0, one_of},
+	combinator::recognize,
 	error::ParseError,
 	multi::{many0, many1},
-	sequence::{delimited, pair, preceded, terminated, tuple},
+	sequence::{delimited, preceded, terminated},
 	IResult,
 };
 
@@ -21,26 +21,6 @@ where
 	E: ParseError<&'a str>,
 {
 	delimited(multispace0, inner, multispace0)
-}
-
-pub fn one_line_comment<'a, E>(input: &'a str) -> IResult<&'a str, (), E>
-where
-	E: ParseError<&'a str>,
-{
-	value(
-		(), // Output is thrown away.
-		pair(tag("//"), not_line_ending),
-	)(input)
-}
-
-pub fn multiline_comment<'a, E>(input: &'a str) -> IResult<&'a str, (), E>
-where
-	E: ParseError<&'a str>,
-{
-	value(
-		(), // Output is thrown away.
-		tuple((tag("/*"), take_until("*/"), tag("*/"))),
-	)(input)
 }
 
 pub fn binary(input: &str) -> IResult<&str, &str> {
