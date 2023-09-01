@@ -1,6 +1,6 @@
 use super::{
 	super::types::{
-		fn_dec::{FnDec, FnType},
+		fn_dec::{FnDecl, FnType},
 		literal::Literal,
 		node::Node,
 		type_annotation::TypeAnnotation,
@@ -44,7 +44,7 @@ pub fn parse<'a>(
 								..
 							}) => {
 								let body = parse(token_iter)?;
-								let named_fn_node = Node::FnDecl(FnDec {
+								let named_fn_node = Node::FnDecl(FnDecl {
 									fn_type: FnType::Classic,
 									name: Some(vec![fn_name]),
 									input_params,
@@ -66,7 +66,7 @@ pub fn parse<'a>(
 										..
 									}) => {
 										let body = parse(token_iter)?;
-										let named_fn_node = Node::FnDecl(FnDec {
+										let named_fn_node = Node::FnDecl(FnDecl {
 											fn_type: FnType::Classic,
 											name: Some(vec![fn_name]),
 											input_params,
@@ -111,7 +111,7 @@ pub fn parse<'a>(
 					}) = token_iter.next()
 					{
 						let body = parse(token_iter)?;
-						let unnamed_fn_node = Node::FnDecl(FnDec {
+						let unnamed_fn_node = Node::FnDecl(FnDecl {
 							fn_type: FnType::Classic,
 							name: None,
 							input_params,

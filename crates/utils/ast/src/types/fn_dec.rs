@@ -6,7 +6,7 @@ pub enum FnType {
 	Classic,
 }
 #[derive(Clone, Debug, PartialEq)]
-pub struct FnDec<'f> {
+pub struct FnDecl<'f> {
 	pub fn_type: FnType,
 	pub name: Option<Vec<&'f str>>,
 	pub input_params: Vec<VarDecl<'f>>,
