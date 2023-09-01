@@ -12,7 +12,7 @@ pub fn scan(input: &str, extra: Option<String>) -> impl Iterator<Item = Token<'_
 	iter::from_fn(move || match all_tokens(input.to_owned()) {
 		Ok((tail, token)) if token.value != TokenType::Generic("") => {
 			input = tail;
-			debug!("{:?}", &input);
+			debug!("{:#?}", &token);
 
 			Some(token)
 		}
