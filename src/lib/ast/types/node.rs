@@ -3,7 +3,7 @@ use super::{
 	r#if::If, unary_op::UnaryOp, var_dec::VarDec,
 };
 
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Node<'n> {
 	Block(Box<Vec<Node<'n>>>),
 	Literal(Box<Literal<'n>>),
