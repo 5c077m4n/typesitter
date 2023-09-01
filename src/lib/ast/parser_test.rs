@@ -95,7 +95,23 @@ pub fn parse_empty_fn_call_test() -> Result<()> {
 		ast,
 		Node::Block(vec![Node::FnCall(Box::new(FnCall {
 			fn_name: "fnName",
-			params: &[]
+			params: Vec::new(),
+		}))])
+	);
+	Ok(())
+}
+
+#[test]
+pub fn parse_2_param_fn_call_test() -> Result<()> {
+	let init_str = r#"fnName(param_1, param_2);"#;
+	let tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = *parse(tokens, None)?;
+
+	assert_eq!(
+		ast,
+		Node::Block(vec![Node::FnCall(Box::new(FnCall {
+			fn_name: "fnName",
+			params: vec!["param_1", "param_2"],
 		}))])
 	);
 	Ok(())
