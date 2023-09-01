@@ -17,6 +17,6 @@ anyhow = "1.0"
 assert_cmd = "2.0"
 
 [features]
-default = ["vm"]
+default = ["llvm"]
 vm = []
 llvm = []
