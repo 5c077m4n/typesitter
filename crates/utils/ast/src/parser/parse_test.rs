@@ -1,3 +1,5 @@
+use lexer::scanner::scan;
+
 use super::{
 	super::types::{
 		fn_call::FnCall,
@@ -9,7 +11,6 @@ use super::{
 	},
 	parse::Parser,
 };
-use lexer::scanner::scan;
 
 macro_rules! parser_test {
 	($name:ident, $input:literal, $num_errors:literal) => {

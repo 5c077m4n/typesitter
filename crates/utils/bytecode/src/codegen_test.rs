@@ -1,4 +1,3 @@
-use super::{codegen::CodeGen, instr::Instr};
 use anyhow::Result;
 use ast::types::{
 	fn_call::FnCall,
@@ -7,6 +6,8 @@ use ast::types::{
 	type_annotation::TypeAnnotation,
 	var_decl::{VarDecl, VarType},
 };
+
+use super::{codegen::CodeGen, instr::Instr};
 
 #[test]
 fn empty_program() -> Result<()> {

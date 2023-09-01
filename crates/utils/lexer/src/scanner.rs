@@ -1,3 +1,7 @@
+use std::iter::{self, Peekable};
+
+use log::{debug, error};
+
 use super::{
 	detector::all_tokens,
 	token::{
@@ -5,8 +9,6 @@ use super::{
 		token_variance::{Span, Token, TokenType},
 	},
 };
-use log::{debug, error};
-use std::iter::{self, Peekable};
 
 pub fn scan(input: &[u8], extra: Option<String>) -> Box<Peekable<impl Iterator<Item = Token<'_>>>> {
 	Box::new(

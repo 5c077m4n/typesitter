@@ -1,3 +1,6 @@
+use anyhow::Result;
+use macros::test_with_logger;
+
 use super::{
 	scanner::scan,
 	token::{
@@ -7,8 +10,6 @@ use super::{
 		token_variance::TokenType,
 	},
 };
-use anyhow::Result;
-use macros::test_with_logger;
 
 #[test_with_logger]
 fn scan_basic_number_init_test() -> Result<()> {

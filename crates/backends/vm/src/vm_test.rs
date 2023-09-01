@@ -1,7 +1,8 @@
-use super::vm::VM;
 use anyhow::Result;
 use bytecode::instr::Instr;
 use macros::test_with_logger;
+
+use super::vm::VM;
 
 #[test_with_logger]
 fn simple_arith_one_plus_one() -> Result<()> {

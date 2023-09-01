@@ -1,12 +1,14 @@
+use std::io;
+
+use anyhow::Result;
+use bytecode::instr::{Instr, Pointer, Program};
+use log::debug;
+
 use super::{
 	call_stack::{CallStack, StackFrame},
 	register_file::RegisterFile,
 	stack::Stack,
 };
-use anyhow::Result;
-use bytecode::instr::{Instr, Pointer, Program};
-use log::debug;
-use std::io;
 
 type R = Box<dyn io::Read>;
 type W = Box<dyn io::Write>;
@@ -49,6 +51,7 @@ impl VM {
 	}
 
 	fn call_builtin(&mut self, fn_name: &str, params: &[Pointer]) -> Result<()> {
+		debug!("{:?}", &self.stack);
 		match fn_name {
 			"console.log" => {
 				let params: Vec<String> = params

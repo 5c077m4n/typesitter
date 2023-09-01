@@ -1,7 +1,9 @@
-use super::instr::{Instr, Pointer, Program};
+use std::collections::BTreeMap;
+
 use anyhow::{anyhow, Result};
 use ast::types::{literal::Literal, node::Node};
-use std::collections::BTreeMap;
+
+use super::instr::{Instr, Pointer, Program};
 
 #[derive(Default)]
 pub struct CodeGen {
@@ -34,7 +36,6 @@ impl CodeGen {
 			},
 			Node::VarCall(var_name) => {
 				let pointer = self.get_var(var_name)?;
-
 				self.program.push(Instr::Get(*pointer));
 			}
 			Node::FnCall(fn_call) => {

@@ -1,13 +1,14 @@
-use anyhow::Result;
-use ast::parser::parse::Parser as ASTParser;
-use bytecode::codegen::CodeGen;
-use clap::Parser;
-use lexer::scanner::scan;
 use std::{
 	fs,
 	io::{stdin, stdout, BufRead, Write},
 	path::PathBuf,
 };
+
+use anyhow::Result;
+use ast::parser::parse::Parser as ASTParser;
+use bytecode::codegen::CodeGen;
+use clap::Parser;
+use lexer::scanner::scan;
 use vm::vm::VM;
 
 #[derive(Parser, Debug)]

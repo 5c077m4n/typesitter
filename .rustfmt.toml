@@ -3,4 +3,4 @@ unstable_features = true
 hard_tabs = true
 imports_layout = "HorizontalVertical"
 imports_granularity = "Crate"
-group_imports = "One"
+group_imports = "StdExternalCrate"

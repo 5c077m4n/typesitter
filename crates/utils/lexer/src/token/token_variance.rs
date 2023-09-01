@@ -1,5 +1,6 @@
-use super::{keyword::Keyword, literal::Literal, punctuation::Punctuation};
 use nom_locate::LocatedSpan;
+
+use super::{keyword::Keyword, literal::Literal, punctuation::Punctuation};
 
 pub type Span<'s> = LocatedSpan<&'s [u8], Option<String>>;
 

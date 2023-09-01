@@ -1,9 +1,3 @@
-use super::token::{
-	keyword::Keyword,
-	literal::Literal,
-	punctuation::Punctuation,
-	token_variance::{Span, Token, TokenType},
-};
 use anyhow::Result;
 use nom::{
 	branch::alt,
@@ -25,6 +19,13 @@ use nom::{
 	IResult,
 };
 use nom_locate::position;
+
+use super::token::{
+	keyword::Keyword,
+	literal::Literal,
+	punctuation::Punctuation,
+	token_variance::{Span, Token, TokenType},
+};
 
 pub fn keyword(input: Span) -> IResult<Span, Token> {
 	let (tail, kw) = alt((

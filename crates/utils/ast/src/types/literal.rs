@@ -1,6 +1,7 @@
+use std::collections::BTreeMap;
+
 use anyhow::{bail, Error};
 use lexer::token::literal::Literal as TokenLiteral;
-use std::collections::BTreeMap;
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Debug, PartialEq, Default)]
