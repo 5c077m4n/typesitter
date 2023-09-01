@@ -22,4 +22,8 @@ impl Stack {
 	pub fn pop(&mut self) -> Option<f64> {
 		self.0.pop()
 	}
+	#[allow(dead_code)]
+	pub(crate) fn debug(&self) {
+		println!("{:#?}", self.0);
+	}
 }

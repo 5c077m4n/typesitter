@@ -1,7 +1,15 @@
 use super::{instr::Instr, vm::VM};
 
 #[test]
-fn simple_calc() {
+fn simple_calc_one_plus_one() {
+	let mut vm = VM::default();
+	let result = vm.interpret(&[Instr::Push(1.), Instr::Push(1.), Instr::Add]);
+
+	assert_eq!(result, Some(2.));
+}
+
+#[test]
+fn complex_arith() {
 	let mut vm = VM::default();
 	let result = vm.interpret(&[
 		Instr::Push(9.),
@@ -19,39 +27,8 @@ fn simple_calc() {
 fn sum_first_100_ints() {
 	let mut vm = VM::default();
 	let result = vm.interpret(&[
-		// setup
-		Instr::Push(0.), // the accumulator
-		Instr::Push(0.), // the index
-		// loop
-		// First, add the index to the accumulator
-		// stack: [accumulator, index]
-		Instr::Get(0),
-		Instr::Get(1),
-		// stack: [accumulator, index, accumulator, index]
-		Instr::Add,
-		// stack: [accumulator, index, accumulator + index]
-		Instr::Set(0),
-		Instr::Pop,
-		// stack: [accumulator + index, index]
-
-		// next, increment the index
-		Instr::Push(1.), // the increment
-		// stack: [accumulator, index, 1]
-		Instr::Add,
-		// stack: [accumulator, index + 1]
-
-		// finally, compare the index with 100 and jump back to the start
-		// if they're not equal.
-		Instr::Get(1),
-		// stack: [accumulator, index, index]
-		Instr::Push(100.),
-		Instr::Sub,
-		// stack: [accumulator, index, index - 100]
-		Instr::JumpNotEqual(2),
-		// if index - 100 == 0, print the accumulator
-		Instr::Get(0),
-		// stack: [accumulator, index, 0, accumulator]
-		Instr::Print,
+		Instr::Push(0.), // [accumilator = 0]
+		Instr::Push(0.), // [accumilator = 0, index = 0]
 	]);
 
 	assert_eq!(result, Some(100.));
