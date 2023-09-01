@@ -8,7 +8,7 @@ use std::{
 
 mod lib;
 
-use lib::tokenizer::scanner::scan;
+use lib::lexer::scanner::scan;
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
