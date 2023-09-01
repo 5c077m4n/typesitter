@@ -166,6 +166,23 @@ pub fn parse<'a>(
 								unimplemented!();
 							}
 						},
+						Some(Token {
+							value: TokenType::Punctuation(Punctuation::Semicolon),
+							..
+						}) => {
+							let init_node = Node::VarDec(Box::new(VarDec {
+								var_type: if init_type == Keyword::Let {
+									VarType::Let
+								} else {
+									VarType::Const
+								},
+								name: param_name,
+								type_annotation: None,
+								value: Box::new(Node::Literal(Box::new(Literal::Undefined))),
+							}));
+
+							expr_list.push(init_node);
+						}
 						other => {
 							error!("{:?}", other);
 							unimplemented!();
