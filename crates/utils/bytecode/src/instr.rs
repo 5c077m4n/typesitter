@@ -52,4 +52,4 @@ pub enum Instr {
 	PrintDebug,
 }
 
-pub type Program<'p> = &'p [Instr];
+pub type Program = Vec<Instr>;

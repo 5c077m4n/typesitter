@@ -1,13 +1,14 @@
 use anyhow::Result;
-use ast::parser::parse::{parse, parse_into_block};
+use ast::parser::parse::parse_into_block;
+use bytecode::codegen::codegen;
 use clap::Parser;
 use lexer::scanner::scan;
-use log::debug;
 use std::{
 	fs,
 	io::{stdin, stdout, Write},
 	path::PathBuf,
 };
+use vm::vm::VM;
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
@@ -21,23 +22,31 @@ struct Args {
 fn main() -> Result<()> {
 	env_logger::init();
 	let args: Args = Args::parse();
+	let mut vm = VM::default();
 
 	if let Some(filepath) = args.filepath {
 		let input = fs::read_to_string(&filepath)?;
 		let input = &input.trim();
+		let input = input.as_bytes();
 
-		let mut tokens = scan(
-			input.as_bytes(),
-			filepath.into_os_string().into_string().ok(),
-		);
+		let mut tokens = scan(input, filepath.into_os_string().into_string().ok());
 		let ast = parse_into_block(&mut tokens)?;
-		debug!("{:?}", ast);
+		let program = codegen(&ast)?;
+
+		if !program.is_empty() {
+			vm.interpret(&program)?;
+		}
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
+		let input = input.as_bytes();
 
-		let mut tokens = scan(input.as_bytes(), Some("Evaluate".to_owned()));
+		let mut tokens = scan(input, Some("Evaluate".to_owned()));
 		let ast = parse_into_block(&mut tokens)?;
-		debug!("{:?}", ast);
+		let program = codegen(&ast)?;
+
+		if !program.is_empty() {
+			vm.interpret(&program)?;
+		}
 	} else {
 		loop {
 			print!(">>> ");
@@ -50,9 +59,14 @@ fn main() -> Result<()> {
 			}
 
 			let input = &input.trim();
-			let mut tokens = scan(input.as_bytes(), Some("REPL".to_owned()));
-			let ast = parse(&mut tokens)?;
-			debug!("{:?}", &ast);
+			let input = input.as_bytes();
+			let mut tokens = scan(input, Some("REPL".to_owned()));
+			let ast = parse_into_block(&mut tokens)?;
+			let program = codegen(&ast)?;
+
+			if !program.is_empty() {
+				vm.interpret(&program)?;
+			}
 		}
 	}
 
