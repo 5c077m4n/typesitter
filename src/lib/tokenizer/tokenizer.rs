@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
 use super::{
-	super::ast::{keyword::Keyword, literal::Literal},
-	token::{GenericToken, KeywordToken, LiteralToken, Span},
+	super::ast::{keyword::Keyword, literal::Literal, punctuation::Punctuation},
+	token::{GenericToken, KeywordToken, LiteralToken, PunctuationToken, Span},
 };
 use nom::{
 	branch::alt,
@@ -27,6 +27,46 @@ pub fn detect_init_keyword(input: Span) -> IResult<Span, KeywordToken> {
 		KeywordToken {
 			position: pos,
 			token: kw,
+		},
+	))
+}
+
+pub fn detect_punctuation(input: Span) -> IResult<Span, PunctuationToken> {
+	let (tail, punc) = alt((
+		value(
+			Punctuation::BracetOpen,
+			tag(Punctuation::BracetOpen.as_str()),
+		),
+		value(
+			Punctuation::BracetClose,
+			tag(Punctuation::BracetOpen.as_str()),
+		),
+		value(
+			Punctuation::BracetCurlyOpen,
+			tag(Punctuation::BracetOpen.as_str()),
+		),
+		value(
+			Punctuation::BracetCurlyClose,
+			tag(Punctuation::BracetOpen.as_str()),
+		),
+		value(Punctuation::Equal, tag(Punctuation::Equal.as_str())),
+		value(
+			Punctuation::GreaterThan,
+			tag(Punctuation::GreaterThan.as_str()),
+		),
+		value(Punctuation::LessThan, tag(Punctuation::LessThan.as_str())),
+		value(
+			Punctuation::ExclamationMark,
+			tag(Punctuation::ExclamationMark.as_str()),
+		),
+	))(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		PunctuationToken {
+			position: pos,
+			token: punc,
 		},
 	))
 }

@@ -1,4 +1,4 @@
-use super::super::ast::{keyword::Keyword, literal::Literal};
+use super::super::ast::{keyword::Keyword, literal::Literal, punctuation::Punctuation};
 use nom_locate::LocatedSpan;
 
 pub type Span<'s> = LocatedSpan<&'s str, Option<String>>;
@@ -17,4 +17,9 @@ pub struct LiteralToken<'s> {
 pub struct KeywordToken<'s> {
 	pub position: Span<'s>,
 	pub token: Keyword,
+}
+#[derive(PartialEq, Eq)]
+pub struct PunctuationToken<'s> {
+	pub position: Span<'s>,
+	pub token: Punctuation,
 }

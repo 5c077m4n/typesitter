@@ -1,6 +1,7 @@
-use std::str::FromStr;
+use strum::EnumIter;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, EnumIter)]
+#[strum(serialize_all = "lowercase")]
 pub enum Keyword {
 	Const,
 	Let,
@@ -36,30 +37,6 @@ impl Keyword {
 			Self::Import => "import",
 			Self::Await => "await",
 			Self::Async => "async",
-		}
-	}
-}
-pub struct KeywordErr(String);
-impl FromStr for Keyword {
-	type Err = KeywordErr;
-	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		match s {
-			"const" => Ok(Self::Const),
-			"let" => Ok(Self::Let),
-			"function" => Ok(Self::Function),
-			"class" => Ok(Self::Class),
-			"true" => Ok(Self::True),
-			"false" => Ok(Self::False),
-			"try" => Ok(Self::Try),
-			"catch" => Ok(Self::Catch),
-			"finally" => Ok(Self::Finally),
-			"if" => Ok(Self::If),
-			"else" => Ok(Self::Else),
-			"export" => Ok(Self::Export),
-			"import" => Ok(Self::Import),
-			"await" => Ok(Self::Await),
-			"async" => Ok(Self::Async),
-			other => Err(KeywordErr(other.to_owned())),
 		}
 	}
 }
