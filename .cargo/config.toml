@@ -1,5 +1,1 @@
-# Bash command for getting the correct LLVM version $(brew --prefix llvm)/bin/llvm-config --prefix
-
-[env]
-LLVM_SYS_130_PREFIX = "/opt/homebrew/Cellar/llvm/13.0.1_1"
-LLVM_SYS_140_PREFIX = "/opt/homebrew/Cellar/llvm/14.0.6"
+# Bash command for getting the correct LLVM version in MacOS: $(brew --prefix llvm)/bin/llvm-config --prefix

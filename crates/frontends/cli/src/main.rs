@@ -32,18 +32,12 @@ fn main() -> Result<()> {
 		);
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
-
-		#[cfg(feature = "llvm")]
-		llvm::run(&ast)?;
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
 		let mut tokens = scan(input.as_bytes(), Some("Evaluate".to_owned()));
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
-
-		#[cfg(feature = "llvm")]
-		llvm::run(&ast)?;
 	} else {
 		loop {
 			print!(">>> ");

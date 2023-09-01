@@ -12,12 +12,7 @@ clap = { version = "3.0", features = ["derive"] }
 anyhow = "1.0"
 ast = { path = "../../utils/ast" }
 lexer = { path = "../../utils/lexer" }
-llvm = { path = "../../backends/llvm", optional = true }
-vm = { path = "../../backends/vm", optional = true }
+vm = { path = "../../backends/vm" }
 
 [dev-dependencies]
 assert_cmd = "2.0"
-
-[features]
-vm = ["dep:vm"]
-llvm = ["dep:llvm"]
