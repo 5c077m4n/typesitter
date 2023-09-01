@@ -3,9 +3,9 @@ use super::{
 	token::token_variance::{Span, Token, TokenType},
 };
 use log::{debug, error};
-use std::iter;
+use std::iter::{self, Peekable};
 
-pub fn scan(input: &str, extra: Option<String>) -> impl Iterator<Item = Token<'_>> {
+pub fn scan(input: &str, extra: Option<String>) -> Peekable<impl Iterator<Item = Token<'_>>> {
 	iter::from_fn({
 		let mut input = Span::new_extra(input, extra);
 
@@ -30,4 +30,5 @@ pub fn scan(input: &str, extra: Option<String>) -> impl Iterator<Item = Token<'_
 		} if frag.trim() == "" => None,
 		other => Some(other),
 	})
+	.peekable()
 }

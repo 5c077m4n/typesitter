@@ -8,9 +8,10 @@ use lexer::token::{
 	punctuation::Punctuation,
 	token_variance::{Token, TokenType},
 };
+use std::iter::Peekable;
 
 pub fn parse_param_list<'a>(
-	token_iter: &mut impl Iterator<Item = Token<'a>>,
+	token_iter: &mut Peekable<impl Iterator<Item = Token<'a>>>,
 ) -> Result<Vec<VarDecl<'a>>> {
 	let mut input_token_index: usize = 0;
 	let mut params: Vec<VarDecl> = Vec::new();
