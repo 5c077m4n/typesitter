@@ -319,6 +319,8 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 		Ok(expr_list)
 	}
 
+	/// This function parses an identifier and its following tokens (assignment/function
+	/// call/binary operators/ect.)
 	fn ident_parse(&mut self, ident: &'p [u8]) -> Result<Vec<Node<'p>>> {
 		let mut expr_list: Vec<Node<'p>> = vec![];
 		let mut ident_parts: Vec<&[u8]> = vec![ident];

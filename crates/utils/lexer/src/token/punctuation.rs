@@ -37,7 +37,9 @@ pub enum Punctuation {
 	Dot,
 	/// `,`
 	Comma,
+	/// \s
 	Space,
+	/// \t
 	Tab,
 	/// End of line
 	EOL,
