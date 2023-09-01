@@ -25,8 +25,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - uses: ./.github/workflows/toolchain
+        with:
+          target: ${{ matrix.target }}
+
       - uses: ./.github/workflows/cache
 
       - name: Tag version
