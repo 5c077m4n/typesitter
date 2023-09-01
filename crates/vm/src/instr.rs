@@ -16,6 +16,7 @@ pub enum Instr {
 	Set(Pointer),
 	Print,
 	PrintChar,
+	PrintDebug,
 }
 
 pub type Program<'p> = &'p [Instr];

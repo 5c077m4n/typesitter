@@ -1,49 +1,53 @@
 use super::{instr::Instr, vm::VM};
+use anyhow::Result;
 
 #[test]
-fn simple_arith_one_plus_one() {
+fn simple_arith_one_plus_one() -> Result<()> {
 	use Instr::*;
 
 	let mut vm = VM::default();
-	let result = vm.interpret(&[Push(1.), Push(1.), Instr::Add]);
+	let result = vm.interpret(&[Push(1.), Push(1.), Instr::Add])?;
 
-	assert_eq!(result, Some(2.));
+	assert_eq!(result, 2.);
+	Ok(())
 }
 
 #[test]
-fn complex_arith() {
+fn complex_arith() -> Result<()> {
 	use Instr::*;
 
 	let mut vm = VM::default();
-	let result = vm.interpret(&[Push(9.), Push(3.), Push(1.), Add, Sub]);
+	let result = vm.interpret(&[Push(9.), Push(3.), Push(1.), Add, Sub])?;
 
-	assert_eq!(result, Some(5.));
+	assert_eq!(result, 5.);
+	Ok(())
 }
 
 #[test]
 #[ignore]
-fn sum_first_100_ints() {
+fn sum_first_100_ints() -> Result<()> {
 	use Instr::*;
 
 	let mut vm = VM::default();
 	let result = vm.interpret(&[
 		Push(0.), // [accumilator = 0]
-		Push(1.), // [accumilator = 0, index = 1]
+		Push(0.), // [accumilator = 0, index = 0]
 		// stack: [accumilator, index]
-		Get(0), // [accumilator, index, accumilator] <- Loop start - jump to here
-		Get(1), // [accumilator, index, accumilator, index]
-		Add,    // [accumilator, index, (accumilator + index)]
-		Set(0), // [accumilator + (accumilator + index), index, (accumilator + index)]
-		Pop,    // [accumilator + (accumilator + index), index]
+		Get(0),    // [accumilator, index, accumilator] <- Loop start - jump to here
+		Get(1),    // [accumilator, index, accumilator, index]
+		AddRegReg, // [accumilator, index, (accumilator + index)]
+		Set(0),    // [(accumilator + index), index]
 		// stack: [accumilator, index]
-		Incr,             // [accumilator, index]
-		Get(1),           // [accumilator, index, index]
-		Push(100.),       // [accumilator, index, index, 100]
-		Sub,              // [accumilator, index, index - 100]
+		AddRegLit(1.),   // [accumilator, index + 1]
+		Get(1),          // [accumilator, index, index]
+		SubRegLit(100.), // [accumilator, index, index - 100]
+		PrintDebug,
 		JumpNotEqual0(2), // [accumilator, index] <- Loop end
 		Get(0),           // [accumilator, index, accumilator]
-		Print,
-	]);
+	])?;
 
-	assert_eq!(result, Some(100.));
+	let sum_upto_100 = (0..100).sum::<usize>() as f64;
+
+	assert_eq!(result, sum_upto_100);
+	Ok(())
 }
