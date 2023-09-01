@@ -7,7 +7,7 @@ use anyhow::Result;
 
 #[test]
 fn const_kw_test() -> Result<()> {
-	let input = Span::new_extra("const", None);
+	let input = Span::new_extra("const a = 'wert';", None);
 	let (_, Token { value, position }) = keyword(input)?;
 
 	assert_eq!(value, TokenType::Keyword(Keyword::Const));
@@ -17,7 +17,7 @@ fn const_kw_test() -> Result<()> {
 
 #[test]
 fn let_kw_test() -> Result<()> {
-	let input = Span::new_extra("let", None);
+	let input = Span::new_extra("let b = 9;", None);
 	let (_, Token { value, position }) = keyword(input)?;
 
 	assert_eq!(value, TokenType::Keyword(Keyword::Let));
@@ -111,5 +111,23 @@ fn string_double_quote_test() -> Result<()> {
 
 	assert_eq!(value, TokenType::Literal(Literal::String("2 34")));
 	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
+fn all_tokens_number_test() -> Result<()> {
+	let input = Span::new_extra("123", None);
+	let (_, Token { value, .. }) = all_tokens(input)?;
+
+	assert_eq!(value, TokenType::Literal(Literal::Number(123.)));
+	Ok(())
+}
+
+#[test]
+fn all_tokens_assignment_test() -> Result<()> {
+	let input = Span::new_extra(r#"const a = "123";"#, None);
+	let (_, Token { value, .. }) = all_tokens(input)?;
+
+	assert_eq!(value, TokenType::Keyword(Keyword::Const));
 	Ok(())
 }

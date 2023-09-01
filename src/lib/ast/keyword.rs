@@ -7,17 +7,18 @@ pub enum Keyword {
 	Let,
 	Function,
 	Class,
-	True,
-	False,
 	Try,
 	Catch,
 	Finally,
 	If,
 	Else,
+	Switch,
+	Case,
 	Export,
 	Import,
 	Await,
 	Async,
+	Return,
 }
 impl Keyword {
 	pub fn as_str(&self) -> &str {
@@ -26,17 +27,18 @@ impl Keyword {
 			Self::Let => "let",
 			Self::Function => "function",
 			Self::Class => "class",
-			Self::True => "true",
-			Self::False => "false",
 			Self::Try => "try",
 			Self::Catch => "catch",
 			Self::Finally => "finally",
 			Self::If => "if",
 			Self::Else => "else",
+			Self::Switch => "switch",
+			Self::Case => "case",
 			Self::Export => "export",
 			Self::Import => "import",
 			Self::Await => "await",
 			Self::Async => "async",
+			Self::Return => "return",
 		}
 	}
 }
