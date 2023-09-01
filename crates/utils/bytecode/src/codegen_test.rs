@@ -1,6 +1,7 @@
 use super::{codegen::CodeGen, instr::Instr};
 use anyhow::Result;
 use ast::types::{
+	fn_call::FnCall,
 	literal::Literal,
 	node::Node,
 	var_decl::{VarDecl, VarType},
@@ -63,4 +64,36 @@ fn number_decl_and_call_wrong_param() {
 	]);
 	let mut codegen = CodeGen::default();
 	let _prog = codegen.run(&tree).unwrap();
+}
+
+#[test]
+fn builtin_console_log() -> Result<()> {
+	let tree = Node::Block(vec![
+		Node::VarDecl(VarDecl {
+			var_type: VarType::Const,
+			name: vec![b"param_1"],
+			type_annotation: None,
+			value: Box::new(Node::Literal(Literal::Number(1.))),
+		}),
+		Node::FnCall(FnCall {
+			fn_name: vec![b"console", b"log"],
+			params: vec![VarDecl {
+				var_type: VarType::Const,
+				name: vec![b"param_1"],
+				type_annotation: None,
+				value: Box::new(Node::Literal(Literal::Number(1.))),
+			}],
+		}),
+	]);
+	let mut codegen = CodeGen::default();
+	let prog = codegen.run(&tree).unwrap();
+
+	assert_eq!(
+		prog,
+		vec![
+			Instr::Push(1.0),
+			Instr::CallBuiltin("console.log".into(), vec![0])
+		]
+	);
+	Ok(())
 }

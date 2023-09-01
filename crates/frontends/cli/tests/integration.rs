@@ -14,33 +14,11 @@ fn eval_number_var_init_test() -> Result<()> {
 }
 
 #[test]
-#[ignore = "strings aren't implemented yet"]
-fn eval_string_var_init_test() -> Result<()> {
-	let mut cmd = Command::cargo_bin(BIN_NAME)?;
-
-	cmd.args(&["--eval", r#"const s: string = 'qwerty';"#])
-		.assert()
-		.success();
-	Ok(())
-}
-
-#[test]
 fn stdin_test() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
 	cmd.write_stdin("const n: number = 1234;")
 		.write_stdin("\n")
-		.assert()
-		.success();
-	Ok(())
-}
-
-#[test]
-#[ignore = "complex assignment isn't supported yet"]
-fn read_param() -> Result<()> {
-	let mut cmd = Command::cargo_bin(BIN_NAME)?;
-
-	cmd.args(&["--eval", "const n1: number = 123; const n2: number = n1;"])
 		.assert()
 		.success();
 	Ok(())
@@ -55,10 +33,52 @@ fn file_read_decl_call_var() -> Result<()> {
 }
 
 #[test]
-#[ignore = "scopes aren't implemented yet"]
-fn file_read_fn_with_scope() -> Result<()> {
+fn console_log_panik() {
+	let mut cmd = Command::cargo_bin(BIN_NAME).unwrap();
+
+	cmd.args(&[
+		"--eval",
+		"const n: number = 1234; console.log(noSuchParam);",
+	])
+	.assert()
+	.failure();
+}
+
+#[test]
+fn console_log() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
-	cmd.arg("tests/assets/1.ts").assert().success();
+	cmd.args(&["--eval", "const n: number = 1234; console.log(n);"])
+		.assert()
+		.code(0)
+		.stdout("1234\n")
+		.success();
+	Ok(())
+}
+
+#[test]
+fn console_log_2() -> Result<()> {
+	let mut cmd = Command::cargo_bin(BIN_NAME)?;
+
+	cmd.args(&["--eval", "const n1 = 1; const n2 = 3; console.log(n1, n2);"])
+		.assert()
+		.code(0)
+		.stdout("1, 3\n")
+		.success();
+	Ok(())
+}
+
+#[test]
+fn console_error() -> Result<()> {
+	let mut cmd = Command::cargo_bin(BIN_NAME)?;
+
+	cmd.args(&[
+		"--eval",
+		"const n1 = 1; const n2 = 3; console.error(n1, n2);",
+	])
+	.assert()
+	.code(0)
+	.stderr("1, 3\n")
+	.success();
 	Ok(())
 }
