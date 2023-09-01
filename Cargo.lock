@@ -241,6 +241,7 @@ name = "jit"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "ast",
  "env_logger",
  "inkwell",
  "log",
