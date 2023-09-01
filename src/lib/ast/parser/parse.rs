@@ -34,23 +34,33 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 				}) => match token_iter.next() {
 					Some(Token {
 						value: TokenType::Punctuation(Punctuation::BracketOpen),
-						..
+						position,
 					}) => {
 						let input_params = parse_param_list(token_iter)?;
-						if let Some(Token {
-							value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
-							..
-						}) = token_iter.next()
-						{
-							let body = parse(token_iter)?;
-							let named_fn_node = Box::new(Node::FnDec(FnDec {
-								fn_type: FnType::Classic,
-								name: Some(fn_name),
-								input_params,
-								return_type: None,
-								body: Box::new(Node::Block(body)),
-							}));
-							expr_list.push(named_fn_node);
+						match token_iter.next() {
+							Some(Token {
+								value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
+								..
+							}) => {
+								let body = parse(token_iter)?;
+								let named_fn_node = Box::new(Node::FnDec(FnDec {
+									fn_type: FnType::Classic,
+									name: Some(fn_name),
+									input_params,
+									return_type: None,
+									body: Box::new(Node::Block(body)),
+								}));
+								expr_list.push(named_fn_node);
+							}
+							Some(Token {
+								value: TokenType::Punctuation(Punctuation::Colon),
+								..
+							}) => {
+								todo!("function return type")
+							}
+							other => {
+								error!("Was not expecting {:?} @ {:?}", &other, &position);
+							}
 						}
 					}
 					other => {
