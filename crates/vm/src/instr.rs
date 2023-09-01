@@ -5,6 +5,8 @@ pub enum Instr {
 	Pop,
 	Add,
 	Sub,
+	Incr,
+	Decr,
 	Mul,
 	Div,
 	Print,

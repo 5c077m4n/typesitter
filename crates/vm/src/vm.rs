@@ -24,16 +24,16 @@ impl VM {
 				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
 					self.stack.push(b + a);
 				}
-
 				debug!("{:?}", self.stack.peek());
 			}
+			Instr::Incr => *self.stack.peek_mut().unwrap() += 1.,
 			Instr::Sub => {
 				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
 					self.stack.push(b - a);
 				}
-
 				debug!("{:?}", self.stack.peek());
 			}
+			Instr::Decr => *self.stack.peek_mut().unwrap() -= 1.,
 			Instr::Mul => {
 				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
 					self.stack.push(b * a);
@@ -45,7 +45,6 @@ impl VM {
 				if let (Some(a), Some(b)) = (self.stack.pop(), self.stack.pop()) {
 					self.stack.push(b / a);
 				}
-
 				debug!("{:?}", self.stack.peek());
 			}
 			Instr::Print => {
