@@ -1,6 +1,6 @@
 use anyhow::Result;
 use ast::parser::parse::parse_into_block;
-use bytecode::codegen::codegen;
+use bytecode::codegen::CodeGen;
 use clap::Parser;
 use lexer::scanner::scan;
 use std::{
@@ -23,6 +23,7 @@ fn main() -> Result<()> {
 	env_logger::init();
 	let args: Args = Args::parse();
 	let mut vm = VM::default();
+	let mut codegen = CodeGen::default();
 
 	if let Some(filepath) = args.filepath {
 		let input = fs::read_to_string(&filepath)?;
@@ -31,7 +32,7 @@ fn main() -> Result<()> {
 
 		let mut tokens = scan(input, filepath.into_os_string().into_string().ok());
 		let ast = parse_into_block(&mut tokens)?;
-		let program = codegen(&ast)?;
+		let program = codegen.run(&ast)?;
 
 		if !program.is_empty() {
 			vm.interpret(&program)?;
@@ -42,7 +43,7 @@ fn main() -> Result<()> {
 
 		let mut tokens = scan(input, Some("Evaluate".to_owned()));
 		let ast = parse_into_block(&mut tokens)?;
-		let program = codegen(&ast)?;
+		let program = codegen.run(&ast)?;
 
 		if !program.is_empty() {
 			vm.interpret(&program)?;
@@ -62,7 +63,7 @@ fn main() -> Result<()> {
 			let input = input.as_bytes();
 			let mut tokens = scan(input, Some("REPL".to_owned()));
 			let ast = parse_into_block(&mut tokens)?;
-			let program = codegen(&ast)?;
+			let program = codegen.run(&ast)?;
 
 			if !program.is_empty() {
 				vm.interpret(&program)?;

@@ -1,4 +1,4 @@
-use super::{codegen::codegen, instr::Instr};
+use super::{codegen::CodeGen, instr::Instr};
 use anyhow::Result;
 use ast::types::{
 	literal::Literal,
@@ -9,7 +9,8 @@ use ast::types::{
 #[test]
 fn empty_program() -> Result<()> {
 	let tree = Node::Block(vec![Node::Block(vec![])]);
-	let prog = codegen(&tree)?;
+	let mut codegen = CodeGen::default();
+	let prog = codegen.run(&tree)?;
 
 	assert_eq!(prog, vec![]);
 	Ok(())
@@ -23,7 +24,8 @@ fn number_decl() -> Result<()> {
 		type_annotation: None,
 		value: Box::new(Node::Literal(Literal::Number(1.))),
 	})]);
-	let prog = codegen(&tree)?;
+	let mut codegen = CodeGen::default();
+	let prog = codegen.run(&tree)?;
 
 	assert_eq!(prog, vec![Instr::Push(1.)]);
 	Ok(())
