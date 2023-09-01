@@ -82,18 +82,6 @@ fn binary_with_dashes_test() -> Result<()> {
 }
 
 #[test]
-fn binary_without_dashes_test() -> Result<()> {
-	let origin = "0b0101";
-	let input = Span::new_extra(origin, None);
-	let (tail, Token { value, position }) = binary(input)?;
-
-	assert_eq!(tail.fragment().to_owned(), "");
-	assert_eq!(value, TokenType::Generic("0101"));
-	assert_eq!(position.location_line(), 1);
-	Ok(())
-}
-
-#[test]
 fn string_single_quote_test() -> Result<()> {
 	let origin = r#"'234'"#;
 	let input = Span::new_extra(origin, None);
@@ -111,6 +99,54 @@ fn string_double_quote_test() -> Result<()> {
 	let (_, Token { value, position }) = string(input)?;
 
 	assert_eq!(value, TokenType::Literal(Literal::String("2 34")));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
+fn binary_without_dashes_test() -> Result<()> {
+	let origin = "0b0101";
+	let input = Span::new_extra(origin, None);
+	let (tail, Token { value, position }) = binary(input)?;
+
+	assert_eq!(tail.fragment().to_owned(), "");
+	assert_eq!(value, TokenType::Generic("0101"));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
+fn identifier_base_test() -> Result<()> {
+	let origin = "paramName";
+	let input = Span::new_extra(origin, None);
+	let (tail, Token { value, position }) = identifier(input)?;
+
+	assert_eq!(tail.fragment().to_owned(), "");
+	assert_eq!(value, TokenType::Identifier(origin));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
+fn identifier_test() -> Result<()> {
+	let origin = "param_name_1";
+	let input = Span::new_extra(origin, None);
+	let (tail, Token { value, position }) = identifier(input)?;
+
+	assert_eq!(tail.fragment().to_owned(), "");
+	assert_eq!(value, TokenType::Identifier(origin));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
+fn identifier_dollar_test() -> Result<()> {
+	let origin = "param_name_$";
+	let input = Span::new_extra(origin, None);
+	let (tail, Token { value, position }) = identifier(input)?;
+
+	assert_eq!(tail.fragment().to_owned(), "");
+	assert_eq!(value, TokenType::Identifier(origin));
 	assert_eq!(position.location_line(), 1);
 	Ok(())
 }
