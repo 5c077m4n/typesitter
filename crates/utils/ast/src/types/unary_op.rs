@@ -1,16 +1,17 @@
 use super::node::Node;
-use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Operator {
 	Typeof,
 	Plus,
 	Minus,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, PartialEq)]
 pub struct UnaryOp<'u> {
 	op: Operator,
-	#[serde(borrow)]
+	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	value: Box<Node<'u>>,
 }

@@ -1,7 +1,7 @@
 use super::node::Node;
-use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Operator {
 	Eq,
 	EqEq,
@@ -19,11 +19,12 @@ pub enum Operator {
 	Mul,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, PartialEq)]
 pub struct BinOp<'b> {
 	op: Operator,
-	#[serde(borrow)]
+	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	lhs: Box<Node<'b>>,
-	#[serde(borrow)]
+	#[cfg_attr(feature = "js_bind", serde(borrow))]
 	rhs: Box<Node<'b>>,
 }

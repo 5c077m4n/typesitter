@@ -9,9 +9,9 @@ use super::{
 	unary_op::UnaryOp,
 	var_dec::VarDecl,
 };
-use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Node<'n> {
 	Block(Vec<Node<'n>>),
 	Literal(Literal<'n>),
