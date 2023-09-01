@@ -5,7 +5,11 @@ use super::super::types::{
 	type_annotation::TypeAnnotation,
 	var_decl::VarDecl,
 };
-use crate::types::{fn_call::FnCall, var_decl::VarType};
+use crate::types::{
+	bin_op::{BinOp, Operator},
+	fn_call::FnCall,
+	var_decl::VarType,
+};
 use anyhow::Result;
 use lexer::token::{
 	keyword::Keyword,
@@ -172,6 +176,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 											value: TokenType::Literal(TokenLiteral::Number(n)),
 											..
 										}) => {
+											let param_name = std::str::from_utf8(param_name)?;
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: vec![param_name],
@@ -186,6 +191,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 											value: TokenType::Literal(TokenLiteral::String(s)),
 											..
 										}) => {
+											let param_name = std::str::from_utf8(param_name)?;
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: vec![param_name],
@@ -214,6 +220,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 								value: TokenType::Literal(TokenLiteral::Number(n)),
 								..
 							}) => {
+								let param_name = std::str::from_utf8(param_name)?;
 								let init_node = Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
 									name: vec![param_name],
@@ -226,6 +233,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 								value: TokenType::Literal(TokenLiteral::String(s)),
 								..
 							}) => {
+								let param_name = std::str::from_utf8(param_name)?;
 								let init_node = Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
 									name: vec![param_name],
@@ -243,6 +251,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 							value: TokenType::Punctuation(Punctuation::Semicolon),
 							..
 						}) => {
+							let param_name = std::str::from_utf8(param_name)?;
 							let init_node = Node::VarDecl(VarDecl {
 								var_type: init_type.try_into()?,
 								name: vec![param_name],
@@ -272,6 +281,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 						value: TokenType::Identifier(ret_ident),
 						..
 					}) => {
+						let ret_ident = std::str::from_utf8(ret_ident)?;
 						expr_list.push(Node::Return(Box::new(Node::VarCall(ret_ident))));
 					}
 					Some(Token {
@@ -316,6 +326,18 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 					expr_list.push(fn_call_node);
 				}
 				TokenType::Punctuation(Punctuation::Equal) => {
+					let body = self.parse()?;
+					let var_name: Vec<String> = ident_parts
+						.iter()
+						.map(|p| String::from_utf8(p.to_vec()).unwrap())
+						.collect();
+					let var_name = var_name.join(".");
+
+					let _bin_op = BinOp {
+						op: Operator::Eq,
+						lhs: Box::new(Node::VarCall(&var_name)),
+						rhs: Box::new(Node::Block(body)),
+					};
 					self.errors.push(format!(
 						"Param assignment is unsupported yet @ {:?}",
 						&position
@@ -353,6 +375,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 				TokenType::Identifier(param_name) => {
 					input_token_index += 1;
 
+					let param_name = std::str::from_utf8(param_name)?;
 					let param_dec = VarDecl {
 						var_type: VarType::Let,
 						name: vec![param_name],
@@ -434,6 +457,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 				TokenType::Identifier(param_name) => {
 					input_token_index += 1;
 
+					let param_name = std::str::from_utf8(param_name)?;
 					let param_dec = VarDecl {
 						var_type: VarType::Let,
 						name: vec![param_name],

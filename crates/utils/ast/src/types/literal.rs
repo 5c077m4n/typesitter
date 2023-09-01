@@ -3,8 +3,9 @@ use lexer::token::literal::Literal as TokenLiteral;
 use std::collections::BTreeMap;
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Default)]
 pub enum Literal<'l> {
+	#[default]
 	Undefined,
 	Null,
 	String(&'l [u8]),
@@ -12,11 +13,6 @@ pub enum Literal<'l> {
 	Bool(bool),
 	Array(Vec<Literal<'l>>),
 	Object(BTreeMap<&'l str, Box<Literal<'l>>>),
-}
-impl Default for Literal<'_> {
-	fn default() -> Self {
-		Self::Undefined
-	}
 }
 
 impl<'l> TryFrom<TokenLiteral<'l>> for Literal<'l> {
