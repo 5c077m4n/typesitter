@@ -34,11 +34,11 @@ fn sum_first_100_ints() -> Result<()> {
 		Add,    // [accumilator, index, (accumilator + index)]
 		Set(0), // [(accumilator + index), index]
 		// stack: [accumilator, index]
-		AddLit(1.),       // [accumilator, index + 1]
-		Get(1),           // [accumilator, index, index]
-		SubLit(100.),     // [accumilator, index, index - 100]
-		JumpNotEqual0(2), // [accumilator, index] <- Loop end
-		Get(0),           // [accumilator, index, accumilator]
+		AddLit(1.),                        // [accumilator, index + 1]
+		Get(1),                            // [accumilator, index, index]
+		SubLit(100.),                      // [accumilator, index, index - 100]
+		JumpNotEqual { ip: 2, value: 0. }, // [accumilator, index] <- Loop end
+		Get(0),                            // [accumilator, index, accumilator]
 	])?;
 	let sum_upto_100 = (0..100).sum::<usize>() as f64;
 

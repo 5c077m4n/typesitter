@@ -1,1 +1,1 @@
-pub type RegisterFile = [usize; 32];
+pub type RegisterFile = [f64; 32];
