@@ -5,7 +5,7 @@ use std::collections::BTreeMap;
 pub enum Literal<'l> {
 	Undefined,
 	Null,
-	String(&'l str),
+	String(&'l [u8]),
 	Number(f64),
 	Bool(bool),
 	Array(Vec<Literal<'l>>),

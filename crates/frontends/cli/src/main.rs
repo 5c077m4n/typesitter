@@ -26,7 +26,10 @@ fn main() -> Result<()> {
 		let input = fs::read_to_string(&filepath)?;
 		let input = &input.trim();
 
-		let mut tokens = scan(input, filepath.into_os_string().into_string().ok());
+		let mut tokens = scan(
+			input.as_bytes(),
+			filepath.into_os_string().into_string().ok(),
+		);
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
 
@@ -35,7 +38,7 @@ fn main() -> Result<()> {
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
-		let mut tokens = scan(input, Some("Evaluate".to_owned()));
+		let mut tokens = scan(input.as_bytes(), Some("Evaluate".to_owned()));
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
 
@@ -53,7 +56,7 @@ fn main() -> Result<()> {
 			}
 
 			let input = &input.trim();
-			let mut tokens = scan(input, Some("REPL".to_owned()));
+			let mut tokens = scan(input.as_bytes(), Some("REPL".to_owned()));
 			let ast = parse(&mut tokens)?;
 			debug!("{:?}", &ast);
 		}

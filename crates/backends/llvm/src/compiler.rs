@@ -67,7 +67,13 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 			&fn_decl
 				.name
 				.as_ref()
-				.map(|name_list| name_list.join("."))
+				.map(|name_list| {
+					name_list
+						.iter()
+						.map(|name| std::str::from_utf8(name).unwrap())
+						.collect::<Vec<_>>()
+						.join(".")
+				})
 				.unwrap_or_else(|| "".to_string()),
 			fn_type,
 			None,
@@ -79,12 +85,12 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 		match &var_decl.type_annotation {
 			Some(TypeAnnotation::String) => match var_decl.value.as_ref() {
 				Node::Literal(Literal::String(s)) => {
-					let string_const = self.context.const_string(s.as_bytes(), false);
+					let string_const = self.context.const_string(s, false);
 					Ok(BasicValueEnum::VectorValue(string_const))
 				}
 				other => bail!(
-					"The var {} is annotated as a {:?} and parsed as a {:?}",
-					var_decl.name.join("."),
+					"The var {:?} is annotated as a {:?} and parsed as a {:?}",
+					var_decl.name,
 					var_decl.type_annotation,
 					other
 				),
@@ -97,8 +103,8 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 					Ok(BasicValueEnum::FloatValue(f64_value))
 				}
 				other => bail!(
-					"The var {} is annotated as a {:?} and parsed as a {:?}",
-					var_decl.name.join("."),
+					"The var {:?} is annotated as a {:?} and parsed as a {:?}",
+					var_decl.name,
 					var_decl.type_annotation,
 					other
 				),
