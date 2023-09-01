@@ -1,8 +1,7 @@
 #![allow(dead_code)]
 
-use super::{
-	super::ast::{keyword::Keyword, literal::Literal, punctuation::Punctuation},
-	token::{Span, Token, TokenType},
+use super::token::{
+	keyword::Keyword, literal::Literal, punctuation::Punctuation, Span, Token, TokenType,
 };
 use nom::{
 	branch::alt,

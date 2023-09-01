@@ -1,5 +1,10 @@
-use super::super::ast::{keyword::Keyword, literal::Literal, punctuation::Punctuation};
+#![allow(dead_code)]
+
 use nom_locate::LocatedSpan;
+
+pub mod keyword;
+pub mod literal;
+pub mod punctuation;
 
 pub type Span<'s> = LocatedSpan<&'s str, Option<String>>;
 
@@ -7,9 +12,9 @@ pub type Span<'s> = LocatedSpan<&'s str, Option<String>>;
 pub enum TokenType<'t> {
 	Generic(&'t str),
 	Identifier(&'t str),
-	Keyword(Keyword),
-	Punctuation(Punctuation),
-	Literal(Literal<'t>),
+	Keyword(keyword::Keyword),
+	Punctuation(punctuation::Punctuation),
+	Literal(literal::Literal<'t>),
 }
 #[derive(Debug, PartialEq)]
 pub struct Token<'t> {
