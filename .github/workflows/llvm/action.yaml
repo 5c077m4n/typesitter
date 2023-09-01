@@ -1,5 +1,12 @@
-name: Toolchain
-description: Rust toolchain setup
+---
+name: LLVM installer
+description: Install LLVM
+
+inputs:
+  llvm-version:
+    description: "The version of LLVM to install"
+    required: false
+    default: "14"
 
 runs:
   using: composite
@@ -12,5 +19,5 @@ runs:
         cd "$(mktemp -d)"
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
-        sudo ./llvm.sh 14
-        echo "LLVM_SYS_140_PREFIX=/usr/lib/llvm-14" >> $GITHUB_ENV
+        sudo ./llvm.sh ${{ inputs.llvm-version }}
+        echo "LLVM_SYS_${{ inputs.llvm-version }}0_PREFIX=/usr/lib/llvm-${{ inputs.llvm-version }}" >> $GITHUB_ENV
