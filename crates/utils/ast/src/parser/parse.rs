@@ -16,7 +16,7 @@ use lexer::token::{
 	punctuation::Punctuation,
 	token_variance::{Token, TokenType},
 };
-use log::{error, warn};
+use log::error;
 use std::iter::Peekable;
 
 pub fn parse<'p>(
@@ -27,7 +27,7 @@ pub fn parse<'p>(
 	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
 			TokenType::Punctuation(Punctuation::Semicolon) => (), // This makes the `;` optional - but only at the right placement
-			TokenType::Punctuation(Punctuation::BracketCurlyClose) => (),
+			TokenType::Punctuation(Punctuation::BracketCurlyClose) => break,
 			TokenType::Keyword(Keyword::Function) => match token_iter.next() {
 				Some(Token {
 					value: TokenType::Identifier(fn_name),
@@ -76,14 +76,6 @@ pub fn parse<'p>(
 											body: Box::new(Node::Block(body)),
 										});
 										expr_list.push(named_fn_node);
-
-										if let Some(Token {
-											value: TokenType::Punctuation(Punctuation::Semicolon),
-											position,
-										}) = token_iter.peek()
-										{
-											warn!("The `;` @ {} is not needed", &position);
-										}
 									}
 									other => {
 										bail!("Wasn't expecting {:?} @ {:?}", &other, &position)
@@ -257,7 +249,7 @@ pub fn parse<'p>(
 			},
 			other => {
 				error!("{:?} @ {:?}", &other, &position);
-				unimplemented!("Main @ {:?}", &position);
+				unimplemented!("[Main] {:?} @ {:?}", &other, &position);
 			}
 		}
 	}
