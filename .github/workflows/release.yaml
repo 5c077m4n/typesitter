@@ -78,5 +78,5 @@ jobs:
           tag_name: ${{ env.TAG_VERSION }}
           prerelease: contains(env.TAG_VERSION, 'alpha') || contains(env.TAG_VERSION, 'beta')
           files: |
-            target/${{ matrix.target }}/release/typesitter
+            target/${{ matrix.target }}/release/cli
           fail_on_unmatched_files: true
