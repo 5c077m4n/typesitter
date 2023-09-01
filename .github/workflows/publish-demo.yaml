@@ -17,12 +17,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: yarn
-          cache-dependency-path: demo/yarn.lock
+          cache: pnpm
+          cache-dependency-path: demo/pnpm-lock.yaml
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -32,10 +35,12 @@ jobs:
         run: sh crates/utils/js_bind/build-demo.sh
       - name: Install deps
         working-directory: demo
-        run: yarn install --immutable --check-cache
+        run: pnpm install --frozen-lockfile
       - name: Build
+        env:
+          NODE_ENV: production
         working-directory: demo
-        run: yarn build
+        run: pnpm run build:prod
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
