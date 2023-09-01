@@ -1,6 +1,6 @@
 use super::{
+	detector::*,
 	token::{keyword::Keyword, literal::Literal, Span, Token, TokenType},
-	tokenizer::*,
 };
 use anyhow::Result;
 
