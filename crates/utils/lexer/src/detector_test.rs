@@ -8,8 +8,14 @@ use super::{
 };
 use anyhow::Result;
 
+fn init_test_logger() {
+	let _ = env_logger::builder().is_test(true).try_init();
+}
+
 #[test]
 fn const_kw_test() -> Result<()> {
+	init_test_logger();
+
 	let input = Span::new_extra("const a = 'wert';", None);
 	let (_, Token { value, position }) = keyword(input)?;
 
@@ -20,6 +26,8 @@ fn const_kw_test() -> Result<()> {
 
 #[test]
 fn let_kw_test() -> Result<()> {
+	init_test_logger();
+
 	let input = Span::new_extra("let b = 9;", None);
 	let (_, Token { value, position }) = keyword(input)?;
 
@@ -30,6 +38,8 @@ fn let_kw_test() -> Result<()> {
 
 #[test]
 fn bool_true_test() -> Result<()> {
+	init_test_logger();
+
 	let input = Span::new_extra("true", None);
 	let (_, Token { value, position }) = boolean(input)?;
 
@@ -40,6 +50,8 @@ fn bool_true_test() -> Result<()> {
 
 #[test]
 fn bool_false_test() -> Result<()> {
+	init_test_logger();
+
 	let input = Span::new_extra("false", None);
 	let (_, Token { value, position }) = boolean(input)?;
 
@@ -50,6 +62,8 @@ fn bool_false_test() -> Result<()> {
 
 #[test]
 fn decimal_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = "42";
 	let input = Span::new_extra(origin, None);
 	let (_, Token { value, position }) = decimal(input)?;
@@ -61,6 +75,8 @@ fn decimal_test() -> Result<()> {
 
 #[test]
 fn decimal_underscore_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = "42_000";
 	let input = Span::new_extra(origin, None);
 	let (tail, Token { value, position }) = decimal(input)?;
@@ -73,6 +89,8 @@ fn decimal_underscore_test() -> Result<()> {
 
 #[test]
 fn binary_with_dashes_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = "0b01_01";
 	let input = Span::new_extra(origin, None);
 	let (tail, Token { value, position }) = binary(input)?;
@@ -85,6 +103,8 @@ fn binary_with_dashes_test() -> Result<()> {
 
 #[test]
 fn string_single_quote_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = r#"'234'"#;
 	let input = Span::new_extra(origin, None);
 	let (_, Token { value, position }) = string(input)?;
@@ -96,6 +116,8 @@ fn string_single_quote_test() -> Result<()> {
 
 #[test]
 fn string_double_quote_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = r#""2 34""#;
 	let input = Span::new_extra(origin, None);
 	let (_, Token { value, position }) = string(input)?;
@@ -107,6 +129,8 @@ fn string_double_quote_test() -> Result<()> {
 
 #[test]
 fn binary_without_dashes_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = "0b0101";
 	let input = Span::new_extra(origin, None);
 	let (tail, Token { value, position }) = binary(input)?;
@@ -119,6 +143,8 @@ fn binary_without_dashes_test() -> Result<()> {
 
 #[test]
 fn identifier_base_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = "paramName";
 	let input = Span::new_extra(origin, None);
 	let (tail, Token { value, position }) = identifier(input)?;
@@ -131,6 +157,8 @@ fn identifier_base_test() -> Result<()> {
 
 #[test]
 fn identifier_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = "param_name_1";
 	let input = Span::new_extra(origin, None);
 	let (tail, Token { value, position }) = identifier(input)?;
@@ -143,6 +171,8 @@ fn identifier_test() -> Result<()> {
 
 #[test]
 fn identifier_dollar_test() -> Result<()> {
+	init_test_logger();
+
 	let origin = "param_name_$";
 	let input = Span::new_extra(origin, None);
 	let (tail, Token { value, position }) = identifier(input)?;
@@ -156,6 +186,8 @@ fn identifier_dollar_test() -> Result<()> {
 #[test]
 #[should_panic]
 fn identifier_no_digit_at_start_test() {
+	init_test_logger();
+
 	let origin = "1_param_name";
 	let input = Span::new_extra(origin, None);
 	let (_, Token { .. }) = identifier(input).unwrap();
@@ -163,6 +195,8 @@ fn identifier_no_digit_at_start_test() {
 
 #[test]
 fn all_tokens_number_test() -> Result<()> {
+	init_test_logger();
+
 	let input = Span::new_extra("123", None);
 	let (_, Token { value, .. }) = all_tokens(input)?;
 
@@ -172,6 +206,8 @@ fn all_tokens_number_test() -> Result<()> {
 
 #[test]
 fn all_tokens_assignment_test() -> Result<()> {
+	init_test_logger();
+
 	let input = Span::new_extra(r#"const a = "123";"#, None);
 	let (_, Token { value, .. }) = all_tokens(input)?;
 
