@@ -1,9 +1,12 @@
-use super::super::types::{
-	fn_dec::{FnDecl, FnType},
-	literal::Literal,
-	node::Node,
-	type_annotation::TypeAnnotation,
-	var_decl::VarDecl,
+use super::{
+	super::types::{
+		fn_dec::{FnDecl, FnType},
+		literal::Literal,
+		node::Node,
+		type_annotation::TypeAnnotation,
+		var_decl::VarDecl,
+	},
+	error::Error,
 };
 use crate::types::{
 	bin_op::{BinOp, Operator},
@@ -21,7 +24,7 @@ use std::iter::Peekable;
 
 pub struct Parser<'p, I: Iterator<Item = Token<'p>>> {
 	token_iter: Box<Peekable<I>>,
-	errors: Vec<String>,
+	errors: Vec<Error<'p>>,
 }
 impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 	pub fn new(token_iter: Box<Peekable<I>>) -> Self {
@@ -31,7 +34,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 		}
 	}
 
-	pub fn get_errors(&self) -> &[String] {
+	pub fn get_errors(&self) -> &[Error] {
 		&self.errors
 	}
 
@@ -50,7 +53,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 				TokenType::Keyword(Keyword::Function) => match self.token_iter.next() {
 					Some(Token {
 						value: TokenType::Identifier(fn_name),
-						..
+						position,
 					}) => match self.token_iter.next() {
 						Some(Token {
 							value: TokenType::Punctuation(Punctuation::BracketOpen),
@@ -98,31 +101,34 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 											expr_list.push(named_fn_node);
 										}
 										other => {
-											self.errors.push(format!(
-												"Wasn't expecting {:?} @ {:?}",
-												&other, &position
+											self.errors.push(Error::new(
+												format!("Wasn't expecting {:?}", &other),
+												&position,
 											));
 										}
 									},
 									other => {
-										self.errors.push(format!(
-											"Wasn't expecting {:?} @ {:?}",
-											&other, &position
+										self.errors.push(Error::new(
+											format!("Wasn't expecting {:?}", &other),
+											&position,
 										));
 									}
 								},
 								other => {
-									self.errors.push(format!(
-										"Wasn't expecting {:?} @ {:?}",
-										&other, &position
+									self.errors.push(Error::new(
+										format!("Wasn't expecting {:?}", &other),
+										&position,
 									));
 								}
 							}
 						}
 						other => {
-							self.errors.push(format!(
-								"The character `(` was expected here, but got: {:?}",
-								&other
+							self.errors.push(Error::new(
+								format!(
+									"The character `(` was expected here, but got: {:?}",
+									&other
+								),
+								&position,
 							));
 						}
 					},
@@ -168,7 +174,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 							{
 								if let Some(Token {
 									value: TokenType::Punctuation(Punctuation::Equal),
-									..
+									position,
 								}) = self.token_iter.next()
 								{
 									match self.token_iter.next() {
@@ -203,9 +209,9 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 											expr_list.push(init_node);
 										}
 										other => {
-											self.errors.push(format!(
-												"Unimplemented Node::Literal {:?}",
-												&other
+											self.errors.push(Error::new(
+												format!("Unimplemented Node::Literal {:?}", &other),
+												&position,
 											));
 										}
 									}
@@ -214,7 +220,7 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 						}
 						Some(Token {
 							value: TokenType::Punctuation(Punctuation::Equal),
-							..
+							position,
 						}) => match self.token_iter.next() {
 							Some(Token {
 								value: TokenType::Literal(TokenLiteral::Number(n)),
@@ -243,8 +249,10 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 								expr_list.push(init_node);
 							}
 							other => {
-								self.errors
-									.push(format!("Unimplemented VarDecl {:?}", &other));
+								self.errors.push(Error::new(
+									format!("Unimplemented VarDecl {:?}", &other),
+									&position,
+								));
 							}
 						},
 						Some(Token {
@@ -261,15 +269,17 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 							expr_list.push(init_node);
 						}
 						other => {
-							self.errors.push(format!(
-								"Unimplemented not initialized VarDecl {:?}",
-								&other
+							self.errors.push(Error::new(
+								format!("Unimplemented not initialized VarDecl {:?}", &other),
+								&position,
 							));
 						}
 					},
 					other => {
-						self.errors
-							.push(format!("Unimplemented VarDecl {:?}", &other));
+						self.errors.push(Error::new(
+							format!("Unimplemented VarDecl {:?}", &other),
+							&position,
+						));
 					}
 				},
 				TokenType::Identifier(ident) => {
@@ -293,8 +303,10 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 					_ => {}
 				},
 				other => {
-					self.errors
-						.push(format!("Unimplemented Main {:?} @ {:?}", &other, &position));
+					self.errors.push(Error::new(
+						format!("Unimplemented Main {:?}", &other),
+						&position,
+					));
 				}
 			}
 		}
@@ -338,15 +350,15 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 						lhs: Box::new(Node::VarCall(&var_name)),
 						rhs: Box::new(Node::Block(body)),
 					};
-					self.errors.push(format!(
-						"Param assignment is unsupported yet @ {:?}",
-						&position
+					self.errors.push(Error::new(
+						"Param assignment is unsupported yet".to_string(),
+						&position,
 					));
 				}
 				other => {
-					self.errors.push(format!(
-						"Unimplemented Identifier {:?} @ {:?}",
-						&other, &position
+					self.errors.push(Error::new(
+						format!("Unimplemented Identifier {:?}", &other),
+						&position,
 					));
 				}
 			}
@@ -364,9 +376,9 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 				TokenType::Punctuation(Punctuation::BracketClose) => break,
 				TokenType::Punctuation(Punctuation::Comma) => {
 					if input_token_index == 0 {
-						self.errors.push(format!(
-							"Shouldn't put a comma as the first char in the fn input @ {:?}",
-							&position
+						self.errors.push(Error::new(
+							"Shouldn't put a comma as the first char in the fn input".to_string(),
+							&position,
 						));
 					} else {
 						input_token_index += 1;
@@ -386,9 +398,9 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 				}
 				TokenType::Punctuation(Punctuation::Colon) => {
 					if input_token_index == 0 {
-						self.errors.push(format!(
-							"Shouldn't put a colon as the first char in the fn input @ {:?}",
-							&position
+						self.errors.push(Error::new(
+							"Shouldn't put a colon as the first char in the fn input".to_string(),
+							&position,
 						));
 					}
 
@@ -401,14 +413,18 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 								Some(TypeAnnotation::try_from(fn_return_type)?);
 						}
 						other => {
-							self.errors
-								.push(format!("Wasn't expecting {:?} @ {:?}", &other, &position));
+							self.errors.push(Error::new(
+								format!("Wasn't expecting {:?}", &other),
+								&position,
+							));
 						}
 					}
 				}
 				other => {
-					self.errors
-						.push(format!("Wasn't expecting {:?} @ {:?}", &other, &position));
+					self.errors.push(Error::new(
+						format!("Wasn't expecting {:?}", &other),
+						&position,
+					));
 				}
 			}
 		}
@@ -425,9 +441,9 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 				TokenType::Punctuation(Punctuation::BracketClose) => break,
 				TokenType::Punctuation(Punctuation::Comma) => {
 					if input_token_index == 0 {
-						self.errors.push(format!(
-							"Shouldn't put a comma as the first char in the fn input @ {:?}",
-							&position
+						self.errors.push(Error::new(
+							"Shouldn't put a comma as the first char in the fn input".to_string(),
+							&position,
 						));
 					} else {
 						input_token_index += 1;
@@ -447,9 +463,9 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 							params.push(param_dec);
 						}
 						other => {
-							self.errors.push(format!(
-								"Non-number types aren't supported yet ({:?} @ {:?})",
-								&other, &position
+							self.errors.push(Error::new(
+								format!("Non-number types aren't supported yet ({:?})", &other,),
+								&position,
 							));
 						}
 					}
@@ -467,8 +483,10 @@ impl<'p, I: Iterator<Item = Token<'p>>> Parser<'p, I> {
 					params.push(param_dec);
 				}
 				other => {
-					self.errors
-						.push(format!("Wasn't expecting {:?} @ {:?}", &other, &position));
+					self.errors.push(Error::new(
+						format!("Wasn't expecting {:?}", &other),
+						&position,
+					));
 				}
 			}
 		}
