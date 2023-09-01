@@ -11,17 +11,42 @@ use inkwell::{
 	context::Context,
 	module::Module,
 	passes::PassManager,
-	types::{AnyTypeEnum, BasicMetadataTypeEnum},
-	values::{BasicValueEnum, FloatValue, FunctionValue},
+	types::{AnyTypeEnum, BasicMetadataTypeEnum, BasicTypeEnum},
+	values::{BasicValueEnum, FunctionValue, PointerValue},
 };
+use std::collections::BTreeMap;
 
 pub struct Compiler<'c, 'ctx> {
 	context: &'ctx Context,
 	module: &'c Module<'ctx>,
 	builder: &'c Builder<'ctx>,
 	pass_manager: &'c PassManager<FunctionValue<'ctx>>,
+
+	var_map: BTreeMap<String, PointerValue<'ctx>>,
+	current_fn: Option<FunctionValue<'ctx>>,
 }
 impl<'c, 'ctx> Compiler<'c, 'ctx> {
+	/// Creates a new stack allocation instruction in the entry block of the function.
+	fn create_entry_block_alloca(
+		&self,
+		name: &str,
+		basic_type: BasicTypeEnum<'ctx>,
+	) -> Result<PointerValue<'ctx>> {
+		let builder = self.context.create_builder();
+
+		if let Some(current_fn) = self.current_fn {
+			let entry = current_fn.get_first_basic_block().unwrap();
+			match entry.get_first_instruction() {
+				Some(first_instr) => builder.position_before(&first_instr),
+				None => builder.position_at_end(entry),
+			}
+
+			Ok(builder.build_alloca(basic_type, name))
+		} else {
+			bail!("No current function")
+		}
+	}
+
 	fn compile_fn_signature(&self, fn_decl: &FnDecl) -> Result<FunctionValue<'ctx>> {
 		let fn_return_type = match &fn_decl.return_type {
 			Some(TypeAnnotation::Number) => AnyTypeEnum::FloatType(self.context.f64_type()),
@@ -125,6 +150,9 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 			module,
 			builder,
 			pass_manager,
+
+			var_map: BTreeMap::new(),
+			current_fn: None,
 		};
 		compiler.compile_instr(tree)
 	}
