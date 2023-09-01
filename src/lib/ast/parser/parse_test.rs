@@ -3,6 +3,7 @@ use super::super::super::{
 		parser::parse::parse,
 		types::{
 			fn_call::FnCall,
+			fn_dec::{FnDec, FnType},
 			literal::Literal,
 			node::Node,
 			var_dec::{VarDec, VarType},
@@ -167,30 +168,43 @@ pub fn bad_parse_2_param_fn_call_test() {
 }
 
 #[test]
-#[ignore]
-pub fn parse_fn_declaration_test() -> Result<()> {
-	let init_str = r#"function fn1() { conosle.log(123); }"#;
+pub fn parse_fn_declaration_empty_body_test() -> Result<()> {
+	let init_str = r#"function fn1(param_1) {}"#;
 	let mut tokens = scan(init_str, Some("Parser test".to_string()));
 	let ast = parse(&mut tokens, None)?;
 
 	assert_eq!(
 		ast,
-		vec![Box::new(Node::FnCall(FnCall {
-			fn_name: "fnName",
-			params: vec![
-				VarDec {
-					var_type: VarType::Let,
-					name: "param_1",
-					type_annotation: None,
-					value: Box::new(Node::Literal(Literal::Undefined))
-				},
-				VarDec {
-					name: "param_2",
-					var_type: VarType::Let,
-					type_annotation: None,
-					value: Box::new(Node::Literal(Literal::Undefined)),
-				}
-			],
+		vec![Box::new(Node::FnDec(FnDec {
+			fn_type: FnType::Classic,
+			name: Some("fn1"),
+			input_params: vec![VarDec {
+				var_type: VarType::Let,
+				name: "param_1",
+				type_annotation: None,
+				value: Box::new(Node::Literal(Literal::Undefined))
+			}],
+			return_type: None,
+			body: Box::new(Node::Block(Vec::new())),
+		}))]
+	);
+	Ok(())
+}
+
+#[test]
+pub fn parse_fn_declaration_empty_body_empty_params_test() -> Result<()> {
+	let init_str = r#"function fn1() {}"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens, None)?;
+
+	assert_eq!(
+		ast,
+		vec![Box::new(Node::FnDec(FnDec {
+			fn_type: FnType::Classic,
+			name: Some("fn1"),
+			input_params: Vec::new(),
+			return_type: None,
+			body: Box::new(Node::Block(Vec::new())),
 		}))]
 	);
 	Ok(())

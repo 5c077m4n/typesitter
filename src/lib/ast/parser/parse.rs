@@ -29,6 +29,7 @@ pub fn parse<'a>(
 		match value {
 			// This makes the `;` optional - but only at the right placement
 			TokenType::Punctuation(Punctuation::Semicolon) => (),
+			TokenType::Punctuation(Punctuation::BracketCurlyClose) => (),
 			TokenType::Keyword(Keyword::Function) => match token_iter.next() {
 				Some(Token {
 					value: TokenType::Identifier(fn_name),
