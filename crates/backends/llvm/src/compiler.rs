@@ -65,17 +65,7 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 		};
 
 		let func_val = self.module.add_function(
-			&fn_decl
-				.name
-				.as_ref()
-				.map(|name_list| {
-					name_list
-						.iter()
-						.map(|name| std::str::from_utf8(name).unwrap())
-						.collect::<Vec<_>>()
-						.join(".")
-				})
-				.unwrap_or_else(|| "".to_string()),
+			&fn_decl.get_name().unwrap_or_else(|| "".to_string()),
 			fn_type,
 			None,
 		);
