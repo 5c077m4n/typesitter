@@ -24,10 +24,22 @@ pub fn keyword(input: Span) -> IResult<Span, Token> {
 		value(Keyword::If, tag(Keyword::If.as_str())),
 		value(Keyword::Else, tag(Keyword::Else.as_str())),
 		value(Keyword::Function, tag(Keyword::Function.as_str())),
-		value(Keyword::Class, tag(Keyword::Class.as_str())),
-		value(Keyword::Import, tag(Keyword::Import.as_str())),
-		value(Keyword::Export, tag(Keyword::Export.as_str())),
-		value(Keyword::Return, tag(Keyword::Return.as_str())),
+		value(
+			Keyword::Class,
+			terminated(tag(Keyword::Class.as_str()), space1),
+		),
+		value(
+			Keyword::Import,
+			terminated(tag(Keyword::Import.as_str()), space1),
+		),
+		value(
+			Keyword::Export,
+			terminated(tag(Keyword::Export.as_str()), space1),
+		),
+		value(
+			Keyword::Return,
+			terminated(tag(Keyword::Return.as_str()), space1),
+		),
 	))(input)?;
 	let (tail, pos) = position(tail)?;
 
