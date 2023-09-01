@@ -3,7 +3,7 @@
 	"private": true,
 	"version": "0.0.0",
 	"scripts": {
-		"build:wasm": "sh ../../utils/js_bind/build-demo.sh",
+		"build:wasm": "sh ../crates/utils/js_bind/build-demo.sh",
 		"dev": "vite",
 		"build": "tsc && vite build",
 		"preview": "vite preview"

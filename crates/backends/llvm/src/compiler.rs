@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use anyhow::{bail, Result};
 use ast::types::{
 	fn_dec::FnDecl,
