@@ -1,7 +1,9 @@
 #!/bin/sh
 
-cargo +nightly fmt --all || exit 1
-cargo clippy --fix --allow-staged --allow-dirty || exit 1
-cargo test --workspace || exit 1
+set -eu
+
+cargo +nightly fmt --all
+cargo clippy --fix --allow-staged --allow-dirty
+cargo test --workspace
 
 git add --update
