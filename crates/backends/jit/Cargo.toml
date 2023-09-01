@@ -1,12 +1,9 @@
 [package]
-name = "vm"
+name = "jit"
 version = "0.0.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ast = { path = '../ast' }
-log = "0.4"
-env_logger = "0.8"
-anyhow = "1.0"
+inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm13-0"] }

@@ -1,13 +1,15 @@
 use super::{
+	call_stack::{CallStack, StackFrame},
 	instr::{Instr, Pointer, Program},
 	stack::Stack,
 };
 use anyhow::Result;
 use log::debug;
 
-#[derive(Default, Debug)]
+#[derive(Debug, Default)]
 pub struct VM {
 	stack: Stack,
+	call_stack: CallStack,
 	/// Instruction pointer
 	ip: Pointer,
 }
@@ -18,44 +20,44 @@ impl VM {
 				self.stack.push(*n);
 			}
 			Instr::Pop => {
-				let tmp = self.stack.pop();
+				let tmp = self.stack.pop()?;
 				debug!("{:?}", tmp);
 			}
 			Instr::AddRegReg => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b + a);
-				debug!("{:?}", self.stack.peek());
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::AddRegLit(lit) => {
-				*self.stack.peek_mut().unwrap() += lit;
-				debug!("{:?}", self.stack.peek());
+				*self.stack.peek_mut()? += lit;
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::SubRegReg => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b - a);
-				debug!("{:?}", self.stack.peek());
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::SubRegLit(lit) => {
-				*self.stack.peek_mut().unwrap() -= lit;
-				debug!("{:?}", self.stack.peek());
+				*self.stack.peek_mut()? -= lit;
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::MulRegReg => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b * a);
-				debug!("{:?}", self.stack.peek());
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::MulRegLit(lit) => {
-				*self.stack.peek_mut().unwrap() -= lit;
-				debug!("{:?}", self.stack.peek());
+				*self.stack.peek_mut()? -= lit;
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::DivRegReg => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b / a);
-				debug!("{:?}", self.stack.peek());
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::DivRegLit(lit) => {
-				*self.stack.peek_mut().unwrap() -= lit;
-				debug!("{:?}", self.stack.peek());
+				*self.stack.peek_mut()? -= lit;
+				debug!("{:?}", self.stack.peek()?);
 			}
 			Instr::Jump(ip) => {
 				self.ip = *ip;
@@ -71,12 +73,22 @@ impl VM {
 				}
 			}
 			Instr::Get(ip) => {
-				let value = *self.stack.get(*ip)?;
+				let value = *self.stack.get(*ip + self.call_stack.last_offset())?;
 				self.stack.push(value);
 			}
 			Instr::Set(ip) => {
 				let last_value = self.stack.pop()?;
-				*self.stack.get_mut(*ip)? = last_value;
+				*self.stack.get_mut(*ip + self.call_stack.last_offset())? = last_value;
+			}
+			Instr::Call(ip) => {
+				self.call_stack.push(StackFrame {
+					stack_offset: self.stack.len(),
+					ip: self.ip,
+				});
+				self.ip = *ip;
+			}
+			Instr::Ret => {
+				self.ip = self.call_stack.pop()?.ip;
 			}
 			Instr::Print => println!("{:?}", *self.stack.peek()?),
 			Instr::PrintChar => println!("{:?}", *self.stack.peek()? as u8 as char),
@@ -86,12 +98,10 @@ impl VM {
 	}
 	pub fn interpret(&mut self, program: Program) -> Result<f64> {
 		self.ip = 0;
-
 		while let Some(instr) = program.get(self.ip) {
 			self.ip += 1;
 			self.handle_instr(&instr)?;
 		}
-
 		self.stack.pop()
 	}
 }

@@ -38,7 +38,6 @@ fn sum_first_100_ints() -> Result<()> {
 		JumpNotEqual0(2), // [accumilator, index] <- Loop end
 		Get(0),           // [accumilator, index, accumilator]
 	])?;
-
 	let sum_upto_100 = (0..100).sum::<usize>() as f64;
 
 	assert_eq!(result, sum_upto_100);
