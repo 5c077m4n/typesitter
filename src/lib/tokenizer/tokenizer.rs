@@ -74,15 +74,20 @@ pub fn detect_punctuation(input: Span) -> IResult<Span, PunctuationToken> {
 pub fn decimal(input: Span) -> IResult<Span, LiteralToken> {
 	let (tail, token) = recognize(many1(terminated(digit1, many0(char('_')))))(input)?;
 	let (tail, pos) = position(tail)?;
-	let number: f64 = token.fragment().replace('_', "").parse().unwrap();
 
-	Ok((
-		tail,
-		LiteralToken {
-			position: pos,
-			token: Literal::Number(number),
-		},
-	))
+	match token.fragment().replace('_', "").parse::<f64>() {
+		Ok(number) => Ok((
+			tail,
+			LiteralToken {
+				position: pos,
+				token: Literal::Number(number),
+			},
+		)),
+		Err(_err) => Err(nom::Err::Error(nom::error::Error::new(
+			tail,
+			nom::error::ErrorKind::Float,
+		))),
+	}
 }
 
 pub fn boolean(input: Span) -> IResult<Span, LiteralToken> {
