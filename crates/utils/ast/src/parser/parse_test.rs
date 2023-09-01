@@ -4,6 +4,7 @@ use super::{
 		fn_dec::{FnDec, FnType},
 		literal::Literal,
 		node::Node,
+		type_annotation::TypeAnnotation,
 		var_dec::{VarDecl, VarType},
 	},
 	parse::parse,
@@ -22,7 +23,7 @@ pub fn parse_const_init_number_test() -> Result<()> {
 		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Const,
 			name: vec!["n"],
-			type_annotation: Some("number"),
+			type_annotation: Some(TypeAnnotation::Number),
 			value: Box::new(Node::Literal(Literal::Number(123.)))
 		})]
 	);
@@ -43,13 +44,13 @@ pub fn parse_2_const_init_number_test() -> Result<()> {
 			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
 				name: vec!["n"],
-				type_annotation: Some("number"),
+				type_annotation: Some(TypeAnnotation::Number),
 				value: Box::new(Node::Literal(Literal::Number(123.)))
 			}),
 			Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
 				name: vec!["n"],
-				type_annotation: Some("number"),
+				type_annotation: Some(TypeAnnotation::Number),
 				value: Box::new(Node::Literal(Literal::Number(123.)))
 			}),
 		]
@@ -68,7 +69,7 @@ pub fn parse_let_init_string_test() -> Result<()> {
 		vec![Node::VarDecl(VarDecl {
 			var_type: VarType::Let,
 			name: vec!["s"],
-			type_annotation: Some("string"),
+			type_annotation: Some(TypeAnnotation::String),
 			value: Box::new(Node::Literal(Literal::String("123"))),
 		})]
 	);
@@ -225,7 +226,7 @@ pub fn parse_fn_declaration_empty_params_test() -> Result<()> {
 			body: Box::new(Node::Block(vec![Node::VarDecl(VarDecl {
 				var_type: VarType::Const,
 				name: vec!["a"],
-				type_annotation: Some("string"),
+				type_annotation: Some(TypeAnnotation::String),
 				value: Box::new(Node::Literal(Literal::String("123"))),
 			})])),
 		})]
@@ -264,7 +265,7 @@ pub fn parse_fn_declaration_return_type_test() -> Result<()> {
 			fn_type: FnType::Classic,
 			name: Some(vec!["fn"]),
 			input_params: vec![],
-			return_type: Some("void"),
+			return_type: Some(TypeAnnotation::Void),
 			body: Box::new(Node::Block(vec![])),
 		})]
 	);
@@ -306,21 +307,21 @@ pub fn parse_fn_declaration_full_test() -> Result<()> {
 			input_params: vec![VarDecl {
 				var_type: VarType::Let,
 				name: vec!["param1"],
-				type_annotation: Some("any"),
+				type_annotation: Some(TypeAnnotation::Any),
 				value: Box::new(Node::Literal(Literal::Undefined))
 			}],
-			return_type: Some("void"),
+			return_type: Some(TypeAnnotation::Void),
 			body: Box::new(Node::Block(vec![
 				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
 					name: vec!["a"],
-					type_annotation: Some("string"),
+					type_annotation: Some(TypeAnnotation::String),
 					value: Box::new(Node::Literal(Literal::String("123"))),
 				}),
 				Node::VarDecl(VarDecl {
 					var_type: VarType::Const,
 					name: vec!["b"],
-					type_annotation: Some("number"),
+					type_annotation: Some(TypeAnnotation::Number),
 					value: Box::new(Node::Literal(Literal::Number(123.))),
 				})
 			])),
