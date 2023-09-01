@@ -223,12 +223,12 @@ impl VM {
 		}
 		Ok(())
 	}
-	pub fn interpret(&mut self, program: &Program) -> Result<f64> {
+	pub fn interpret(&mut self, program: &Program) -> Result<&f64> {
 		self.ip = 0;
 		while let Some(instr) = program.get(self.ip) {
 			self.ip += 1;
 			self.handle_instr(instr)?;
 		}
-		self.stack.pop()
+		self.stack.last()
 	}
 }

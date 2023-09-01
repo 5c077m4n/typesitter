@@ -34,9 +34,7 @@ fn main() -> Result<()> {
 		let ast = parse_into_block(&mut tokens)?;
 		let program = codegen.run(&ast)?;
 
-		if !program.is_empty() {
-			vm.interpret(&program)?;
-		}
+		vm.interpret(&program)?;
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 		let input = input.as_bytes();
@@ -45,9 +43,7 @@ fn main() -> Result<()> {
 		let ast = parse_into_block(&mut tokens)?;
 		let program = codegen.run(&ast)?;
 
-		if !program.is_empty() {
-			vm.interpret(&program)?;
-		}
+		vm.interpret(&program)?;
 	} else {
 		loop {
 			print!(">>> ");
@@ -65,9 +61,7 @@ fn main() -> Result<()> {
 			let ast = parse_into_block(&mut tokens)?;
 			let program = codegen.run(&ast)?;
 
-			if !program.is_empty() {
-				vm.interpret(&program)?;
-			}
+			vm.interpret(&program)?;
 		}
 	}
 
