@@ -4,11 +4,20 @@ use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
 	character::complete::{alphanumeric1, char, digit1, multispace0, multispace1, one_of},
-	combinator::{opt, recognize},
+	combinator::{opt, recognize, value},
 	multi::{many0, many1, separated_list0},
 	sequence::{delimited, preceded, terminated, tuple},
 	IResult,
 };
+
+use crate::lib::ast::keyword::Keyword;
+
+pub fn detect_init_keyword(input: &str) -> IResult<&str, Keyword> {
+	alt((
+		value(Keyword::CONST, tag(Keyword::CONST.as_str())),
+		value(Keyword::LET, tag(Keyword::LET.as_str())),
+	))(input)
+}
 
 pub fn binary(input: &str) -> IResult<&str, &str> {
 	preceded(

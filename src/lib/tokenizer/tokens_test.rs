@@ -1,4 +1,16 @@
+use crate::lib::ast::keyword::Keyword;
+
 use super::tokens::*;
+
+#[test]
+fn detect_const_test() {
+	assert_eq!(detect_init_keyword("const"), Ok(("", Keyword::CONST)));
+}
+
+#[test]
+fn detect_let_test() {
+	assert_eq!(detect_init_keyword("let"), Ok(("", Keyword::LET)));
+}
 
 #[test]
 fn decimal_test() {
