@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ReactJson from 'react-json-view';
-import init, { tokenize, build_ast as buildAST, ts_eval as tsEval } from 'js_bind';
+import init, { tokenize, build_ast as buildAST, ts_eval as tsEval, check } from 'js_bind';
 
 function Main() {
 	const [script, setScript] = useState('');
@@ -10,6 +10,15 @@ function Main() {
 			const start = performance.now();
 			const t = tokenize(script);
 			return { tokens: JSON.parse(t), time: performance.now() - start };
+		} catch (e) {
+			return {};
+		}
+	}, [script]);
+	const { errors, time: errorTime } = useMemo(() => {
+		try {
+			const start = performance.now();
+			const t = check(script);
+			return { errors: JSON.parse(t), time: performance.now() - start };
 		} catch (e) {
 			return {};
 		}
@@ -40,11 +49,15 @@ function Main() {
 				value={script}
 				onChange={(e) => setScript(e.target.value)}
 			/>
-			<details open>
+			<details>
 				<summary>Tokenizer ({tokenTime}ms)</summary>
 				<ReactJson src={tokens} />
 			</details>
-			<details open>
+			<details>
+				<summary>Errors ({errorTime}ms)</summary>
+				<ReactJson src={errors} />
+			</details>
+			<details>
 				<summary>AST ({astTime}ms)</summary>
 				<ReactJson src={ast} />
 			</details>
