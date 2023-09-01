@@ -20,14 +20,12 @@ specifiers:
   vite: ^2.9.5
   vite-plugin-checker: ^0.4.6
   vite-plugin-pwa: ^0.12.0
-  web: 'link:'
 
 dependencies:
   js_bind: link:../crates/utils/js_bind/pkg
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
   react-json-view: 1.21.3_47ae209ab5c2ea051c9a2540426c6b2f
-  web: 'link:'
 
 devDependencies:
   '@types/react': 18.0.8

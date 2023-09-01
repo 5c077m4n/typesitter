@@ -27,7 +27,7 @@ function Main() {
 	return (
 		<main className="w-full h-full p-4">
 			<textarea
-				className="p-2 w-full border border-black rounded"
+				className="p-2 w-full border border-black rounded font-mono"
 				value={script}
 				onChange={(e) => setScript(e.target.value)}
 			/>
