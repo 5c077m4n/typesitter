@@ -1,21 +1,18 @@
-use {
-	super::{
-		super::lexer::token::{
-			keyword::Keyword,
-			literal::Literal as TokenLiteral,
-			punctuation::Punctuation,
-			Token,
-			TokenType,
-		},
-		types::{
-			literal::Literal,
-			node::Node,
-			var_dec::{VarDec, VarType},
-		},
+use super::{
+	super::lexer::token::{
+		keyword::Keyword,
+		literal::Literal as TokenLiteral,
+		punctuation::Punctuation,
+		token_variance::{Token, TokenType},
 	},
-	anyhow::Result,
-	log::error,
+	types::{
+		literal::Literal,
+		node::Node,
+		var_dec::{VarDec, VarType},
+	},
 };
+use anyhow::Result;
+use log::error;
 
 pub fn parse<'a>(
 	mut token_iter: impl Iterator<Item = Token<'a>>,
@@ -184,7 +181,7 @@ pub fn parse<'a>(
 							expr_list.push(init_node);
 						}
 						other => {
-							error!("{:?}", other);
+							error!("{:?}", &other);
 							unimplemented!();
 						}
 					}
@@ -193,7 +190,7 @@ pub fn parse<'a>(
 				}
 			}
 			other => {
-				error!("{:?}", other);
+				error!("{:?}", &other);
 				unimplemented!();
 			}
 		}

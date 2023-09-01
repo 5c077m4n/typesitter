@@ -1,10 +1,12 @@
-use {
-	super::{
-		detector::*,
-		token::{keyword::Keyword, literal::Literal, Span, Token, TokenType},
+use super::{
+	super::lexer::detector::{all_tokens, binary, boolean, decimal, identifier, keyword, string},
+	token::{
+		keyword::Keyword,
+		literal::Literal,
+		token_variance::{Span, Token, TokenType},
 	},
-	anyhow::Result,
 };
+use anyhow::Result;
 
 #[test]
 fn const_kw_test() -> Result<()> {

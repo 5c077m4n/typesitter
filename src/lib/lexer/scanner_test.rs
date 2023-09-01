@@ -1,6 +1,11 @@
 use super::{
 	scanner::scan,
-	token::{keyword::Keyword, literal::Literal, punctuation::Punctuation, TokenType},
+	token::{
+		keyword::Keyword,
+		literal::Literal,
+		punctuation::Punctuation,
+		token_variance::TokenType,
+	},
 };
 
 #[test]
