@@ -1,0 +1,11 @@
+name: Toolchain
+description: Rust toolchain setup
+
+runs:
+  using: composite
+  steps:
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: nightly
+        override: true

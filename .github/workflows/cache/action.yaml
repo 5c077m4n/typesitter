@@ -1,10 +1,8 @@
-name: "Cache"
-description: "Cache cargo deps"
-inputs: {}
-outputs: {}
+name: Cache
+description: Cache cargo deps
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - uses: actions/cache@v2
       with:
