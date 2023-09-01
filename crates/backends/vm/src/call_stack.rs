@@ -7,11 +7,18 @@ pub struct StackFrame {
 	pub ip: Pointer,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct CallStack(Vec<StackFrame>);
-impl CallStack {
-	pub fn new() -> Self {
+
+impl Default for CallStack {
+	fn default() -> Self {
 		Self(Vec::with_capacity(1024))
+	}
+}
+impl CallStack {
+	#[allow(dead_code)]
+	pub fn new(capacity: usize) -> Self {
+		Self(Vec::with_capacity(capacity))
 	}
 	pub fn push(&mut self, sf: StackFrame) {
 		self.0.push(sf)
