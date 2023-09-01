@@ -3,17 +3,17 @@
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Punctuation {
 	/// `(`
-	BracetOpen,
+	BracketOpen,
 	/// `)`
-	BracetClose,
+	BracketClose,
 	/// `[`
-	BracetSquareOpen,
+	BracketSquareOpen,
 	/// `]`
-	BracetSquareClose,
+	BracketSquareClose,
 	/// `{`
-	BracetCurlyOpen,
+	BracketCurlyOpen,
 	/// `}`
-	BracetCurlyClose,
+	BracketCurlyClose,
 	/// `;`
 	Semicolon,
 	/// `:`
@@ -30,16 +30,18 @@ pub enum Punctuation {
 	Pipe,
 	/// `&`
 	Ampersand,
+	/// .
+	Dot,
 }
 impl Punctuation {
 	pub fn as_str(&self) -> &str {
 		match *self {
-			Self::BracetOpen => "(",
-			Self::BracetClose => ")",
-			Self::BracetSquareOpen => "[",
-			Self::BracetSquareClose => "]",
-			Self::BracetCurlyOpen => "{",
-			Self::BracetCurlyClose => "}",
+			Self::BracketOpen => "(",
+			Self::BracketClose => ")",
+			Self::BracketSquareOpen => "[",
+			Self::BracketSquareClose => "]",
+			Self::BracketCurlyOpen => "{",
+			Self::BracketCurlyClose => "}",
 			Self::Semicolon => ";",
 			Self::Colon => ":",
 			Self::Equal => "=",
@@ -48,6 +50,7 @@ impl Punctuation {
 			Self::GreaterThan => ">",
 			Self::Pipe => "|",
 			Self::Ampersand => "&",
+			Self::Dot => ".",
 		}
 	}
 }
