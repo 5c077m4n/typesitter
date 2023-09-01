@@ -235,6 +235,25 @@ pub fn parse_fn_declaration_empty_params_test() -> Result<()> {
 }
 
 #[test]
+pub fn parse_anonymous_fn_declaration_test() -> Result<()> {
+	let init_str = r#"function () {}"#;
+	let mut tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = parse(&mut tokens)?;
+
+	assert_eq!(
+		ast,
+		vec![Node::FnDec(FnDec {
+			fn_type: FnType::Classic,
+			name: None,
+			input_params: vec![],
+			return_type: None,
+			body: Box::new(Node::Block(vec![])),
+		})]
+	);
+	Ok(())
+}
+
+#[test]
 pub fn parse_fn_declaration_return_type_test() -> Result<()> {
 	let init_str = r#"function fn(): void {}"#;
 	let mut tokens = scan(init_str, Some("Parser test".to_string()));

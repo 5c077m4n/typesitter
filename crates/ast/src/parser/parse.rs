@@ -15,7 +15,7 @@ use lexer::token::{
 	punctuation::Punctuation,
 	token_variance::{Token, TokenType},
 };
-use log::error;
+use log::{error, warn};
 use std::iter::Peekable;
 
 pub fn parse<'a>(
@@ -25,8 +25,7 @@ pub fn parse<'a>(
 
 	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
-			// This makes the `;` optional - but only at the right placement
-			TokenType::Punctuation(Punctuation::Semicolon) => (),
+			TokenType::Punctuation(Punctuation::Semicolon) => (), // This makes the `;` optional - but only at the right placement
 			TokenType::Punctuation(Punctuation::BracketCurlyClose) => (),
 			TokenType::Keyword(Keyword::Function) => match token_iter.next() {
 				Some(Token {
@@ -74,6 +73,14 @@ pub fn parse<'a>(
 											body: Box::new(Node::Block(body)),
 										});
 										expr_list.push(named_fn_node);
+
+										if let Some(Token {
+											value: TokenType::Punctuation(Punctuation::Semicolon),
+											position,
+										}) = token_iter.peek()
+										{
+											warn!("The `;` @ {} is not needed", &position);
+										}
 									}
 									other => {
 										bail!("Wasn't expecting {:?} @ {:?}", &other, &position)
@@ -94,13 +101,21 @@ pub fn parse<'a>(
 					value: TokenType::Punctuation(Punctuation::BracketOpen),
 					..
 				}) => {
-					let _params = parse_param_list(token_iter)?;
+					let input_params = parse_param_list(token_iter)?;
 					if let Some(Token {
 						value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
 						..
 					}) = token_iter.next()
 					{
-						unimplemented!("Function call on nested object");
+						let body = parse(token_iter)?;
+						let unnamed_fn_node = Node::FnDec(FnDec {
+							fn_type: FnType::Classic,
+							name: None,
+							input_params,
+							return_type: None,
+							body: Box::new(Node::Block(body)),
+						});
+						expr_list.push(unnamed_fn_node);
 					}
 				}
 				_ => {}
