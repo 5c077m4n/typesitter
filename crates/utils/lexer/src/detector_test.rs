@@ -51,6 +51,17 @@ fn bool_false_test() -> Result<()> {
 }
 
 #[test_with_logger]
+fn decimal_longer_test() -> Result<()> {
+	let origin = b"12345";
+	let input = Span::new_extra(origin, None);
+	let (_, Token { value, position }) = decimal(input)?;
+
+	assert_eq!(value, TokenType::Literal(Literal::Number(12345.)));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test_with_logger]
 fn decimal_test() -> Result<()> {
 	let origin = b"42";
 	let input = Span::new_extra(origin, None);
