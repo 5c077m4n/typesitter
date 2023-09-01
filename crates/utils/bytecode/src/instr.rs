@@ -1,6 +1,6 @@
 pub type Pointer = usize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Instr {
 	/// Add a new stack item
 	Push(f64),
