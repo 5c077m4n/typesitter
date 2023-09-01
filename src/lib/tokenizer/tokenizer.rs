@@ -7,7 +7,7 @@ use super::{
 use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
-	character::complete::{alphanumeric1, char, digit1, one_of, space1},
+	character::complete::{alphanumeric1, char, digit1, multispace1, one_of, space1},
 	combinator::{map_res, recognize, value},
 	multi::{many0, many1},
 	sequence::{delimited, preceded, terminated},
@@ -178,13 +178,13 @@ pub fn identifier(input: Span) -> IResult<Span, Token> {
 		tail,
 		Token {
 			position: pos,
-			value: TokenType::Generic(&token),
+			value: TokenType::Identifier(&token),
 		},
 	))
 }
 
-pub fn empty(input: Span) -> IResult<Span, Token> {
-	let (tail, token) = tag("")(input)?;
+pub fn space(input: Span) -> IResult<Span, Token> {
+	let (tail, token) = multispace1(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
@@ -200,12 +200,12 @@ pub fn all_tokens(input: Span) -> IResult<Span, Token> {
 	alt((
 		keyword,
 		punctuation,
-		decimal,
 		undefined,
 		null,
+		decimal,
 		string,
 		binary,
-		empty,
+		space,
 		identifier,
 	))(input)
 }
