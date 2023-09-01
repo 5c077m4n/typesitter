@@ -19,7 +19,7 @@ fn main() -> Result<()> {
 
 	if let Some(input) = args.eval {
 		let input = &input.trim();
-		let _tokens = scan(input, Some("Evaluation script".to_owned())).collect::<Vec<_>>();
+		let _tokens: Vec<_> = scan(input, Some("Evaluation script".to_owned())).collect();
 	} else {
 		loop {
 			print!(">>> ");
@@ -32,7 +32,7 @@ fn main() -> Result<()> {
 			}
 
 			let input = &input.trim();
-			let _tokens = scan(input, Some("REPL".to_owned())).collect::<Vec<_>>();
+			let _tokens: Vec<_> = scan(input, Some("REPL".to_owned())).collect();
 		}
 	}
 

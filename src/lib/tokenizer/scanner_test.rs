@@ -6,12 +6,12 @@ use super::{
 #[test]
 fn scan_basic_number_init_test() -> anyhow::Result<()> {
 	let input = r#"const a = 123;"#;
-	let token_values = scan(input, Some("test".to_owned()))
+	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
 		.filter_map(|t| match t.value {
 			TokenType::Generic(frag) if frag.trim() == "" => None,
 			other => Some(other),
 		})
-		.collect::<Vec<TokenType>>();
+		.collect();
 
 	assert_eq!(
 		token_values,
@@ -29,12 +29,12 @@ fn scan_basic_number_init_test() -> anyhow::Result<()> {
 #[test]
 fn scan_basic_string_init_test() -> anyhow::Result<()> {
 	let input = r#"const a = 'what?!';"#;
-	let token_values = scan(input, Some("test".to_owned()))
+	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
 		.filter_map(|t| match t.value {
 			TokenType::Generic(frag) if frag.trim() == "" => None,
 			other => Some(other),
 		})
-		.collect::<Vec<TokenType>>();
+		.collect();
 
 	assert_eq!(
 		token_values,
@@ -52,12 +52,12 @@ fn scan_basic_string_init_test() -> anyhow::Result<()> {
 #[test]
 fn scan_console_log_test() -> anyhow::Result<()> {
 	let input = r#"console.log(123);"#;
-	let token_values = scan(input, Some("test".to_owned()))
+	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
 		.filter_map(|t| match t.value {
 			TokenType::Generic(frag) if frag.trim() == "" => None,
 			other => Some(other),
 		})
-		.collect::<Vec<TokenType>>();
+		.collect();
 
 	assert_eq!(
 		token_values,
