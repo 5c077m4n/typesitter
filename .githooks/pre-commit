@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 for file in $(cargo +nightly fmt -- --emit json | jq -r '.[].name'); do
-	cargo +nightly fmt --color='always' -- $file
+	cargo +nightly fmt -- $file
 	git add $file
 done
 unset file
