@@ -19,8 +19,8 @@ use super::{
 use anyhow::{bail, Result};
 use log::error;
 
-pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec<Box<Node<'a>>>> {
-	let mut expr_list: Vec<Box<Node<'a>>> = Vec::new();
+pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec<Node<'a>>> {
+	let mut expr_list: Vec<Node<'a>> = Vec::new();
 
 	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
@@ -43,13 +43,13 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 								..
 							}) => {
 								let body = parse(token_iter)?;
-								let named_fn_node = Box::new(Node::FnDec(FnDec {
+								let named_fn_node = Node::FnDec(FnDec {
 									fn_type: FnType::Classic,
 									name: Some(fn_name),
 									input_params,
 									return_type: None,
 									body: Box::new(Node::Block(body)),
-								}));
+								});
 								expr_list.push(named_fn_node);
 							}
 							Some(Token {
@@ -65,13 +65,13 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 										..
 									}) => {
 										let body = parse(token_iter)?;
-										let named_fn_node = Box::new(Node::FnDec(FnDec {
+										let named_fn_node = Node::FnDec(FnDec {
 											fn_type: FnType::Classic,
 											name: Some(fn_name),
 											input_params,
 											return_type: Some(fn_return_type),
 											body: Box::new(Node::Block(body)),
-										}));
+										});
 										expr_list.push(named_fn_node);
 									}
 									other => {
@@ -129,24 +129,24 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 											value: TokenType::Literal(TokenLiteral::Number(n)),
 											..
 										}) => {
-											let init_node = Box::new(Node::VarDecl(VarDecl {
+											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
 												value: Box::new(Node::Literal(Literal::Number(n))),
-											}));
+											});
 											expr_list.push(init_node);
 										}
 										Some(Token {
 											value: TokenType::Literal(TokenLiteral::String(s)),
 											..
 										}) => {
-											let init_node = Box::new(Node::VarDecl(VarDecl {
+											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
 												value: Box::new(Node::Literal(Literal::String(s))),
-											}));
+											});
 											expr_list.push(init_node);
 										}
 										other => {
@@ -165,24 +165,24 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 								value: TokenType::Literal(TokenLiteral::Number(n)),
 								..
 							}) => {
-								let init_node = Box::new(Node::VarDecl(VarDecl {
+								let init_node = Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
 									name: param_name,
 									type_annotation: None,
 									value: Box::new(Node::Literal(Literal::Number(n))),
-								}));
+								});
 								expr_list.push(init_node);
 							}
 							Some(Token {
 								value: TokenType::Literal(TokenLiteral::String(s)),
 								..
 							}) => {
-								let init_node = Box::new(Node::VarDecl(VarDecl {
+								let init_node = Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
 									name: param_name,
 									type_annotation: None,
 									value: Box::new(Node::Literal(Literal::String(s))),
-								}));
+								});
 								expr_list.push(init_node);
 							}
 							other => {
@@ -194,12 +194,12 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 							value: TokenType::Punctuation(Punctuation::Semicolon),
 							..
 						}) => {
-							let init_node = Box::new(Node::VarDecl(VarDecl {
+							let init_node = Node::VarDecl(VarDecl {
 								var_type: init_type.try_into()?,
 								name: param_name,
 								type_annotation: None,
 								value: Box::new(Node::Literal(Literal::Undefined)),
-							}));
+							});
 							expr_list.push(init_node);
 						}
 						other => {
@@ -219,10 +219,10 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 					..
 				}) => {
 					let params = parse_param_list(token_iter)?;
-					let fn_call_node = Box::new(Node::FnCall(FnCall {
+					let fn_call_node = Node::FnCall(FnCall {
 						fn_name: ident,
 						params,
-					}));
+					});
 					expr_list.push(fn_call_node);
 				}
 				Some(Token {
