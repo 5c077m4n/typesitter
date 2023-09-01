@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - demo/**
+      - crates/**
       - .github/workflows/publish-demo.yaml
     branches:
       - main
