@@ -35,7 +35,6 @@ fn stdin_test() -> Result<()> {
 }
 
 #[test]
-#[ignore]
 fn file_read_test() -> Result<()> {
 	let mut cmd = Command::cargo_bin(BIN_NAME)?;
 
