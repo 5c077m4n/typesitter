@@ -1,7 +1,5 @@
 use anyhow::Result;
-use ast::{
-	parser::parse::{parse, parse_into_block},
-};
+use ast::parser::parse::{parse, parse_into_block};
 use clap::Parser;
 use lexer::scanner::scan;
 use llvm::run;
@@ -26,21 +24,23 @@ fn main() -> Result<()> {
 	let args: Args = Args::parse();
 
 	if let Some(filepath) = args.filepath {
-		let input = fs::read_to_string(filepath)?;
+		let input = fs::read_to_string(&filepath)?;
 		let input = &input.trim();
 
-		let mut tokens = scan(input, Some("File".to_owned()));
+		let mut tokens = scan(input, filepath.into_os_string().into_string().ok());
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
 
+		#[cfg(feature = "llvm")]
 		run(&ast)?;
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
-		let mut tokens = scan(input, Some("REPL".to_owned()));
+		let mut tokens = scan(input, Some("Evaluate".to_owned()));
 		let ast = parse_into_block(&mut tokens)?;
 		debug!("{:?}", ast);
 
+		#[cfg(feature = "llvm")]
 		run(&ast)?;
 	} else {
 		loop {
