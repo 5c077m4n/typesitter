@@ -24,7 +24,7 @@ struct Args {
 #[cfg(all(feature = "vm", feature = "llvm"))]
 compile_error!("The two features `vm` and `llvm` cannot be used at the same time");
 
-#[cfg(feature = "vm")]
+#[cfg(all(feature = "vm", not(feature = "llvm")))]
 fn start(tree: &Node, check_only: bool) -> Result<()> {
 	use bytecode::codegen::CodeGen;
 	use vm::vm::VM;
