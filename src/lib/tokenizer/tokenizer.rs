@@ -45,6 +45,45 @@ pub fn decimal(input: Span) -> IResult<Span, LiteralToken> {
 	))
 }
 
+pub fn boolean(input: Span) -> IResult<Span, LiteralToken> {
+	let (tail, bool_value) = alt((value(true, tag("true")), value(false, tag("false"))))(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		LiteralToken {
+			position: pos,
+			token: Literal::Bool(bool_value),
+		},
+	))
+}
+
+pub fn undefined(input: Span) -> IResult<Span, LiteralToken> {
+	let (tail, _token) = tag("undefined")(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		LiteralToken {
+			position: pos,
+			token: Literal::Undefined,
+		},
+	))
+}
+
+pub fn null(input: Span) -> IResult<Span, LiteralToken> {
+	let (tail, _token) = tag("null")(input)?;
+	let (tail, pos) = position(tail)?;
+
+	Ok((
+		tail,
+		LiteralToken {
+			position: pos,
+			token: Literal::Null,
+		},
+	))
+}
+
 pub fn string(input: Span) -> IResult<Span, LiteralToken> {
 	let (tail, token) = alt((
 		delimited(char('\''), take_until("'"), char('\'')),

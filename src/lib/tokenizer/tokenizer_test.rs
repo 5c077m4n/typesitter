@@ -26,6 +26,26 @@ fn detect_let_test() -> Result<()> {
 }
 
 #[test]
+fn bool_true_test() -> Result<()> {
+	let input = Span::new_extra("true", None);
+	let (_, LiteralToken { token, position }) = boolean(input)?;
+
+	assert_eq!(token, Literal::Bool(true));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
+fn bool_false_test() -> Result<()> {
+	let input = Span::new_extra("false", None);
+	let (_, LiteralToken { token, position }) = boolean(input)?;
+
+	assert_eq!(token, Literal::Bool(false));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
 fn decimal_test() -> Result<()> {
 	let origin = "42";
 	let input = Span::new_extra(origin, None);
