@@ -1,9 +1,10 @@
-use log::{debug, error};
-use std::iter;
-
-use super::{
-	detector::all_tokens,
-	token::{Span, Token, TokenType},
+use {
+	super::{
+		detector::all_tokens,
+		token::{Span, Token, TokenType},
+	},
+	log::{debug, error},
+	std::iter,
 };
 
 pub fn scan(input: &str, extra: Option<String>) -> impl Iterator<Item = Token<'_>> {
