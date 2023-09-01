@@ -4,7 +4,6 @@ use super::{
 	stack::Stack,
 };
 use anyhow::Result;
-use ast::types::node::Node;
 use log::debug;
 use std::io;
 
@@ -44,7 +43,6 @@ impl VM {
 			..Self::default()
 		}
 	}
-	pub fn build_stack(_tree: Node) {}
 
 	fn handle_instr(&mut self, instr: &Instr) -> Result<()> {
 		match instr {
@@ -55,39 +53,39 @@ impl VM {
 				let tmp = self.stack.pop()?;
 				debug!("{:?}", tmp);
 			}
-			Instr::AddRegReg => {
+			Instr::Add => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b + a);
 				debug!("{:?}", self.stack.peek()?);
 			}
-			Instr::AddRegLit(lit) => {
+			Instr::AddLit(lit) => {
 				*self.stack.peek_mut()? += lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
-			Instr::SubRegReg => {
+			Instr::Sub => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b - a);
 				debug!("{:?}", self.stack.peek()?);
 			}
-			Instr::SubRegLit(lit) => {
+			Instr::SubLit(lit) => {
 				*self.stack.peek_mut()? -= lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
-			Instr::MulRegReg => {
+			Instr::Mul => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b * a);
 				debug!("{:?}", self.stack.peek()?);
 			}
-			Instr::MulRegLit(lit) => {
+			Instr::MulLit(lit) => {
 				*self.stack.peek_mut()? -= lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
-			Instr::DivRegReg => {
+			Instr::Div => {
 				let (a, b) = (self.stack.pop()?, self.stack.pop()?);
 				self.stack.push(b / a);
 				debug!("{:?}", self.stack.peek()?);
 			}
-			Instr::DivRegLit(lit) => {
+			Instr::DivLit(lit) => {
 				*self.stack.peek_mut()? -= lit;
 				debug!("{:?}", self.stack.peek()?);
 			}
