@@ -9,7 +9,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"js_bind": "../crates/utils/js_bind/pkg",
+		"js_bind": "link:../crates/utils/js_bind/pkg",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
 		"react-json-view": "^1.21.3"
