@@ -10,7 +10,6 @@ use super::super::super::{
 	},
 };
 use anyhow::{bail, Result};
-use log::error;
 
 pub fn parse_param_list<'a>(
 	token_iter: &mut impl Iterator<Item = Token<'a>>,
@@ -18,11 +17,24 @@ pub fn parse_param_list<'a>(
 	let mut input_token_index: usize = 0;
 	let mut params: Vec<VarDecl> = Vec::new();
 
-	for Token { value, position } in token_iter {
+	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
 			TokenType::Punctuation(Punctuation::BracketClose) => {
 				break;
 			}
+			TokenType::Punctuation(Punctuation::Colon) => match token_iter.next() {
+				Some(Token {
+					value: TokenType::Identifier(fn_return_type),
+					..
+				}) => {
+					if let Some(last_param) = params.last_mut() {
+						last_param.type_annotation = Some(fn_return_type);
+					}
+				}
+				other => {
+					bail!("Wasn't expecting {:?} @ {:?}", &other, &position);
+				}
+			},
 			TokenType::Punctuation(Punctuation::Comma) => {
 				if input_token_index == 0 {
 					bail!(
@@ -44,8 +56,7 @@ pub fn parse_param_list<'a>(
 				params.push(param_dec);
 			}
 			other => {
-				error!("{:?}", &other);
-				unimplemented!();
+				bail!("Wasn't expecting {:?} @ {:?}", &other, &position);
 			}
 		}
 	}
