@@ -57,6 +57,17 @@ fn decimal_test() -> Result<()> {
 }
 
 #[test]
+fn decimal_underscore_test() -> Result<()> {
+	let origin = "42_000";
+	let input = Span::new_extra(origin, None);
+	let (_, LiteralToken { token, position }) = decimal(input)?;
+
+	assert_eq!(token, Literal::Number(42_000.));
+	assert_eq!(position.location_line(), 1);
+	Ok(())
+}
+
+#[test]
 fn binary_with_dashes_test() -> Result<()> {
 	let origin = "0b01_01";
 	let input = Span::new_extra(origin, None);
