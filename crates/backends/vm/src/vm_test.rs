@@ -1,21 +1,17 @@
 use super::{instr::Instr, vm::VM};
 use anyhow::Result;
+use macros::test_with_logger;
 
-fn init_test_logger() {
-	let _ = env_logger::builder().is_test(true).try_init();
-}
-
-#[test]
+#[test_with_logger]
 fn simple_arith_one_plus_one() -> Result<()> {
 	use Instr::*;
-	init_test_logger();
 
 	let result = VM::default().interpret(&[Push(1.), Push(1.), AddRegReg])?;
 	assert_eq!(result, 2.);
 	Ok(())
 }
 
-#[test]
+#[test_with_logger]
 fn complex_arith() -> Result<()> {
 	use Instr::*;
 
@@ -24,10 +20,9 @@ fn complex_arith() -> Result<()> {
 	Ok(())
 }
 
-#[test]
+#[test_with_logger]
 fn sum_first_100_ints() -> Result<()> {
 	use Instr::*;
-	init_test_logger();
 
 	let result = VM::default().interpret(&[
 		Push(0.), // [accumilator = 0]

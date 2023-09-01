@@ -307,6 +307,7 @@ dependencies = [
  "anyhow",
  "env_logger",
  "log",
+ "macros",
  "nom",
  "nom_locate",
  "serde",
@@ -686,6 +687,7 @@ dependencies = [
  "ast",
  "env_logger",
  "log",
+ "macros",
 ]
 
 [[package]]
