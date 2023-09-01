@@ -40,10 +40,14 @@ pub enum Instr {
 	Call(Pointer),
 	/// Return from a function
 	Ret,
-	/// Print top stack item
-	Print,
-	/// Print top stack item as a char
+	/// Print top stack item into stdout
+	PrintOut,
+	/// Print top stack item as a char into stdout
 	PrintChar,
+	/// Print top stack item into stderr
+	PrintErr,
+	/// Read from stdin
+	Read,
 	/// Print the whole stack
 	PrintDebug,
 }

@@ -6,15 +6,46 @@ use super::{
 use anyhow::Result;
 use ast::types::node::Node;
 use log::debug;
+use std::io;
 
-#[derive(Debug, Default)]
 pub struct VM {
 	stack: Stack,
 	call_stack: CallStack,
 	/// Instruction pointer
 	ip: Pointer,
+
+	reader: Box<dyn io::Read>,
+	writer_out: Box<dyn io::Write>,
+	writer_err: Box<dyn io::Write>,
+}
+impl Default for VM {
+	fn default() -> Self {
+		Self {
+			stack: Stack::default(),
+			call_stack: CallStack::default(),
+			ip: 0,
+
+			reader: Box::new(io::stdin()),
+			writer_out: Box::new(io::stdout()),
+			writer_err: Box::new(io::stderr()),
+		}
+	}
 }
 impl VM {
+	pub fn new(
+		reader: Box<dyn io::Read>,
+		writer_out: Box<dyn io::Write>,
+		writer_err: Box<dyn io::Write>,
+	) -> Self {
+		Self {
+			reader,
+			writer_out,
+			writer_err,
+			..Self::default()
+		}
+	}
+	pub fn build_stack(_tree: Node) {}
+
 	fn handle_instr(&mut self, instr: &Instr) -> Result<()> {
 		match instr {
 			Instr::Push(n) => {
@@ -102,8 +133,26 @@ impl VM {
 			Instr::Ret => {
 				self.ip = self.call_stack.pop()?.ip;
 			}
-			Instr::Print => println!("{:?}", *self.stack.peek()?),
-			Instr::PrintChar => println!("{:?}", *self.stack.peek()? as u8 as char),
+			Instr::Read => {
+				let mut buffer: Vec<u8> = Vec::new();
+				self.reader.read_to_end(&mut buffer)?;
+				// TODO: do something with the buffer
+			}
+			Instr::PrintOut => {
+				let peek_out = format!("{:?}", *self.stack.peek()?);
+				let peek_out = peek_out.as_bytes();
+				self.writer_out.write_all(peek_out)?;
+			}
+			Instr::PrintChar => {
+				let peek_out = format!("{:?}", *self.stack.peek()? as u8 as char);
+				let peek_out = peek_out.as_bytes();
+				self.writer_out.write_all(peek_out)?;
+			}
+			Instr::PrintErr => {
+				let peek_out = format!("{:?}", *self.stack.peek()?);
+				let peek_out = peek_out.as_bytes();
+				self.writer_err.write_all(peek_out)?;
+			}
 			Instr::PrintDebug => self.stack.debug(),
 		}
 		Ok(())
@@ -116,6 +165,4 @@ impl VM {
 		}
 		self.stack.pop()
 	}
-
-	pub fn build_stack(_tree: Node) {}
 }
