@@ -8,4 +8,4 @@ pub mod node;
 pub mod object;
 pub mod type_annotation;
 pub mod unary_op;
-pub mod var_dec;
+pub mod var_decl;

@@ -1,4 +1,4 @@
-use super::{node::Node, type_annotation::TypeAnnotation, var_dec::VarDecl};
+use super::{node::Node, type_annotation::TypeAnnotation, var_decl::VarDecl};
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]

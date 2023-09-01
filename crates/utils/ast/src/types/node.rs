@@ -7,7 +7,7 @@ use super::{
 	object::Object,
 	r#if::If,
 	unary_op::UnaryOp,
-	var_dec::VarDecl,
+	var_decl::VarDecl,
 };
 
 #[cfg_attr(feature = "js_bind", derive(serde::Serialize, serde::Deserialize))]
