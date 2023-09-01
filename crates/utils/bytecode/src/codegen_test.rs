@@ -4,6 +4,7 @@ use ast::types::{
 	fn_call::FnCall,
 	literal::Literal,
 	node::Node,
+	type_annotation::TypeAnnotation,
 	var_decl::{VarDecl, VarType},
 };
 
@@ -14,6 +15,21 @@ fn empty_program() -> Result<()> {
 	let prog = codegen.run(&tree)?;
 
 	assert_eq!(prog, vec![]);
+	Ok(())
+}
+
+#[test]
+fn long_number_decl() -> Result<()> {
+	let tree = Node::Block(vec![Node::VarDecl(VarDecl {
+		var_type: VarType::Const,
+		name: vec![b"a"],
+		type_annotation: Some(TypeAnnotation::Number),
+		value: Box::new(Node::Literal(Literal::Number(12345.))),
+	})]);
+	let mut codegen = CodeGen::default();
+	let prog = codegen.run(&tree)?;
+
+	assert_eq!(prog, vec![Instr::Push(12345.)]);
 	Ok(())
 }
 
