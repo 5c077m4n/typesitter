@@ -8,6 +8,9 @@ use bytecode::instr::{Instr, Pointer, Program};
 use log::debug;
 use std::io;
 
+type R = Box<dyn io::Read>;
+type W = Box<dyn io::Write>;
+
 pub struct VM {
 	stack: Stack,
 	call_stack: CallStack,
@@ -18,9 +21,9 @@ pub struct VM {
 
 	register_file: RegisterFile,
 
-	reader: Box<dyn io::Read>,
-	writer_out: Box<dyn io::Write>,
-	writer_err: Box<dyn io::Write>,
+	reader: R,
+	writer_out: W,
+	writer_err: W,
 }
 impl Default for VM {
 	fn default() -> Self {
@@ -39,11 +42,7 @@ impl Default for VM {
 	}
 }
 impl VM {
-	pub fn new(
-		reader: Box<dyn io::Read>,
-		writer_out: Box<dyn io::Write>,
-		writer_err: Box<dyn io::Write>,
-	) -> Self {
+	pub fn new(reader: R, writer_out: W, writer_err: W) -> Self {
 		Self {
 			reader,
 			writer_out,
