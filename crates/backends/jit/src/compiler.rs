@@ -8,7 +8,7 @@ pub struct Compiler<'c, 'ctx> {
 	builder: &'c Builder<'ctx>,
 }
 impl<'c, 'ctx> Compiler<'c, 'ctx> {
-	pub fn compile_var(&'ctx self, var_decl: &VarDecl) -> Result<BasicValueEnum<'ctx>> {
+	fn compile_var(&self, var_decl: &VarDecl) -> Result<BasicValueEnum<'ctx>> {
 		match var_decl.type_annotation {
 			Some(TypeAnnotation::String) => match var_decl.value.as_ref() {
 				Node::Literal(Literal::String(s)) => {
@@ -36,22 +36,20 @@ impl<'c, 'ctx> Compiler<'c, 'ctx> {
 					other
 				),
 			},
-			None | Some(TypeAnnotation::Any) => todo!("Support `Any` type"),
+			None | Some(TypeAnnotation::Any) => todo!("Support `any` type"),
 			_ => unimplemented!("Compile var decl"),
 		}
 	}
 
-	pub fn compile_instr(&'ctx self, node: Box<Node>) -> Result<()> {
-		let _instr = match *node {
-			Node::VarDecl(var_decl) => self.compile_var(&var_decl)?,
+	fn compile_instr(&self, node: &Node) -> Result<()> {
+		match node {
+			Node::VarDecl(var_decl) => self.compile_var(var_decl)?,
 			_ => unimplemented!("Compile instruction"),
 		};
-
 		Ok(())
 	}
 
-	pub fn compile(&'ctx self, tree: Box<Node>) -> Result<()> {
-		self.compile_instr(tree)?;
-		Ok(())
+	pub fn compile(&self, tree: &Node) -> Result<()> {
+		self.compile_instr(tree)
 	}
 }

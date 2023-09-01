@@ -155,7 +155,7 @@ fn identifier_dollar_test() -> Result<()> {
 
 #[test]
 #[should_panic]
-fn identifier_no_digit_at_start_test() -> () {
+fn identifier_no_digit_at_start_test() {
 	let origin = "1_param_name";
 	let input = Span::new_extra(origin, None);
 	let (_, Token { .. }) = identifier(input).unwrap();
