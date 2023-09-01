@@ -24,4 +24,11 @@ pub fn scan(input: &str, extra: Option<String>) -> impl Iterator<Item = Token<'_
 			}
 		}
 	})
+	.filter_map(|token| match token {
+		Token {
+			value: TokenType::Generic(frag),
+			..
+		} if frag.trim() == "" => None,
+		other => Some(other),
+	})
 }

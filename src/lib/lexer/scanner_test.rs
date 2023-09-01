@@ -7,10 +7,7 @@ use super::{
 fn scan_basic_number_init_test() -> anyhow::Result<()> {
 	let input = r#"const a = 123;"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
-		.filter_map(|t| match t.value {
-			TokenType::Generic(frag) if frag.trim() == "" => None,
-			other => Some(other),
-		})
+		.map(|t| t.value)
 		.collect();
 
 	assert_eq!(
@@ -30,10 +27,7 @@ fn scan_basic_number_init_test() -> anyhow::Result<()> {
 fn scan_typed_number_init_test() -> anyhow::Result<()> {
 	let input = r#"const a: number = 123;"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
-		.filter_map(|t| match t.value {
-			TokenType::Generic(frag) if frag.trim() == "" => None,
-			other => Some(other),
-		})
+		.map(|t| t.value)
 		.collect();
 
 	assert_eq!(
@@ -55,10 +49,7 @@ fn scan_typed_number_init_test() -> anyhow::Result<()> {
 fn scan_basic_string_init_test() -> anyhow::Result<()> {
 	let input = r#"const a = 'what?!';"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
-		.filter_map(|t| match t.value {
-			TokenType::Generic(frag) if frag.trim() == "" => None,
-			other => Some(other),
-		})
+		.map(|t| t.value)
 		.collect();
 
 	assert_eq!(
@@ -78,10 +69,7 @@ fn scan_basic_string_init_test() -> anyhow::Result<()> {
 fn scan_console_log_test() -> anyhow::Result<()> {
 	let input = r#"console.log(123);"#;
 	let token_values: Vec<TokenType> = scan(input, Some("test".to_owned()))
-		.filter_map(|t| match t.value {
-			TokenType::Generic(frag) if frag.trim() == "" => None,
-			other => Some(other),
-		})
+		.map(|t| t.value)
 		.collect();
 
 	assert_eq!(
