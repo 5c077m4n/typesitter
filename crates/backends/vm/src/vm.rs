@@ -94,7 +94,7 @@ impl VM {
 			}
 			Instr::Call(ip) => {
 				self.call_stack.push(StackFrame {
-					stack_offset: self.stack.len(),
+					sp: self.stack.len(),
 					ip: self.ip,
 				});
 				self.ip = *ip;

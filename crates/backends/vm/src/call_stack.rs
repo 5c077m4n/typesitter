@@ -3,7 +3,9 @@ use anyhow::{anyhow, Result};
 
 #[derive(Debug, Default)]
 pub struct StackFrame {
-	pub stack_offset: Pointer,
+	/// Stack pointer
+	pub sp: Pointer,
+	/// Instruction pointer
 	pub ip: Pointer,
 }
 
@@ -24,19 +26,19 @@ impl CallStack {
 		self.0.push(sf)
 	}
 	pub fn pop(&mut self) -> Result<StackFrame> {
-		self.0.pop().ok_or_else(|| {
-			anyhow!("There was an error in getting the last element in the call stack")
-		})
+		self.0
+			.pop()
+			.ok_or_else(|| anyhow!("The call stack is empty"))
 	}
 	pub fn last_offset(&self) -> usize {
-		self.0.last().map_or(0, |sf| sf.stack_offset)
+		self.0.last().map_or(0, |sf| sf.sp)
 	}
 	pub fn get_offset(&self) -> Result<usize> {
-		let first_index_before_fn =
-			self.0
-				.last()
-				.ok_or_else(|| anyhow!("The stack is empty"))?
-				.stack_offset - 1;
+		let first_index_before_fn = self
+			.0
+			.last()
+			.ok_or_else(|| anyhow!("The call stack is empty"))?
+			.sp - 1;
 		Ok(first_index_before_fn)
 	}
 }
