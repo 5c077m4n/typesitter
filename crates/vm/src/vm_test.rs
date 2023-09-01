@@ -51,6 +51,7 @@ fn sum_first_100_ints() {
 		// if index - 100 == 0, print the accumulator
 		Instr::Get(0),
 		// stack: [accumulator, index, 0, accumulator]
+		Instr::Print,
 	]);
 
 	assert_eq!(result, Some(100.));

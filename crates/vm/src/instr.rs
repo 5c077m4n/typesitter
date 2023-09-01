@@ -9,12 +9,13 @@ pub enum Instr {
 	Decr,
 	Mul,
 	Div,
-	Print,
 	Jump(Pointer),
 	JumpEqual(Pointer),
 	JumpNotEqual(Pointer),
 	Get(Pointer),
 	Set(Pointer),
+	Print,
+	PrintChar,
 }
 
 pub type Program<'p> = &'p [Instr];
