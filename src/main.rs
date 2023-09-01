@@ -1,14 +1,11 @@
 use anyhow::Result;
 use clap::Parser;
 use log::debug;
-use std::{
-	io::{stdin, stdout, Write},
-	iter,
-};
+use std::io::{stdin, stdout, Write};
 
 mod lib;
 
-use lib::tokenizer::token::Span;
+use lib::tokenizer::{scanner::scan, token::Span};
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
@@ -22,8 +19,8 @@ fn main() -> Result<()> {
 	let args: Args = Args::parse();
 
 	if let Some(input) = args.eval {
-		let input = Span::new_extra(&input, None);
-		debug!("{input:#?}");
+		let tokens = scan(&input, Some("Eval".to_owned())).collect::<Vec<_>>();
+		debug!("{tokens:#?}");
 	} else {
 		loop {
 			print!(">>> ");
