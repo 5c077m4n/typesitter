@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/workflows/llvm
       - uses: ./.github/workflows/toolchain
       - uses: ./.github/workflows/cache
       - uses: actions-rs/cargo@v1
@@ -27,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/workflows/llvm
       - uses: ./.github/workflows/toolchain
       - uses: ./.github/workflows/cache
       - run: rustup component add rustfmt
@@ -41,20 +39,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/workflows/llvm
       - uses: ./.github/workflows/toolchain
       - uses: ./.github/workflows/cache
       - run: rustup component add clippy
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
+          args: --all-features
 
   test:
     name: Test Suite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/workflows/llvm
       - uses: ./.github/workflows/toolchain
       - uses: ./.github/workflows/cache
       - uses: actions-rs/cargo@v1
