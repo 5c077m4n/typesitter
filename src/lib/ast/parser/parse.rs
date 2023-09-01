@@ -75,11 +75,7 @@ pub fn parse<'a>(
 											..
 										}) => {
 											let init_node = Node::VarDec(Box::new(VarDec {
-												var_type: if init_type == Keyword::Let {
-													VarType::Let
-												} else {
-													VarType::Const
-												},
+												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
 												value: Box::new(Node::Literal(Box::new(
@@ -93,11 +89,7 @@ pub fn parse<'a>(
 											..
 										}) => {
 											let init_node = Node::VarDec(Box::new(VarDec {
-												var_type: if init_type == Keyword::Let {
-													VarType::Let
-												} else {
-													VarType::Const
-												},
+												var_type: init_type.try_into()?,
 												name: param_name,
 												type_annotation: Some(var_type),
 												value: Box::new(Node::Literal(Box::new(
