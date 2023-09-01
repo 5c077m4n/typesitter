@@ -1,2 +1,0 @@
-[toolchain]
-components = ["rustc", "cargo", "rustfmt", "clippy", "wasm-pack"]
