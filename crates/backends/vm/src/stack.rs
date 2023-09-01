@@ -20,12 +20,12 @@ impl Stack {
 	pub fn get(&self, p: Pointer) -> Result<&f64> {
 		self.0
 			.get(p)
-			.ok_or_else(|| anyhow!("There should be an {}th item in the stack", p))
+			.ok_or_else(|| anyhow!("There should be an #{} item in the stack", p))
 	}
 	pub fn get_mut(&mut self, p: Pointer) -> Result<&mut f64> {
 		self.0
 			.get_mut(p)
-			.ok_or_else(|| anyhow!("There should be a mutable {}th item in the stack", p))
+			.ok_or_else(|| anyhow!("There should be a mutable #{} item in the stack", p))
 	}
 	pub fn peek(&self) -> Result<&f64> {
 		self.0
