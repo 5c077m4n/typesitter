@@ -1,5 +1,5 @@
 use super::{
-	super::lexer::detector::{all_tokens, binary, boolean, decimal, identifier, keyword, string},
+	detector::{all_tokens, binary, boolean, decimal, identifier, keyword, string},
 	token::{
 		keyword::Keyword,
 		literal::Literal,

@@ -1,22 +1,20 @@
 use super::{
-	super::{
-		super::lexer::token::{
-			keyword::Keyword,
-			literal::Literal as TokenLiteral,
-			punctuation::Punctuation,
-			token_variance::{Token, TokenType},
-		},
-		types::{
-			fn_call::FnCall,
-			fn_dec::{FnDec, FnType},
-			literal::Literal,
-			node::Node,
-			var_dec::VarDecl,
-		},
+	super::types::{
+		fn_call::FnCall,
+		fn_dec::{FnDec, FnType},
+		literal::Literal,
+		node::Node,
+		var_dec::VarDecl,
 	},
 	param_list::parse_param_list,
 };
 use anyhow::{bail, Result};
+use lexer::token::{
+	keyword::Keyword,
+	literal::Literal as TokenLiteral,
+	punctuation::Punctuation,
+	token_variance::{Token, TokenType},
+};
 use log::error;
 
 pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec<Node<'a>>> {
