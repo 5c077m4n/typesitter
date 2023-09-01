@@ -9,10 +9,10 @@ use super::token::{
 use nom::{
 	branch::alt,
 	bytes::complete::{tag, take_until},
-	character::complete::{alphanumeric1, char, digit1, multispace1, one_of, space1},
+	character::complete::{alpha1, alphanumeric1, char, digit1, multispace1, one_of, space1},
 	combinator::{map_res, recognize, value},
 	multi::{many0, many1},
-	sequence::{delimited, preceded, terminated},
+	sequence::{delimited, preceded, terminated, tuple},
 	IResult,
 };
 use nom_locate::position;
@@ -203,7 +203,10 @@ pub fn binary(input: Span) -> IResult<Span, Token> {
 }
 
 pub fn identifier(input: Span) -> IResult<Span, Token> {
-	let (tail, token) = recognize(many1(alt((alphanumeric1, tag("_"), tag("$")))))(input)?;
+	let (tail, token) = recognize(tuple((
+		many1(alt((alpha1, tag("_"), tag("$")))),
+		many0(alt((alphanumeric1, tag("_"), tag("$")))),
+	)))(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
