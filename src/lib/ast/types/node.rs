@@ -7,7 +7,7 @@ use super::{
 	object::Object,
 	r#if::If,
 	unary_op::UnaryOp,
-	var_dec::VarDec,
+	var_dec::VarDecl,
 };
 
 #[derive(Clone, Debug, PartialEq)]
@@ -19,7 +19,7 @@ pub enum Node<'n> {
 	BinOp(BinOp<'n>),
 	UnaryOp(UnaryOp<'n>),
 	If(If<'n>),
-	VarDecl(VarDec<'n>),
+	VarDecl(VarDecl<'n>),
 	FnDec(FnDec<'n>),
 	FnCall(FnCall<'n>),
 	Return(Box<Node<'n>>),

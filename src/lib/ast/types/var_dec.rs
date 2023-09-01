@@ -19,7 +19,7 @@ impl TryFrom<Keyword> for VarType {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct VarDec<'v> {
+pub struct VarDecl<'v> {
 	pub var_type: VarType,
 	pub name: &'v str,
 	pub type_annotation: Option<&'v str>,

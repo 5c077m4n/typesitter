@@ -29,13 +29,13 @@ fn main() -> Result<()> {
 		let input = &input.trim();
 
 		let mut tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(&mut tokens, None)?;
+		let ast = parse(&mut tokens)?;
 		debug!("{:?}", &ast);
 	} else if let Some(input) = args.eval {
 		let input = &input.trim();
 
 		let mut tokens = scan(input, Some("REPL".to_owned()));
-		let ast = parse(&mut tokens, None)?;
+		let ast = parse(&mut tokens)?;
 		debug!("{:?}", &ast);
 	} else {
 		loop {
@@ -50,7 +50,7 @@ fn main() -> Result<()> {
 
 			let input = &input.trim();
 			let mut tokens = scan(input, Some("REPL".to_owned()));
-			let ast = parse(&mut tokens, None)?;
+			let ast = parse(&mut tokens)?;
 			debug!("{:?}", &ast);
 		}
 	}
