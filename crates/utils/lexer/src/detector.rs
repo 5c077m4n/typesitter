@@ -20,7 +20,7 @@ use nom::{
 		tab,
 	},
 	combinator::{map_res, recognize, value},
-	multi::{many0, many1},
+	multi::{many0, many1, many_m_n},
 	sequence::{delimited, preceded, terminated, tuple},
 	IResult,
 };
@@ -129,7 +129,15 @@ pub fn punctuation(input: Span) -> IResult<Span, Token> {
 
 pub fn decimal(input: Span) -> IResult<Span, Token> {
 	let (tail, token) = map_res(
-		recognize(many1(terminated(digit1, many0(char('_'))))),
+		recognize(tuple((
+			many_m_n(0, 1, char('-')),
+			many1(terminated(digit1, many0(char('_')))),
+			many_m_n(
+				0,
+				1,
+				tuple((char('.'), many1(terminated(digit1, many0(char('_')))))),
+			),
+		))),
 		|token: Span| -> Result<f64> {
 			let n_str = token
 				.fragment()
