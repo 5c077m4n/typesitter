@@ -54,10 +54,32 @@ pub fn parse<'a>(token_iter: &mut impl Iterator<Item = Token<'a>>) -> Result<Vec
 							}
 							Some(Token {
 								value: TokenType::Punctuation(Punctuation::Colon),
-								..
-							}) => {
-								todo!("function return type")
-							}
+								position,
+							}) => match token_iter.next() {
+								Some(Token {
+									value: TokenType::Identifier(fn_return_type),
+									..
+								}) => match token_iter.next() {
+									Some(Token {
+										value: TokenType::Punctuation(Punctuation::BracketCurlyOpen),
+										..
+									}) => {
+										let body = parse(token_iter)?;
+										let named_fn_node = Box::new(Node::FnDec(FnDec {
+											fn_type: FnType::Classic,
+											name: Some(fn_name),
+											input_params,
+											return_type: Some(fn_return_type),
+											body: Box::new(Node::Block(body)),
+										}));
+										expr_list.push(named_fn_node);
+									}
+									other => {
+										bail!("Wasn't expecting {:?} @ {:?}", &other, &position)
+									}
+								},
+								other => bail!("Wasn't expecting {:?} @ {:?}", &other, &position),
+							},
 							other => {
 								error!("Was not expecting {:?} @ {:?}", &other, &position);
 							}
