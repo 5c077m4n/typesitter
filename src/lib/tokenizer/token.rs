@@ -3,23 +3,15 @@ use nom_locate::LocatedSpan;
 
 pub type Span<'s> = LocatedSpan<&'s str, Option<String>>;
 
-#[derive(PartialEq, Eq)]
-pub struct GenericToken<'s> {
-	pub position: Span<'s>,
-	pub token: &'s str,
+#[derive(Debug, PartialEq)]
+pub enum TokenType<'t> {
+	Generic(&'t str),
+	Keyword(Keyword),
+	Punctuation(Punctuation),
+	Literal(Literal<'t>),
 }
-#[derive(PartialEq)]
-pub struct LiteralToken<'s> {
-	pub position: Span<'s>,
-	pub token: Literal<'s>,
-}
-#[derive(PartialEq, Eq)]
-pub struct KeywordToken<'s> {
-	pub position: Span<'s>,
-	pub token: Keyword,
-}
-#[derive(PartialEq, Eq)]
-pub struct PunctuationToken<'s> {
-	pub position: Span<'s>,
-	pub token: Punctuation,
+#[derive(Debug, PartialEq)]
+pub struct Token<'t> {
+	pub position: Span<'t>,
+	pub value: TokenType<'t>,
 }

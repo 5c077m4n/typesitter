@@ -2,7 +2,7 @@
 
 use super::{
 	super::ast::{keyword::Keyword, literal::Literal, punctuation::Punctuation},
-	token::{GenericToken, KeywordToken, LiteralToken, PunctuationToken, Span},
+	token::{Span, Token, TokenType},
 };
 use nom::{
 	branch::alt,
@@ -15,7 +15,7 @@ use nom::{
 };
 use nom_locate::position;
 
-pub fn keyword(input: Span) -> IResult<Span, KeywordToken> {
+pub fn keyword(input: Span) -> IResult<Span, Token> {
 	let (tail, kw) = alt((
 		value(Keyword::Const, tag(Keyword::Const.as_str())),
 		value(Keyword::Let, tag(Keyword::Let.as_str())),
@@ -24,14 +24,14 @@ pub fn keyword(input: Span) -> IResult<Span, KeywordToken> {
 
 	Ok((
 		tail,
-		KeywordToken {
+		Token {
 			position: pos,
-			token: kw,
+			value: TokenType::Keyword(kw),
 		},
 	))
 }
 
-pub fn punctuation(input: Span) -> IResult<Span, PunctuationToken> {
+pub fn punctuation(input: Span) -> IResult<Span, Token> {
 	let (tail, punc) = alt((
 		value(
 			Punctuation::BracetOpen,
@@ -64,14 +64,14 @@ pub fn punctuation(input: Span) -> IResult<Span, PunctuationToken> {
 
 	Ok((
 		tail,
-		PunctuationToken {
+		Token {
 			position: pos,
-			token: punc,
+			value: TokenType::Punctuation(punc),
 		},
 	))
 }
 
-pub fn decimal(input: Span) -> IResult<Span, LiteralToken> {
+pub fn decimal(input: Span) -> IResult<Span, Token> {
 	let (tail, token) = map_res(
 		recognize(many1(terminated(digit1, many0(char('_'))))),
 		|token: Span| token.fragment().replace('_', "").parse::<f64>(),
@@ -80,53 +80,53 @@ pub fn decimal(input: Span) -> IResult<Span, LiteralToken> {
 
 	Ok((
 		tail,
-		LiteralToken {
+		Token {
 			position: pos,
-			token: Literal::Number(token),
+			value: TokenType::Literal(Literal::Number(token)),
 		},
 	))
 }
 
-pub fn boolean(input: Span) -> IResult<Span, LiteralToken> {
+pub fn boolean(input: Span) -> IResult<Span, Token> {
 	let (tail, bool_value) = alt((value(true, tag("true")), value(false, tag("false"))))(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
 		tail,
-		LiteralToken {
+		Token {
 			position: pos,
-			token: Literal::Bool(bool_value),
+			value: TokenType::Literal(Literal::Bool(bool_value)),
 		},
 	))
 }
 
-pub fn undefined(input: Span) -> IResult<Span, LiteralToken> {
+pub fn undefined(input: Span) -> IResult<Span, Token> {
 	let (tail, _token) = tag("undefined")(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
 		tail,
-		LiteralToken {
+		Token {
 			position: pos,
-			token: Literal::Undefined,
+			value: TokenType::Literal(Literal::Undefined),
 		},
 	))
 }
 
-pub fn null(input: Span) -> IResult<Span, LiteralToken> {
+pub fn null(input: Span) -> IResult<Span, Token> {
 	let (tail, _token) = tag("null")(input)?;
 	let (tail, pos) = position(tail)?;
 
 	Ok((
 		tail,
-		LiteralToken {
+		Token {
 			position: pos,
-			token: Literal::Null,
+			value: TokenType::Literal(Literal::Null),
 		},
 	))
 }
 
-pub fn string(input: Span) -> IResult<Span, LiteralToken> {
+pub fn string(input: Span) -> IResult<Span, Token> {
 	let (tail, token) = alt((
 		delimited(char('\''), take_until("'"), char('\'')),
 		delimited(char('"'), take_until("\""), char('"')),
@@ -135,14 +135,14 @@ pub fn string(input: Span) -> IResult<Span, LiteralToken> {
 
 	Ok((
 		tail,
-		LiteralToken {
+		Token {
 			position: pos,
-			token: Literal::String(token.fragment()),
+			value: TokenType::Literal(Literal::String(token.fragment())),
 		},
 	))
 }
 
-pub fn binary(input: Span) -> IResult<Span, GenericToken> {
+pub fn binary(input: Span) -> IResult<Span, Token> {
 	let (tail, token) = preceded(
 		tag("0b"),
 		recognize(many1(terminated(one_of("01"), many0(char('_'))))),
@@ -151,9 +151,9 @@ pub fn binary(input: Span) -> IResult<Span, GenericToken> {
 
 	Ok((
 		tail,
-		GenericToken {
+		Token {
 			position: pos,
-			token: &token,
+			value: TokenType::Generic(&token),
 		},
 	))
 }
