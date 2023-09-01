@@ -1,5 +1,5 @@
 [package]
-name = "jit"
+name = "llvm"
 version = "0.0.0"
 edition = "2021"
 
