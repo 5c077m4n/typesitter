@@ -45,7 +45,7 @@ pub fn parse<'a>(
 								let body = parse(token_iter)?;
 								let named_fn_node = Node::FnDec(FnDec {
 									fn_type: FnType::Classic,
-									name: Some(fn_name),
+									name: Some(vec![fn_name]),
 									input_params,
 									return_type: None,
 									body: Box::new(Node::Block(body)),
@@ -67,7 +67,7 @@ pub fn parse<'a>(
 										let body = parse(token_iter)?;
 										let named_fn_node = Node::FnDec(FnDec {
 											fn_type: FnType::Classic,
-											name: Some(fn_name),
+											name: Some(vec![fn_name]),
 											input_params,
 											return_type: Some(fn_return_type),
 											body: Box::new(Node::Block(body)),
@@ -147,7 +147,7 @@ pub fn parse<'a>(
 										}) => {
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
-												name: param_name,
+												name: vec![param_name],
 												type_annotation: Some(var_type),
 												value: Box::new(Node::Literal(Literal::Number(n))),
 											});
@@ -159,7 +159,7 @@ pub fn parse<'a>(
 										}) => {
 											let init_node = Node::VarDecl(VarDecl {
 												var_type: init_type.try_into()?,
-												name: param_name,
+												name: vec![param_name],
 												type_annotation: Some(var_type),
 												value: Box::new(Node::Literal(Literal::String(s))),
 											});
@@ -183,7 +183,7 @@ pub fn parse<'a>(
 							}) => {
 								let init_node = Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
-									name: param_name,
+									name: vec![param_name],
 									type_annotation: None,
 									value: Box::new(Node::Literal(Literal::Number(n))),
 								});
@@ -195,7 +195,7 @@ pub fn parse<'a>(
 							}) => {
 								let init_node = Node::VarDecl(VarDecl {
 									var_type: init_type.try_into()?,
-									name: param_name,
+									name: vec![param_name],
 									type_annotation: None,
 									value: Box::new(Node::Literal(Literal::String(s))),
 								});
@@ -212,7 +212,7 @@ pub fn parse<'a>(
 						}) => {
 							let init_node = Node::VarDecl(VarDecl {
 								var_type: init_type.try_into()?,
-								name: param_name,
+								name: vec![param_name],
 								type_annotation: None,
 								value: Box::new(Node::Literal(Literal::Undefined)),
 							});

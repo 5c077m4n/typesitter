@@ -11,23 +11,29 @@ use log::error;
 use std::iter::Peekable;
 
 pub fn ident_parse<'a>(
-	initial_ident: &'a str,
+	ident: &'a str,
 	token_iter: &mut Peekable<impl Iterator<Item = Token<'a>>>,
 ) -> Result<Vec<Node<'a>>> {
 	let mut expr_list: Vec<Node<'a>> = Vec::new();
+	let mut ident_parts = vec![ident];
+
+	while let Some(Token { value, .. }) = token_iter.peek() {
+		match value {
+			TokenType::Identifier(ident_part) => ident_parts.push(ident_part),
+			TokenType::Punctuation(Punctuation::Dot) => {}
+			_ => break,
+		}
+		token_iter.next();
+	}
 
 	while let Some(Token { value, position }) = token_iter.next() {
 		match value {
 			TokenType::Punctuation(Punctuation::BracketOpen) => {
 				let params = parse_param_list(token_iter)?;
-				let fn_call_node = Node::FnCall(FnCall {
-					fn_name: initial_ident,
-					params,
-				});
+				let fn_name = ident_parts.to_owned();
+
+				let fn_call_node = Node::FnCall(FnCall { fn_name, params });
 				expr_list.push(fn_call_node);
-			}
-			TokenType::Punctuation(Punctuation::Dot) => {
-				todo!("Object fields lookup");
 			}
 			TokenType::Punctuation(Punctuation::Equal) => {
 				todo!("Param assignment");
