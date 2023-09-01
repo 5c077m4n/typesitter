@@ -22,7 +22,7 @@ pub fn parse<'a>(
 	mut token_iter: impl Iterator<Item = Token<'a>>,
 	expr_list: Option<Vec<Node<'a>>>,
 ) -> Result<Box<Node<'a>>> {
-	let mut expr_list = expr_list.unwrap_or_else(Vec::new);
+	let mut expr_list = expr_list.unwrap_or_default();
 
 	while let Some(Token { value, .. }) = token_iter.next() {
 		match value {

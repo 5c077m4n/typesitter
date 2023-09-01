@@ -13,7 +13,7 @@ use super::super::super::{
 use anyhow::Result;
 
 #[test]
-pub fn parse_const_number_init_number_test() -> Result<()> {
+pub fn parse_const_init_number_test() -> Result<()> {
 	let init_str = "const n: number = 123;";
 	let tokens = scan(init_str, Some("Parser test".to_string()));
 	let ast = *parse(tokens, None)?;
@@ -31,7 +31,35 @@ pub fn parse_const_number_init_number_test() -> Result<()> {
 }
 
 #[test]
-pub fn parse_let_number_init_string_test() -> Result<()> {
+pub fn parse_2_const_init_number_test() -> Result<()> {
+	let init_str = r#"const n: number = 123;
+    const n: number = 123;
+    "#;
+	let tokens = scan(init_str, Some("Parser test".to_string()));
+	let ast = *parse(tokens, None)?;
+
+	assert_eq!(
+		ast,
+		Node::Block(vec![
+			Node::VarDec(Box::new(VarDec {
+				var_type: VarType::Const,
+				name: "n",
+				type_annotation: Some("number"),
+				value: Box::new(Node::Literal(Box::new(Literal::Number(123.))))
+			})),
+			Node::VarDec(Box::new(VarDec {
+				var_type: VarType::Const,
+				name: "n",
+				type_annotation: Some("number"),
+				value: Box::new(Node::Literal(Box::new(Literal::Number(123.))))
+			}))
+		])
+	);
+	Ok(())
+}
+
+#[test]
+pub fn parse_let_init_string_test() -> Result<()> {
 	let init_str = r#"let s: string = '123';"#;
 	let tokens = scan(init_str, Some("Parser test".to_string()));
 	let ast = *parse(tokens, None)?;
