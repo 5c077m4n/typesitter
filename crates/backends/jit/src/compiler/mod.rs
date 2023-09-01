@@ -1,4 +1,1 @@
-mod instr;
-mod var;
-
-pub mod compile;
+pub mod compiler;
