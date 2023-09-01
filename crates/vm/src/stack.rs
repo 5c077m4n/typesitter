@@ -1,36 +1,25 @@
-use anyhow::{bail, Result};
+use super::instr::Pointer;
 
 #[derive(Default, Debug)]
 pub struct Stack(Vec<f64>);
+
 impl Stack {
 	pub fn push(&mut self, v: f64) {
 		self.0.push(v)
 	}
-	pub fn pop(&mut self) -> Result<f64> {
-		if let Some(n) = self.0.pop() {
-			Ok(n)
-		} else {
-			bail!(
-				"There was an error in getting the stack's pop: {:?}",
-				self.0
-			);
-		}
+	pub fn get(&self, p: Pointer) -> Option<&f64> {
+		self.0.get(p)
 	}
-	pub fn peek(&mut self) -> Result<&f64> {
-		if let Some(n) = self.0.last() {
-			Ok(n)
-		} else {
-			bail!(
-				"There was an error in getting the stack's pop: {:?}",
-				self.0
-			);
-		}
+	pub fn get_mut(&mut self, p: Pointer) -> Option<&mut f64> {
+		self.0.get_mut(p)
 	}
-	pub fn peek_mut(&mut self) -> Result<&mut f64> {
-		if let Some(n) = self.0.last_mut() {
-			Ok(n)
-		} else {
-			bail!("There was an error in getting the stack's pop");
-		}
+	pub fn peek(&mut self) -> Option<&f64> {
+		self.0.last()
+	}
+	pub fn peek_mut(&mut self) -> Option<&mut f64> {
+		self.0.last_mut()
+	}
+	pub fn pop(&mut self) -> Option<f64> {
+		self.0.pop()
 	}
 }
