@@ -19,7 +19,7 @@ use log::{error, warn};
 use std::iter::Peekable;
 
 pub fn parse<'a>(
-	token_iter: &mut Peekable<impl Iterator<Item = Token<'a>>>,
+	token_iter: &mut Box<Peekable<impl Iterator<Item = Token<'a>>>>,
 ) -> Result<Vec<Node<'a>>> {
 	let mut expr_list: Vec<Node<'a>> = Vec::new();
 
