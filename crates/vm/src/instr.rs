@@ -9,8 +9,8 @@ pub enum Instr {
 	Div,
 	Print,
 	Jump(Pointer),
-	JE(Pointer),
-	JNE(Pointer),
+	JumpEqual(Pointer),
+	JumpNotEqual(Pointer),
 	Get(Pointer),
 	Set(Pointer),
 }
